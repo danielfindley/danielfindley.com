@@ -37,7 +37,7 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
-          "Access-Control-Allow-Origin": "https://danielfindley.com",
+          "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "POST, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
         },
@@ -62,7 +62,7 @@ export default {
       return new Response(JSON.stringify({ reply: response.response }), {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "https://danielfindley.com",
+          "Access-Control-Allow-Origin": "*",
         },
       });
     } catch (err) {
@@ -70,7 +70,7 @@ export default {
         status: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "https://danielfindley.com",
+          "Access-Control-Allow-Origin": "*",
         },
       });
     }

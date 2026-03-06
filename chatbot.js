@@ -1,9 +1,9 @@
-// Update this URL after deploying the worker
 const WORKER_URL = "https://danielfindley-chatbot.danielfindley.workers.dev";
 
 const chatHTML = `
 <button class="chat-toggle" aria-label="Open chat">
-  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+  <svg viewBox="0 0 24 24" width="20" height="20" style="flex-shrink:0"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+  <span>Ask the chatbot</span>
 </button>
 <div class="chat-window">
   <div class="chat-header">
@@ -19,60 +19,59 @@ const chatHTML = `
   </div>
 </div>`;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
   const container = document.createElement("div");
   container.innerHTML = chatHTML;
   document.body.appendChild(container);
 
   const toggle = container.querySelector(".chat-toggle");
-  const window_ = container.querySelector(".chat-window");
+  const chatWindow = container.querySelector(".chat-window");
   const input = container.querySelector(".chat-input-area input");
   const sendBtn = container.querySelector(".chat-input-area button");
   const messages = container.querySelector(".chat-messages");
 
   let history = [];
 
-  toggle.addEventListener("click", () => {
-    window_.classList.toggle("open");
-    if (window_.classList.contains("open")) input.focus();
+  toggle.addEventListener("click", function() {
+    chatWindow.classList.toggle("open");
+    if (chatWindow.classList.contains("open")) input.focus();
   });
 
-  async function send() {
+  function send() {
     const text = input.value.trim();
     if (!text) return;
 
-    // Add user message
     appendMsg(text, "user");
     history.push({ role: "user", content: text });
     input.value = "";
     sendBtn.disabled = true;
 
-    // Show typing indicator
     const typing = appendMsg("Thinking...", "bot typing");
 
-    try {
-      const res = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
-      });
-      const data = await res.json();
+    fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: history })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
       typing.remove();
-
-      const reply = data.reply || "Sorry, something went wrong.";
+      var reply = data.reply || data.error || "Sorry, something went wrong.";
       appendMsg(reply, "bot");
       history.push({ role: "assistant", content: reply });
-    } catch {
+      sendBtn.disabled = false;
+      input.focus();
+    })
+    .catch(function(err) {
       typing.remove();
-      appendMsg("Couldn't reach the chatbot. Try again later.", "bot");
-    }
-
-    sendBtn.disabled = false;
-    input.focus();
+      appendMsg("Couldn't reach the chatbot: " + err.message, "bot");
+      sendBtn.disabled = false;
+      input.focus();
+    });
   }
 
   function appendMsg(text, classes) {
-    const div = document.createElement("div");
+    var div = document.createElement("div");
     div.className = "chat-msg " + classes;
     div.textContent = text;
     messages.appendChild(div);
@@ -81,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   sendBtn.addEventListener("click", send);
-  input.addEventListener("keydown", (e) => {
+  input.addEventListener("keydown", function(e) {
     if (e.key === "Enter") send();
   });
 });

@@ -1,5 +1,5 @@
 // Update this URL after deploying the worker
-const WORKER_URL = "https://danielfindley-chatbot.YOUR_SUBDOMAIN.workers.dev";
+const WORKER_URL = "https://danielfindley-chatbot.danielfindley.workers.dev";
 
 const chatHTML = `
 <button class="chat-toggle" aria-label="Open chat">

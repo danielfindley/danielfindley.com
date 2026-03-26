@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Embedding Pipeline</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #07080d; color: #e0e0e0; font-family: 'Inter', sans-serif; overflow: hidden; }
+  canvas { position: fixed; top: 0; left: 0; }
+  #overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 1; pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .player-card {
+    position: absolute; width: 360px;
+    background: rgba(10, 12, 22, 0.94);
+    border: 1px solid rgba(100, 180, 255, 0.1);
+    border-radius: 14px; padding: 28px 30px;
+    backdrop-filter: blur(20px);
+    opacity: 0; transform: scale(0.92) translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    box-shadow: 0 0 80px rgba(40, 100, 220, 0.06);
+  }
+  .player-card.visible { opacity: 1; transform: scale(1) translateY(0); }
+  .player-card.dissolving { opacity: 0; transform: scale(0.88); transition: opacity 1s, transform 1s; }
+  .player-card .name {
+    font-size: 24px; font-weight: 800;
+    background: linear-gradient(135deg, #5eb5f7, #c084e8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 3px; letter-spacing: -0.4px;
+  }
+  .player-card .team {
+    font-size: 12px; color: #666; font-weight: 300;
+    margin-bottom: 18px; letter-spacing: 1.8px; text-transform: uppercase;
+  }
+  .stat-row {
+    display: flex; justify-content: space-between; padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  }
+  .stat-row .label { color: #555; }
+  .stat-row .value { color: #8cc4ff; font-weight: 700; }
+  .phase-label {
+    position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; letter-spacing: 3.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.2); font-weight: 300;
+    opacity: 0; transition: opacity 0.5s; white-space: nowrap;
+  }
+  .phase-label.visible { opacity: 1; }
+  .result-card {
+    position: absolute; text-align: center;
+    opacity: 0; transform: scale(0.8);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .result-card.visible { opacity: 1; transform: scale(1); }
+  .result-card .delta {
+    font-size: 68px; font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    background: linear-gradient(135deg, #4cff91, #2dd4a0, #4cff91);
+    background-size: 200% 200%; animation: gShift 2s ease infinite;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(76,255,145,0.25));
+  }
+  .result-card .sublabel {
+    font-size: 15px; color: rgba(255,255,255,0.35);
+    letter-spacing: 4px; text-transform: uppercase; margin-top: 6px;
+  }
+  @keyframes gShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  #restart-btn {
+    position: fixed; bottom: 22px; right: 22px; z-index: 10;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.3); padding: 8px 18px; border-radius: 6px;
+    font-family: 'Inter'; font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; cursor: pointer; pointer-events: all;
+    transition: all 0.3s;
+  }
+  #restart-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+  .progress-bar {
+    position: fixed; bottom: 0; left: 0; height: 2px;
+    background: linear-gradient(90deg, #5eb5f7, #c084e8, #4cff91);
+    z-index: 10; transition: width 0.1s linear;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div id="overlay">
+  <div class="player-card" id="card-in">
+    <div class="name">Indiana Vassilev</div>
+    <div class="team">Philadelphia Union</div>
+    <div class="stat-row"><span class="label">Rating</span><span class="value">7.24</span></div>
+    <div class="stat-row"><span class="label">Goals</span><span class="value">4</span></div>
+    <div class="stat-row"><span class="label">Assists</span><span class="value">6</span></div>
+    <div class="stat-row"><span class="label">xG</span><span class="value">3.81</span></div>
+    <div class="stat-row"><span class="label">xA</span><span class="value">4.52</span></div>
+    <div class="stat-row"><span class="label">Chances Created</span><span class="value">28</span></div>
+    <div class="stat-row"><span class="label">Accurate Passes</span><span class="value">312</span></div>
+    <div class="stat-row"><span class="label">Touches</span><span class="value">583</span></div>
+    <div class="stat-row"><span class="label">Dribbles</span><span class="value">19</span></div>
+    <div class="stat-row" style="border:none"><span class="label">Duels Won</span><span class="value">47</span></div>
+  </div>
+  <div class="result-card" id="result-card">
+    <div class="delta">+4.2%</div>
+    <div class="sublabel">Win Probability</div>
+  </div>
+  <div class="player-card" id="card-out">
+    <div class="name">Indiana Vassilev</div>
+    <div class="team">&rarr; St. Louis City SC</div>
+    <div class="stat-row"><span class="label">Rating</span><span class="value">7.24</span></div>
+    <div class="stat-row"><span class="label">Goals</span><span class="value">4</span></div>
+    <div class="stat-row"><span class="label">Assists</span><span class="value">6</span></div>
+    <div class="stat-row"><span class="label">xG</span><span class="value">3.81</span></div>
+    <div class="stat-row"><span class="label">xA</span><span class="value">4.52</span></div>
+    <div class="stat-row"><span class="label">Chances Created</span><span class="value">28</span></div>
+    <div class="stat-row"><span class="label">Accurate Passes</span><span class="value">312</span></div>
+    <div class="stat-row"><span class="label">Touches</span><span class="value">583</span></div>
+    <div class="stat-row"><span class="label">Dribbles</span><span class="value">19</span></div>
+    <div class="stat-row" style="border:none"><span class="label">Win Prob Uplift</span><span class="value" style="color:#4cff91">+4.2%</span></div>
+  </div>
+  <div class="phase-label" id="phase-label"></div>
+</div>
+
+<div class="progress-bar" id="progress"></div>
+<button id="restart-btn" onclick="restart()">Replay</button>
+
+<script>
+const DUR = 25000;
+const P = {
+  CARD:    [0,     2400],
+  DISSLV:  [2400,  4800],
+  ENCODE:  [3800,  7200],
+  JOIN:    [6800,  10500],
+  MERGE:   [10000, 13000],
+  PROCESS: [12500, 17000],
+  EXTRACT: [16500, 19500],
+  RESULT:  [19000, 22500],
+  RECON:   [22000, 25000],
+};
+
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+let W, H, cx, cy, dpr;
+
+function onResize() {
+  dpr = devicePixelRatio;
+  W = innerWidth; H = innerHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  cx = W / 2; cy = H / 2;
+}
+addEventListener('resize', onResize);
+onResize();
+
+function pp(elapsed, phase) {
+  if (elapsed < phase[0]) return 0;
+  if (elapsed > phase[1]) return 1;
+  return (elapsed - phase[0]) / (phase[1] - phase[0]);
+}
+function eio(t) { return t < .5 ? 2*t*t : 1 - ((-2*t+2)**2) / 2; }
+function eo(t) { return 1 - (1-t)**3; }
+function ei(t) { return t*t*t; }
+function lerp(a,b,t) { return a + (b-a)*t; }
+
+const NAMES = ['Vassilev','Baumgartl','Durkin','Hartel','Becher',
+               'Orozco','Polvara','Wallem','Edelman','Santos','Burki'];
+const COLS = [
+  '#5eb5f7','#c084e8','#4fc3f7','#f48fb1','#81c784',
+  '#ffb74d','#4db6ac','#e57373','#aed581','#9fa8da','#fff176'
+];
+
+// ==================== NEURON SYSTEM ====================
+// Each player = cluster of neurons. They merge into one big network.
+
+let neurons = [];      // {x,y,tx,ty,r,col,glow,cluster,origX,origY}
+let connections = [];  // {a,b,signal,signalDir,active}
+let signals = [];      // {conn_idx,t,speed,color}
+let sparks = [];       // {x,y,vx,vy,life,col}
+let bgDots = [];
+let t0 = 0;
+
+const CLUSTER_R = 55;        // radius of a player cluster
+const NEURONS_PER = 8;       // neurons per player
+const TEAM_NEURON_COUNT = 32; // neurons in the merged team
+
+function makeClusterPositions(cx_, cy_, n, r) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + Math.random() * 0.4;
+    const d = r * (0.3 + Math.random() * 0.7);
+    out.push([cx_ + Math.cos(a) * d, cy_ + Math.sin(a) * d]);
+  }
+  return out;
+}
+
+function init() {
+  neurons = []; connections = []; signals = []; sparks = []; bgDots = [];
+
+  // Background dots
+  for (let i = 0; i < 60; i++) {
+    bgDots.push({
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-.5)*.2, vy: (Math.random()-.5)*.2,
+      s: Math.random()*1.2, o: Math.random()*.1
+    });
+  }
+
+  // Lay out player clusters in an arc above center
+  const arcR = Math.min(W, H) * 0.32;
+  const arcStart = Math.PI * 0.15;
+  const arcEnd = Math.PI * 0.85;
+
+  for (let p = 0; p < NAMES.length; p++) {
+    const a = arcStart + (p / (NAMES.length - 1)) * (arcEnd - arcStart);
+    const clx = cx + Math.cos(a + Math.PI) * arcR;
+    const cly = cy + Math.sin(a + Math.PI) * arcR * 0.6 - 20;
+    const positions = makeClusterPositions(clx, cly, NEURONS_PER, CLUSTER_R);
+
+    for (let i = 0; i < NEURONS_PER; i++) {
+      neurons.push({
+        x: cx, y: cy,   // start at center (will animate out)
+        tx: positions[i][0], ty: positions[i][1],
+        origX: positions[i][0], origY: positions[i][1],
+        // Team target positions (set during merge)
+        teamX: 0, teamY: 0,
+        r: 3 + Math.random() * 3,
+        col: COLS[p],
+        glow: 0,
+        cluster: p,
+        opacity: 0,
+      });
+    }
+  }
+
+  // Pre-compute team layout (big circle cluster)
+  const teamPositions = makeClusterPositions(cx, cy, neurons.length, 140);
+  for (let i = 0; i < neurons.length; i++) {
+    neurons[i].teamX = teamPositions[i][0];
+    neurons[i].teamY = teamPositions[i][1];
+  }
+
+  // Generate connections within each cluster
+  for (let p = 0; p < NAMES.length; p++) {
+    const start = p * NEURONS_PER;
+    for (let i = start; i < start + NEURONS_PER; i++) {
+      for (let j = i + 1; j < start + NEURONS_PER; j++) {
+        if (Math.random() < 0.4) {
+          connections.push({ a: i, b: j, signal: 0, active: false, type: 'cluster' });
+        }
+      }
+    }
+  }
+
+  // Generate cross-cluster connections (for merged state)
+  for (let i = 0; i < neurons.length; i++) {
+    for (let j = i + 1; j < neurons.length; j++) {
+      if (neurons[i].cluster !== neurons[j].cluster && Math.random() < 0.012) {
+        connections.push({ a: i, b: j, signal: 0, active: false, type: 'team' });
+      }
+    }
+  }
+
+  t0 = performance.now();
+}
+
+// ==================== DRAWING ====================
+function drawBg() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#07080d';
+  ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W,H)*0.55);
+  g.addColorStop(0, 'rgba(20,30,60,0.1)');
+  g.addColorStop(1, 'transparent');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  for (const d of bgDots) {
+    d.x += d.vx; d.y += d.vy;
+    if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+    if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.s, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(80,130,220,${d.o})`;
+    ctx.fill();
+  }
+}
+
+function drawConnections(elapsed, merged, processing) {
+  for (const c of connections) {
+    const na = neurons[c.a], nb = neurons[c.b];
+    if (na.opacity < 0.05 || nb.opacity < 0.05) continue;
+    // Hide team connections unless merged
+    if (c.type === 'team' && !merged) continue;
+    // Hide cluster connections once fully merged
+    // (keep them — they still look fine)
+
+    const dx = nb.x - na.x;
+    const dy = nb.y - na.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    // Don't draw super long connections
+    if (dist > 250) continue;
+
+    const baseOp = Math.min(na.opacity, nb.opacity) * (1 - dist/250) * 0.25;
+
+    ctx.beginPath();
+    ctx.moveTo(na.x, na.y);
+    ctx.lineTo(nb.x, nb.y);
+    ctx.strokeStyle = `rgba(120,180,255,${baseOp})`;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Signal traveling along connection
+    if (processing && c.signal > 0) {
+      const sx = na.x + dx * c.signal;
+      const sy = na.y + dy * c.signal;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 2.5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(160,220,255,${baseOp * 3})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(sx, sy, 6, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(100,180,255,${baseOp * 1.5})`;
+      ctx.fill();
+    }
+  }
+}
+
+function drawNeurons() {
+  for (const n of neurons) {
+    if (n.opacity < 0.01) continue;
+    const r = n.r;
+    const op = n.opacity;
+    const glow = n.glow;
+
+    // Outer glow
+    if (glow > 0.05) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r + 10 * glow, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${hexR(n.col)},${hexG(n.col)},${hexB(n.col)},${glow * 0.15 * op})`;
+      ctx.fill();
+    }
+
+    // Core
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${hexR(n.col)},${hexG(n.col)},${hexB(n.col)},${op * 0.75})`;
+    ctx.fill();
+
+    // Bright center
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r * 0.45, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${op * 0.3})`;
+    ctx.fill();
+  }
+}
+
+function drawSparks() {
+  for (let i = sparks.length - 1; i >= 0; i--) {
+    const s = sparks[i];
+    s.x += s.vx; s.y += s.vy;
+    s.vx *= 0.97; s.vy *= 0.97;
+    s.life -= 0.015;
+    if (s.life <= 0) { sparks.splice(i, 1); continue; }
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 1.5 * s.life, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${hexR(s.col)},${hexG(s.col)},${hexB(s.col)},${s.life * 0.7})`;
+    ctx.fill();
+  }
+}
+
+function drawClusterLabels(elapsed, showTeam) {
+  ctx.textAlign = 'center';
+
+  if (!showTeam) {
+    // Per-player labels
+    for (let p = 0; p < NAMES.length; p++) {
+      const start = p * NEURONS_PER;
+      let sumX = 0, sumY = 0, sumOp = 0;
+      for (let i = start; i < start + NEURONS_PER; i++) {
+        sumX += neurons[i].x; sumY += neurons[i].y; sumOp += neurons[i].opacity;
+      }
+      const avgOp = sumOp / NEURONS_PER;
+      if (avgOp < 0.1) continue;
+      ctx.font = '10px "JetBrains Mono"';
+      ctx.fillStyle = `rgba(255,255,255,${avgOp * 0.3})`;
+      ctx.fillText(NAMES[p], sumX / NEURONS_PER, sumY / NEURONS_PER + CLUSTER_R + 14);
+    }
+  } else {
+    // Team label
+    ctx.font = '700 16px "JetBrains Mono"';
+    ctx.fillStyle = `rgba(255,255,255,0.5)`;
+    ctx.fillText('ST. LOUIS CITY', cx, cy + 175);
+
+    ctx.shadowColor = 'rgba(232, 72, 85, 0.35)';
+    ctx.shadowBlur = 25;
+    ctx.fillText('ST. LOUIS CITY', cx, cy + 175);
+    ctx.shadowBlur = 0;
+  }
+}
+
+function drawScoreFlashes(elapsed) {
+  for (let i = scoreFlashes.length - 1; i >= 0; i--) {
+    const sf = scoreFlashes[i];
+    const t = (elapsed - sf.s) / sf.d;
+    if (t < 0 || t > 1) { if (t > 1) scoreFlashes.splice(i, 1); continue; }
+    const op = t < 0.15 ? t/.15 : 1 - (t-.15)/.85;
+    ctx.font = `${sf.sz}px "JetBrains Mono"`;
+    ctx.fillStyle = `rgba(140,200,255,${op * 0.4})`;
+    ctx.textAlign = 'center';
+    ctx.fillText(sf.txt, sf.x, sf.y - t * 25);
+  }
+}
+
+let scoreFlashes = [];
+
+// Color helpers
+function hexR(h) { return parseInt(h.slice(1,3),16); }
+function hexG(h) { return parseInt(h.slice(3,5),16); }
+function hexB(h) { return parseInt(h.slice(5,7),16); }
+
+// ==================== UPDATE ====================
+function update(el) {
+  const pCard = pp(el, P.CARD);
+  const pDis = pp(el, P.DISSLV);
+  const pEnc = pp(el, P.ENCODE);
+  const pJoin = pp(el, P.JOIN);
+  const pMrg = pp(el, P.MERGE);
+  const pProc = pp(el, P.PROCESS);
+  const pExt = pp(el, P.EXTRACT);
+  const pRes = pp(el, P.RESULT);
+  const pRec = pp(el, P.RECON);
+
+  const $in = document.getElementById('card-in');
+  const $out = document.getElementById('card-out');
+  const $res = document.getElementById('result-card');
+  const $ph = document.getElementById('phase-label');
+
+  // Card
+  if (pCard > 0.1 && pDis < 0.4) { $in.classList.add('visible'); $in.classList.remove('dissolving'); }
+  if (pDis > 0.15) { $in.classList.add('dissolving'); $in.classList.remove('visible'); }
+
+  // Phase labels
+  if (pEnc > 0 && pEnc < 1) { $ph.textContent = 'ENCODING PLAYER STATS'; $ph.classList.add('visible'); }
+  else if (pJoin > 0 && pMrg < 0.2) { $ph.textContent = 'COMPOSING LINEUP'; $ph.classList.add('visible'); }
+  else if (pMrg > 0.1 && pMrg < 1) { $ph.textContent = 'FUSING TEAM COMPOSITION'; $ph.classList.add('visible'); }
+  else if (pProc > 0 && pProc < 1) { $ph.textContent = 'PREDICTING OUTCOMES'; $ph.classList.add('visible'); }
+  else if (pExt > 0 && pExt < 1) { $ph.textContent = 'EXTRACTING MARGINAL VALUE'; $ph.classList.add('visible'); }
+  else if (pRes > 0 && pRec < 0.2) { $ph.textContent = 'TRANSFER IMPACT'; $ph.classList.add('visible'); }
+  else { $ph.classList.remove('visible'); }
+
+  // === DISSOLVE + ENCODE: Vassilev's cluster appears ===
+  if (pDis > 0 || pEnc > 0) {
+    for (let i = 0; i < NEURONS_PER; i++) {
+      const n = neurons[i]; // cluster 0 = Vassilev
+      const delay = i / NEURONS_PER * 0.3;
+      const t = Math.max(0, Math.min(1, (pEnc - delay) / 0.5));
+      n.opacity = eo(t);
+      n.x = lerp(cx, n.origX, eo(t));
+      n.y = lerp(cy, n.origY, eo(t));
+      n.glow = Math.max(0, 1 - t) * 0.5;
+    }
+  }
+
+  // === JOIN: other clusters appear staggered ===
+  if (pJoin > 0 && pMrg < 1) {
+    for (let p = 1; p < NAMES.length; p++) {
+      const delay = ((p-1) / (NAMES.length-1)) * 0.5;
+      const t = Math.max(0, Math.min(1, (pJoin - delay) / 0.4));
+      const start = p * NEURONS_PER;
+      for (let i = start; i < start + NEURONS_PER; i++) {
+        const n = neurons[i];
+        n.opacity = eo(t);
+        n.x = lerp(cx, n.origX, eo(t));
+        n.y = lerp(cy, n.origY, eo(t));
+        n.glow = Math.max(0, 0.6 - t) * 0.5;
+      }
+    }
+  }
+
+  // === MERGE: all neurons slide to team layout ===
+  if (pMrg > 0) {
+    const t = eio(pMrg);
+    for (const n of neurons) {
+      n.x = lerp(n.origX, n.teamX, t);
+      n.y = lerp(n.origY, n.teamY, t);
+      n.opacity = 1;
+    }
+
+    // Emit sparks during merge
+    if (pMrg > 0.1 && pMrg < 0.8 && Math.random() < 0.3 && sparks.length < 200) {
+      const ni = Math.floor(Math.random() * neurons.length);
+      const n = neurons[ni];
+      sparks.push({
+        x: n.x, y: n.y,
+        vx: (cx - n.x) * 0.03 + (Math.random()-.5)*2,
+        vy: (cy - n.y) * 0.03 + (Math.random()-.5)*2,
+        life: 1, col: n.col,
+      });
+    }
+
+    // Shockwave
+    if (pMrg > 0.55 && pMrg < 0.7) {
+      const rt = (pMrg - 0.55) / 0.15;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rt * 220, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(200,160,255,${(1-rt)*0.25})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  // === PROCESS: signals travel, nodes pulse ===
+  const isMerged = pMrg >= 1;
+  const isProcessing = pProc > 0 && pProc < 1;
+
+  if (isProcessing) {
+    // Fire signals along random connections
+    for (const c of connections) {
+      if (c.signal <= 0 && Math.random() < 0.008) {
+        c.signal = 0.001; // start
+      }
+      if (c.signal > 0) {
+        c.signal += 0.02;
+        if (c.signal > 1) c.signal = 0;
+      }
+    }
+
+    // Pulse random neurons
+    for (const n of neurons) {
+      if (Math.random() < 0.02) n.glow = 1;
+      n.glow *= 0.94;
+    }
+
+    // Score flashes
+    if (Math.random() < 0.1) {
+      const txts = ['2-1','0-0','3-2','1-0','1-1','2-0','0-1','4-1',
+                     '47.2%','52.8%','31.1%','68.4%','44.7%','55.3%'];
+      scoreFlashes.push({
+        txt: txts[Math.floor(Math.random()*txts.length)],
+        x: cx + (Math.random()-.5)*450, y: cy + (Math.random()-.5)*280,
+        s: el, d: 700, sz: 13 + Math.random()*8,
+      });
+    }
+  }
+
+  // === EXTRACT: Vassilev cluster separates right, rest shifts left ===
+  if (pExt > 0) {
+    const t = eio(pExt);
+    const sepX = 200 * t;
+
+    for (const n of neurons) {
+      if (n.cluster === 0) {
+        // Vassilev: slide right from team position
+        n.x = n.teamX + sepX;
+        n.y = lerp(n.teamY, n.origY * 0.3 + cy * 0.7, t * 0.4);
+        n.glow = t * 0.4;
+        n.opacity = 1;
+      } else {
+        // Others: shift left slightly, fade a bit
+        n.x = n.teamX - sepX * 0.35;
+        n.opacity = Math.max(0.25, 1 - t * 0.6);
+        n.glow *= 0.95;
+      }
+    }
+
+    // Sparks between the separating groups
+    if (pExt < 0.6 && Math.random() < 0.15 && sparks.length < 150) {
+      sparks.push({
+        x: cx, y: cy + (Math.random()-.5)*100,
+        vx: 2 + Math.random()*3, vy: (Math.random()-.5)*3,
+        life: 1, col: '#5eb5f7',
+      });
+    }
+
+    // Kill signals
+    for (const c of connections) c.signal = 0;
+  }
+
+  // === RESULT ===
+  if (pRes > 0.15 && pRec < 0.25) {
+    $res.classList.add('visible');
+    for (const n of neurons) {
+      n.opacity = Math.max(0.1, n.opacity - 0.005);
+    }
+  } else {
+    $res.classList.remove('visible');
+  }
+
+  // === RECONSTITUTE ===
+  if (pRec > 0) {
+    for (const n of neurons) {
+      n.opacity = Math.max(0, n.opacity - 0.02);
+    }
+  }
+  if (pRec > 0.3) { $out.classList.add('visible'); }
+  else { $out.classList.remove('visible'); }
+
+  return { isMerged, isProcessing };
+}
+
+// ==================== RENDER LOOP ====================
+let animId = null;
+
+function frame(now) {
+  const el = now - t0;
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawBg();
+
+  const { isMerged, isProcessing } = update(el);
+
+  drawConnections(el, isMerged || pp(el, P.MERGE) > 0.6, isProcessing);
+  drawNeurons();
+  drawSparks();
+  drawClusterLabels(el, isMerged && pp(el, P.EXTRACT) < 0.5);
+  drawScoreFlashes(el);
+
+  document.getElementById('progress').style.width =
+    Math.min(100, el / DUR * 100) + '%';
+
+  if (el < DUR + 2000) animId = requestAnimationFrame(frame);
+}
+
+function restart() {
+  if (animId) cancelAnimationFrame(animId);
+  document.getElementById('card-in').className = 'player-card';
+  document.getElementById('card-out').className = 'player-card';
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('phase-label').className = 'phase-label';
+  scoreFlashes = [];
+  init();
+  animId = requestAnimationFrame(frame);
+}
+
+init();
+animId = requestAnimationFrame(frame);
+</script>
+</body>
+</html>

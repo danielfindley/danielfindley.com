@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wordle Arena</title>
+<style>
+  :root {
+    --bg: #121213; --bg2: #1a1a2e; --border: #3a3a3c;
+    --green: #538d4e; --yellow: #b59f3b; --gray: #3a3a3c;
+    --text: #ffffff; --text2: #818384;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh; overflow-x: auto;
+  }
+
+  /* --- Header --- */
+  .header {
+    text-align: center; padding: 24px 16px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 2.2em; letter-spacing: 6px; font-weight: 800;
+    background: linear-gradient(135deg, #538d4e, #b59f3b, #ef5350, #ab47bc);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p { color: var(--text2); margin-top: 4px; font-size: 0.95em; }
+
+  /* --- Controls --- */
+  .controls {
+    display: flex; justify-content: center; align-items: center;
+    gap: 12px; padding: 14px; flex-wrap: wrap;
+  }
+  .controls button {
+    background: var(--border); color: var(--text); border: none;
+    padding: 8px 18px; border-radius: 6px; cursor: pointer;
+    font-size: 0.95em; transition: background 0.2s;
+  }
+  .controls button:hover { background: #555; }
+  .controls button.active { background: var(--green); }
+  .game-label {
+    font-size: 1.1em; font-weight: 600; min-width: 220px;
+    text-align: center;
+  }
+  .game-label .target { color: var(--green); }
+  .speed-control { display: flex; align-items: center; gap: 6px; }
+  .speed-control input { width: 100px; accent-color: var(--green); }
+
+  /* --- Arena grid --- */
+  .arena {
+    display: flex; justify-content: center; gap: 16px;
+    padding: 16px; flex-wrap: wrap;
+  }
+  .solver-col {
+    background: var(--bg2); border-radius: 12px; padding: 14px;
+    min-width: 195px; border: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .solver-name {
+    font-weight: 700; font-size: 1em; margin-bottom: 8px;
+    padding: 4px 12px; border-radius: 4px; letter-spacing: 1px;
+  }
+  .board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .tile {
+    width: 48px; height: 48px; display: flex; align-items: center;
+    justify-content: center; font-size: 1.4em; font-weight: 700;
+    border: 2px solid var(--border); text-transform: uppercase;
+    border-radius: 4px; transition: transform 0.3s, background 0.3s, border-color 0.3s;
+  }
+  .tile.green  { background: var(--green);  border-color: var(--green); }
+  .tile.yellow { background: var(--yellow); border-color: var(--yellow); }
+  .tile.gray   { background: var(--gray);   border-color: var(--gray); }
+  .tile.pop    { animation: pop 0.15s ease-out; }
+  @keyframes pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+  }
+  .tile.flip {
+    animation: flip 0.45s ease-in-out;
+  }
+  @keyframes flip {
+    0%   { transform: rotateX(0deg); }
+    45%  { transform: rotateX(90deg); }
+    55%  { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+  }
+  .solver-result {
+    margin-top: 10px; font-size: 0.95em; font-weight: 600;
+    min-height: 24px; text-align: center;
+  }
+  .solver-result.win  { color: var(--green); }
+  .solver-result.fail { color: #ef5350; }
+
+  /* --- Stats panel --- */
+  .stats-panel {
+    max-width: 1100px; margin: 20px auto; padding: 0 16px;
+  }
+  .stats-panel h2 {
+    text-align: center; font-size: 1.3em; letter-spacing: 3px;
+    margin-bottom: 16px; color: var(--text2);
+  }
+  .stats-grid {
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  }
+  .stat-card {
+    background: var(--bg2); border-radius: 10px; padding: 16px 20px;
+    min-width: 155px; border: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-card .name { font-weight: 700; font-size: 0.9em; margin-bottom: 10px; letter-spacing: 1px; }
+  .stat-card .big  { font-size: 2em; font-weight: 800; }
+  .stat-card .label { font-size: 0.75em; color: var(--text2); margin-top: 2px; }
+  .stat-card .row-stats { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+  .stat-card .mini { text-align: center; }
+  .stat-card .mini .val { font-size: 1.1em; font-weight: 700; }
+  .stat-card .mini .lbl { font-size: 0.65em; color: var(--text2); }
+
+  /* --- Bar chart --- */
+  .chart-section {
+    max-width: 900px; margin: 24px auto; padding: 0 16px 40px;
+  }
+  .chart-section h2 {
+    text-align: center; font-size: 1.3em; letter-spacing: 3px;
+    margin-bottom: 16px; color: var(--text2);
+  }
+  .chart {
+    background: var(--bg2); border-radius: 12px; padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .chart-bars {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 24px; height: 180px; padding-bottom: 8px;
+  }
+  .bar-group { display: flex; flex-direction: column; align-items: center; }
+  .bar {
+    width: 44px; border-radius: 4px 4px 0 0; transition: height 0.8s ease;
+    min-height: 4px;
+  }
+  .bar-val { font-size: 0.85em; font-weight: 700; margin-bottom: 4px; }
+  .bar-label {
+    font-size: 0.7em; color: var(--text2); margin-top: 6px;
+    text-align: center; max-width: 70px; word-wrap: break-word;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>WORDLE ARENA</h1>
+  <p>LLM vs RL vs Heuristics</p>
+</div>
+
+<div class="controls">
+  <button id="prevBtn" onclick="prevGame()">&#9664; Prev</button>
+  <div class="game-label">
+    Game <span id="gameNum">1</span> / <span id="totalGames">0</span>
+    &mdash; <span id="targetWord" class="target">?????</span>
+  </div>
+  <button id="nextBtn" onclick="nextGame()">Next &#9654;</button>
+  <button id="playBtn" class="active" onclick="togglePlay()">&#9654; Play</button>
+  <div class="speed-control">
+    <span style="font-size:0.8em;color:var(--text2)">Speed</span>
+    <input type="range" id="speedSlider" min="1" max="10" value="5"
+           oninput="updateSpeed()">
+  </div>
+</div>
+
+<div class="arena" id="arena"></div>
+
+<div class="stats-panel">
+  <h2>S T A T I S T I C S</h2>
+  <div class="stats-grid" id="statsGrid"></div>
+</div>
+
+<div class="chart-section">
+  <h2>A V G &nbsp; S C O R E</h2>
+  <div class="chart">
+    <div class="chart-bars" id="chartBars"></div>
+  </div>
+</div>
+
+<script>
+// ---- Embedded data ----
+const DATA      = {"Random": {"games": [{"target": "craft", "guesses": ["donor", "craze", "crawl", "crass", "crack", "cramp"], "feedbacks": [["gray", "gray", "gray", "gray", "yellow"], ["green", "green", "green", "gray", "gray"], ["green", "green", "green", "gray", "gray"], ["green", "green", "green", "gray", "gray"], ["green", "green", "green", "gray", "gray"], ["green", "green", "green", "gray", "gray"]], "solved": false, "score": 7, "time": 0.003}, {"target": "ardor", "guesses": ["await", "abhor", "ardor"], "feedbacks": [["green", "gray", "gray", "gray", "gray"], ["green", "gray", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 3, "time": 0.002}, {"target": "level", "guesses": ["grain", "fluff", "lowly", "level"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "yellow", "gray", "gray", "gray"], ["green", "gray", "gray", "yellow", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.002}, {"target": "humph", "guesses": ["wrest", "cling", "mammy", "jumbo", "humph"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "gray", "gray", "gray", "gray"], ["gray", "gray", "green", "gray", "gray"], ["gray", "green", "green", "gray", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.002}, {"target": "grind", "guesses": ["sonar", "prune", "briny", "drink", "grind"], "feedbacks": [["gray", "gray", "yellow", "gray", "yellow"], ["gray", "green", "gray", "green", "gray"], ["gray", "green", "green", "green", "gray"], ["yellow", "green", "green", "green", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.002}], "stats": {"avg_score": 4.8, "win_rate": 0.8, "wins": 4, "total": 5, "distribution": [0, 0, 1, 1, 2, 0, 1]}}, "Frequency": {"games": [{"target": "craft", "guesses": ["alert", "craft"], "feedbacks": [["yellow", "gray", "gray", "yellow", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 2, "time": 0.004}, {"target": "ardor", "guesses": ["alert", "abhor", "ardor"], "feedbacks": [["green", "gray", "gray", "yellow", "gray"], ["green", "gray", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 3, "time": 0.004}, {"target": "level", "guesses": ["alert", "noble", "pixel", "jewel", "level"], "feedbacks": [["gray", "yellow", "yellow", "gray", "gray"], ["gray", "gray", "gray", "yellow", "yellow"], ["gray", "gray", "gray", "green", "green"], ["gray", "green", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.005}, {"target": "humph", "guesses": ["alert", "noisy", "chump", "humph"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "gray", "gray", "gray", "gray"], ["gray", "yellow", "yellow", "yellow", "yellow"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.005}, {"target": "grind", "guesses": ["alert", "curio", "brink", "grind"], "feedbacks": [["gray", "gray", "gray", "yellow", "gray"], ["gray", "gray", "yellow", "yellow", "gray"], ["gray", "green", "green", "green", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.005}], "stats": {"avg_score": 3.6, "win_rate": 1.0, "wins": 5, "total": 5, "distribution": [0, 1, 1, 2, 1, 0, 0]}}, "Entropy": {"games": [{"target": "craft", "guesses": ["alert", "craft"], "feedbacks": [["yellow", "gray", "gray", "yellow", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 2, "time": 0.232}, {"target": "ardor", "guesses": ["alert", "arbor", "ardor"], "feedbacks": [["green", "gray", "gray", "yellow", "gray"], ["green", "green", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 3, "time": 0.233}, {"target": "level", "guesses": ["alert", "belie", "jewel", "level"], "feedbacks": [["gray", "yellow", "yellow", "gray", "gray"], ["gray", "green", "yellow", "gray", "yellow"], ["gray", "green", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.189}, {"target": "humph", "guesses": ["alert", "hound", "husky", "humph"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["green", "gray", "yellow", "gray", "gray"], ["green", "green", "gray", "gray", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.202}, {"target": "grind", "guesses": ["alert", "crony", "bring", "grind"], "feedbacks": [["gray", "gray", "gray", "yellow", "gray"], ["gray", "green", "gray", "green", "gray"], ["gray", "green", "green", "green", "yellow"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.196}], "stats": {"avg_score": 3.4, "win_rate": 1.0, "wins": 5, "total": 5, "distribution": [0, 1, 1, 3, 0, 0, 0]}}, "PPO": {"games": [{"target": "craft", "guesses": ["undue", "awash", "bravo", "track", "craft"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "gray", "green", "gray", "gray"], ["gray", "green", "green", "gray", "gray"], ["yellow", "green", "green", "yellow", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.022}, {"target": "ardor", "guesses": ["undue", "radar", "ardor"], "feedbacks": [["gray", "gray", "green", "gray", "gray"], ["yellow", "yellow", "green", "gray", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 3, "time": 0.015}, {"target": "level", "guesses": ["undue", "swear", "helix", "level"], "feedbacks": [["gray", "gray", "gray", "gray", "yellow"], ["gray", "gray", "yellow", "gray", "gray"], ["gray", "green", "yellow", "gray", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.018}, {"target": "humph", "guesses": ["undue", "rural", "buxom", "music", "humph"], "feedbacks": [["yellow", "gray", "gray", "gray", "gray"], ["gray", "green", "gray", "gray", "gray"], ["gray", "green", "gray", "gray", "yellow"], ["yellow", "green", "gray", "gray", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.016}, {"target": "grind", "guesses": ["undue", "drain", "grind"], "feedbacks": [["gray", "yellow", "yellow", "gray", "gray"], ["yellow", "green", "gray", "yellow", "yellow"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 3, "time": 0.015}], "stats": {"avg_score": 4.0, "win_rate": 1.0, "wins": 5, "total": 5, "distribution": [0, 0, 2, 1, 2, 0, 0]}}, "DDPG": {"games": [{"target": "craft", "guesses": ["gloss", "mamma", "abide", "tract", "craft"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "yellow", "gray", "gray", "gray"], ["yellow", "gray", "gray", "gray", "gray"], ["gray", "green", "green", "yellow", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.021}, {"target": "ardor", "guesses": ["gloss", "mambo", "topaz", "ardor"], "feedbacks": [["gray", "gray", "yellow", "gray", "gray"], ["gray", "yellow", "gray", "gray", "yellow"], ["gray", "yellow", "gray", "yellow", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.017}, {"target": "level", "guesses": ["gloss", "medal", "betel", "jewel", "level"], "feedbacks": [["gray", "yellow", "gray", "gray", "gray"], ["gray", "green", "gray", "gray", "green"], ["gray", "green", "gray", "green", "green"], ["gray", "green", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.016}, {"target": "humph", "guesses": ["gloss", "mamma", "timid", "jumpy", "humph"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "gray", "green", "gray", "gray"], ["gray", "gray", "green", "gray", "gray"], ["gray", "green", "green", "green", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 0.019}, {"target": "grind", "guesses": ["gloss", "gamma", "giddy", "grind"], "feedbacks": [["green", "gray", "gray", "gray", "gray"], ["green", "gray", "gray", "gray", "gray"], ["green", "yellow", "yellow", "gray", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 0.015}], "stats": {"avg_score": 4.6, "win_rate": 1.0, "wins": 5, "total": 5, "distribution": [0, 0, 0, 2, 3, 0, 0]}}, "LLM (Qwen 3.5)": {"games": [{"target": "craft", "guesses": ["aback", "cease", "chaff", "craft"], "feedbacks": [["gray", "gray", "green", "yellow", "gray"], ["green", "gray", "green", "gray", "gray"], ["green", "gray", "green", "green", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 33.258}, {"target": "ardor", "guesses": ["aback", "adept", "aloud", "ardor"], "feedbacks": [["green", "gray", "gray", "gray", "gray"], ["green", "yellow", "gray", "gray", "gray"], ["green", "gray", "yellow", "gray", "yellow"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 32.884}, {"target": "level", "guesses": ["aback", "defer", "jewel", "level"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "green", "gray", "green", "gray"], ["gray", "green", "gray", "green", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 32.759}, {"target": "humph", "guesses": ["aback", "defer", "ghost", "hilly", "humph"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["gray", "gray", "gray", "gray", "gray"], ["gray", "yellow", "gray", "gray", "gray"], ["green", "gray", "gray", "gray", "gray"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 5, "time": 40.992}, {"target": "grind", "guesses": ["aback", "defer", "gourd", "grind"], "feedbacks": [["gray", "gray", "gray", "gray", "gray"], ["yellow", "gray", "gray", "gray", "yellow"], ["green", "gray", "gray", "yellow", "green"], ["green", "green", "green", "green", "green"]], "solved": true, "score": 4, "time": 32.757}], "stats": {"avg_score": 4.2, "win_rate": 1.0, "wins": 5, "total": 5, "distribution": [0, 0, 0, 4, 1, 0, 0]}}};
+const SOLVERS   = ["Random", "Frequency", "Entropy", "PPO", "DDPG", "LLM (Qwen 3.5)"];
+const COLORS    = {"Random": "#818384", "Frequency": "#4fc3f7", "Entropy": "#66bb6a", "PPO": "#ffa726", "DDPG": "#ef5350", "LLM (Qwen 3.5)": "#ab47bc"};
+const NUM_GAMES = 5;
+
+// ---- State ----
+let currentGame = 0;
+let currentRow  = -1;
+let isPlaying   = true;
+let speed       = 800;   // ms between row reveals
+let animTimer   = null;
+
+// ---- Build DOM ----
+function init() {
+  document.getElementById('totalGames').textContent = NUM_GAMES;
+  buildArena();
+  buildStats();
+  buildChart();
+  showGame(0);
+  scheduleTick();
+}
+
+function buildArena() {
+  const arena = document.getElementById('arena');
+  arena.innerHTML = '';
+  for (const name of SOLVERS) {
+    const col = document.createElement('div');
+    col.className = 'solver-col';
+
+    const label = document.createElement('div');
+    label.className = 'solver-name';
+    label.style.color = COLORS[name];
+    label.style.borderBottom = '2px solid ' + COLORS[name];
+    label.textContent = name;
+    col.appendChild(label);
+
+    const board = document.createElement('div');
+    board.className = 'board';
+    board.id = 'board-' + safeName(name);
+    for (let r = 0; r < 6; r++) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      for (let c = 0; c < 5; c++) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.id = `t-${safeName(name)}-${r}-${c}`;
+        row.appendChild(tile);
+      }
+      board.appendChild(row);
+    }
+    col.appendChild(board);
+
+    const result = document.createElement('div');
+    result.className = 'solver-result';
+    result.id = 'res-' + safeName(name);
+    col.appendChild(result);
+
+    arena.appendChild(col);
+  }
+}
+
+function buildStats() {
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = '';
+  for (const name of SOLVERS) {
+    const s = DATA[name].stats;
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.innerHTML = `
+      <div class="name" style="color:${COLORS[name]}">${name}</div>
+      <div class="big">${(s.win_rate * 100).toFixed(0)}%</div>
+      <div class="label">WIN RATE</div>
+      <div class="row-stats">
+        <div class="mini"><div class="val">${s.avg_score}</div><div class="lbl">AVG</div></div>
+        <div class="mini"><div class="val">${s.wins}/${s.total}</div><div class="lbl">W/L</div></div>
+      </div>`;
+    grid.appendChild(card);
+  }
+}
+
+function buildChart() {
+  const container = document.getElementById('chartBars');
+  container.innerHTML = '';
+  const maxAvg = Math.max(...SOLVERS.map(n => DATA[n].stats.avg_score), 1);
+  for (const name of SOLVERS) {
+    const avg = DATA[name].stats.avg_score;
+    const pct = Math.max(5, (avg / 7) * 100);
+    const group = document.createElement('div');
+    group.className = 'bar-group';
+    group.innerHTML = `
+      <div class="bar-val" style="color:${COLORS[name]}">${avg}</div>
+      <div class="bar" style="height:${pct}%;background:${COLORS[name]}"></div>
+      <div class="bar-label">${name}</div>`;
+    container.appendChild(group);
+  }
+}
+
+// ---- Game display ----
+function showGame(idx) {
+  currentGame = idx;
+  currentRow = -1;
+  document.getElementById('gameNum').textContent = idx + 1;
+
+  const target = DATA[SOLVERS[0]].games[idx].target;
+  document.getElementById('targetWord').textContent = '?????';
+
+  // Clear all boards
+  for (const name of SOLVERS) {
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < 5; c++) {
+        const tile = document.getElementById(`t-${safeName(name)}-${r}-${c}`);
+        tile.textContent = '';
+        tile.className = 'tile';
+      }
+    }
+    document.getElementById('res-' + safeName(name)).textContent = '';
+    document.getElementById('res-' + safeName(name)).className = 'solver-result';
+  }
+}
+
+function revealRow(rowIdx) {
+  for (const name of SOLVERS) {
+    const game = DATA[name].games[currentGame];
+    if (rowIdx >= game.guesses.length) continue;
+    const guess = game.guesses[rowIdx];
+    const feedback = game.feedbacks[rowIdx];
+
+    for (let c = 0; c < 5; c++) {
+      const tile = document.getElementById(`t-${safeName(name)}-${rowIdx}-${c}`);
+      // Show letter immediately
+      tile.textContent = guess[c].toUpperCase();
+      tile.classList.add('pop');
+
+      // Delayed color reveal with flip
+      (function(t, fb, delay) {
+        setTimeout(() => {
+          t.classList.remove('pop');
+          t.classList.add('flip');
+          setTimeout(() => { t.classList.add(fb); }, 200);
+        }, delay);
+      })(tile, feedback[c], c * 120);
+    }
+
+    // Show result after last guess
+    if (rowIdx === game.guesses.length - 1) {
+      setTimeout(() => {
+        const res = document.getElementById('res-' + safeName(name));
+        if (game.solved) {
+          res.textContent = `Solved ${game.score}/6`;
+          res.className = 'solver-result win';
+        } else {
+          res.textContent = 'FAIL';
+          res.className = 'solver-result fail';
+        }
+      }, 5 * 120 + 400);
+    }
+  }
+}
+
+function revealTarget() {
+  const target = DATA[SOLVERS[0]].games[currentGame].target;
+  document.getElementById('targetWord').textContent = target.toUpperCase();
+}
+
+// ---- Animation loop ----
+function tick() {
+  if (!isPlaying) return;
+
+  const maxRows = Math.max(...SOLVERS.map(n => DATA[n].games[currentGame].guesses.length));
+
+  if (currentRow < maxRows - 1) {
+    currentRow++;
+    revealRow(currentRow);
+    scheduleTick();
+  } else {
+    // All rows revealed — show target and pause before next game
+    revealTarget();
+    setTimeout(() => {
+      if (!isPlaying) return;
+      const next = (currentGame + 1) % NUM_GAMES;
+      showGame(next);
+      scheduleTick();
+    }, speed * 2.5);
+  }
+}
+
+function scheduleTick() {
+  clearTimeout(animTimer);
+  animTimer = setTimeout(tick, speed);
+}
+
+// ---- Controls ----
+function togglePlay() {
+  isPlaying = !isPlaying;
+  const btn = document.getElementById('playBtn');
+  btn.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+  btn.classList.toggle('active', isPlaying);
+  if (isPlaying) scheduleTick();
+}
+
+function prevGame() {
+  const idx = (currentGame - 1 + NUM_GAMES) % NUM_GAMES;
+  showGame(idx);
+  // Instantly reveal all rows
+  revealAllRows();
+}
+
+function nextGame() {
+  const idx = (currentGame + 1) % NUM_GAMES;
+  showGame(idx);
+  revealAllRows();
+}
+
+function revealAllRows() {
+  const maxRows = Math.max(...SOLVERS.map(n => DATA[n].games[currentGame].guesses.length));
+  for (let r = 0; r < maxRows; r++) {
+    for (const name of SOLVERS) {
+      const game = DATA[name].games[currentGame];
+      if (r >= game.guesses.length) continue;
+      const guess = game.guesses[r];
+      const feedback = game.feedbacks[r];
+      for (let c = 0; c < 5; c++) {
+        const tile = document.getElementById(`t-${safeName(name)}-${r}-${c}`);
+        tile.textContent = guess[c].toUpperCase();
+        tile.classList.add(feedback[c]);
+      }
+      if (r === game.guesses.length - 1) {
+        const res = document.getElementById('res-' + safeName(name));
+        if (game.solved) {
+          res.textContent = `Solved ${game.score}/6`;
+          res.className = 'solver-result win';
+        } else {
+          res.textContent = 'FAIL';
+          res.className = 'solver-result fail';
+        }
+      }
+    }
+  }
+  currentRow = maxRows - 1;
+  revealTarget();
+}
+
+function updateSpeed() {
+  const val = document.getElementById('speedSlider').value;
+  speed = 1600 - val * 140;  // slider 1=slow(1460ms) 10=fast(200ms)
+}
+
+function safeName(name) {
+  return name.replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+// ---- Boot ----
+init();
+</script>
+</body>
+</html>

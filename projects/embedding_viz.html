@@ -91,36 +91,36 @@
 
 <div id="overlay">
   <div class="player-card" id="card-in">
-    <div class="name">Indiana Vassilev</div>
-    <div class="team">Philadelphia Union</div>
-    <div class="stat-row"><span class="label">Rating</span><span class="value">7.24</span></div>
-    <div class="stat-row"><span class="label">Goals</span><span class="value">4</span></div>
-    <div class="stat-row"><span class="label">Assists</span><span class="value">6</span></div>
-    <div class="stat-row"><span class="label">xG</span><span class="value">3.81</span></div>
-    <div class="stat-row"><span class="label">xA</span><span class="value">4.52</span></div>
-    <div class="stat-row"><span class="label">Chances Created</span><span class="value">28</span></div>
-    <div class="stat-row"><span class="label">Accurate Passes</span><span class="value">312</span></div>
-    <div class="stat-row"><span class="label">Touches</span><span class="value">583</span></div>
-    <div class="stat-row"><span class="label">Dribbles</span><span class="value">19</span></div>
-    <div class="stat-row" style="border:none"><span class="label">Duels Won</span><span class="value">47</span></div>
+    <div class="name">Heung-Min Son</div>
+    <div class="team">Los Angeles FC</div>
+    <div class="stat-row"><span class="label">Avg Rating</span><span class="value">8.00</span></div>
+    <div class="stat-row"><span class="label">Goals / Game</span><span class="value">0.67</span></div>
+    <div class="stat-row"><span class="label">Assists / Game</span><span class="value">0.28</span></div>
+    <div class="stat-row"><span class="label">xG / Game</span><span class="value">0.45</span></div>
+    <div class="stat-row"><span class="label">xA / Game</span><span class="value">0.22</span></div>
+    <div class="stat-row"><span class="label">Chances Created</span><span class="value">2.94</span></div>
+    <div class="stat-row"><span class="label">Accurate Passes</span><span class="value">22.0</span></div>
+    <div class="stat-row"><span class="label">Touches</span><span class="value">43.8</span></div>
+    <div class="stat-row"><span class="label">Dribbles</span><span class="value">2.07</span></div>
+    <div class="stat-row" style="border:none"><span class="label">Duels Won</span><span class="value">3.89</span></div>
   </div>
   <div class="result-card" id="result-card">
     <div class="delta">+4.2%</div>
-    <div class="sublabel">Win Probability</div>
+    <div class="sublabel">Avg Win Percentage</div>
   </div>
   <div class="player-card" id="card-out">
-    <div class="name">Indiana Vassilev</div>
-    <div class="team">&rarr; St. Louis City SC</div>
-    <div class="stat-row"><span class="label">Rating</span><span class="value">7.24</span></div>
-    <div class="stat-row"><span class="label">Goals</span><span class="value">4</span></div>
-    <div class="stat-row"><span class="label">Assists</span><span class="value">6</span></div>
-    <div class="stat-row"><span class="label">xG</span><span class="value">3.81</span></div>
-    <div class="stat-row"><span class="label">xA</span><span class="value">4.52</span></div>
-    <div class="stat-row"><span class="label">Chances Created</span><span class="value">28</span></div>
-    <div class="stat-row"><span class="label">Accurate Passes</span><span class="value">312</span></div>
-    <div class="stat-row"><span class="label">Touches</span><span class="value">583</span></div>
-    <div class="stat-row"><span class="label">Dribbles</span><span class="value">19</span></div>
-    <div class="stat-row" style="border:none"><span class="label">Win Prob Uplift</span><span class="value" style="color:#4cff91">+4.2%</span></div>
+    <div class="name">Heung-Min Son</div>
+    <div class="team">LAFC &rarr; St. Louis City SC</div>
+    <div class="stat-row"><span class="label">Avg Rating</span><span class="value">8.00</span></div>
+    <div class="stat-row"><span class="label">Goals / Game</span><span class="value">0.67</span></div>
+    <div class="stat-row"><span class="label">Assists / Game</span><span class="value">0.28</span></div>
+    <div class="stat-row"><span class="label">xG / Game</span><span class="value">0.45</span></div>
+    <div class="stat-row"><span class="label">xA / Game</span><span class="value">0.22</span></div>
+    <div class="stat-row"><span class="label">Chances Created</span><span class="value">2.94</span></div>
+    <div class="stat-row"><span class="label">Accurate Passes</span><span class="value">22.0</span></div>
+    <div class="stat-row"><span class="label">Touches</span><span class="value">43.8</span></div>
+    <div class="stat-row"><span class="label">Dribbles</span><span class="value">2.07</span></div>
+    <div class="stat-row" style="border:none"><span class="label">Avg Win % Uplift</span><span class="value" style="color:#4cff91">+4.2 pp</span></div>
   </div>
   <div class="phase-label" id="phase-label"></div>
 </div>
@@ -166,11 +166,11 @@ function eo(t) { return 1 - (1-t)**3; }
 function ei(t) { return t*t*t; }
 function lerp(a,b,t) { return a + (b-a)*t; }
 
-const NAMES = ['Vassilev','Baumgartl','Durkin','Hartel','Becher',
+const NAMES = ['Son','Baumgartl','Durkin','Hartel','Becher',
                'Orozco','Polvara','Wallem','Edelman','Santos','Burki'];
 const COLS = [
-  '#5eb5f7','#c084e8','#4fc3f7','#f48fb1','#81c784',
-  '#ffb74d','#4db6ac','#e57373','#aed581','#9fa8da','#fff176'
+  '#f6c944','#c084e8','#4fc3f7','#f48fb1','#81c784',
+  '#ffb74d','#4db6ac','#e57373','#aed581','#9fa8da','#5eb5f7'
 ];
 
 // ==================== NEURON SYSTEM ====================

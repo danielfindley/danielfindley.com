@@ -80,7 +80,6 @@
     transition: opacity 0.5s;
   }
   .about-panel strong { color: rgba(255,255,255,0.7); }
-  .about-panel.faded { opacity: 0; pointer-events: none; }
   #restart-btn {
     position: fixed; bottom: 22px; right: 22px; z-index: 10;
     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
@@ -647,7 +646,6 @@ function restart() {
   document.getElementById('card-out').className = 'player-card';
   document.getElementById('result-card').className = 'result-card';
   document.getElementById('phase-label').className = 'phase-label';
-  document.getElementById('about-panel').classList.remove('faded');
   scoreFlashes = [];
   init();
   animId = requestAnimationFrame(frame);
@@ -655,7 +653,6 @@ function restart() {
 
 init();
 animId = requestAnimationFrame(frame);
-setTimeout(function(){ document.getElementById('about-panel').classList.add('faded'); }, 5000);
 </script>
 </body>
 </html>

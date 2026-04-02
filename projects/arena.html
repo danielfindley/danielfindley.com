@@ -29,6 +29,12 @@
     background-clip: text;
   }
   .header p { color: var(--text2); margin-top: 4px; font-size: 0.95em; }
+  .about {
+    max-width: 720px; margin: 0 auto; padding: 18px 24px;
+    color: var(--text2); font-size: 0.9em; line-height: 1.65;
+    border-bottom: 1px solid var(--border);
+  }
+  .about strong { color: var(--text); }
 
   /* --- Controls --- */
   .controls {
@@ -188,6 +194,10 @@
 <div class="header">
   <h1>WORDLE ARENA</h1>
   <p>LLM vs RL vs Heuristics</p>
+</div>
+
+<div class="about">
+  Three Wordle solvers go head to head across hundreds of games. The <strong>RL agent</strong> learns letter-placement value through Q-learning, refining a policy that balances information gain with exploitation of known letters. The <strong>LLM solver</strong> (Claude) reasons about each board state in natural language, choosing words based on semantic and positional intuition. The <strong>heuristic solver</strong> uses classic information-theoretic strategy: maximize expected entropy reduction by picking the word that eliminates the most remaining candidates. Watch them race through each puzzle side by side, track their guess distributions, and see which approach handles the variance of a five-letter word game best.
 </div>
 
 <div class="controls">

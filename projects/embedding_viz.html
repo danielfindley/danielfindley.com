@@ -69,6 +69,18 @@
     letter-spacing: 4px; text-transform: uppercase; margin-top: 6px;
   }
   @keyframes gShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  .about-panel {
+    position: fixed; top: 16px; left: 16px; z-index: 10;
+    max-width: 340px; padding: 18px 22px;
+    background: rgba(10, 12, 22, 0.88);
+    border: 1px solid rgba(100, 180, 255, 0.08);
+    border-radius: 10px; backdrop-filter: blur(16px);
+    font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.4);
+    pointer-events: all;
+    transition: opacity 0.5s;
+  }
+  .about-panel strong { color: rgba(255,255,255,0.7); }
+  .about-panel.faded { opacity: 0; pointer-events: none; }
   #restart-btn {
     position: fixed; bottom: 22px; right: 22px; z-index: 10;
     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
@@ -125,6 +137,10 @@
   <div class="phase-label" id="phase-label"></div>
 </div>
 
+<div class="about-panel" id="about-panel">
+  <strong>Player Embedding Pipeline</strong><br>
+  Each player's season stats &mdash; goals, assists, xG, xA, chances created, passing, dribbling, defensive actions &mdash; are encoded into a dense vector representation. Players who contribute similarly on the pitch land near each other in embedding space, regardless of league or position label. To evaluate a transfer, the pipeline swaps a player into a team's roster embedding and measures the projected change in win percentage. The animation shows this process: a player card is encoded into particles, merged with the team's latent representation, and the result is extracted as a predicted uplift.
+</div>
 <div class="progress-bar" id="progress"></div>
 <button id="restart-btn" onclick="restart()">Replay</button>
 
@@ -631,6 +647,7 @@ function restart() {
   document.getElementById('card-out').className = 'player-card';
   document.getElementById('result-card').className = 'result-card';
   document.getElementById('phase-label').className = 'phase-label';
+  document.getElementById('about-panel').classList.remove('faded');
   scoreFlashes = [];
   init();
   animId = requestAnimationFrame(frame);
@@ -638,6 +655,7 @@ function restart() {
 
 init();
 animId = requestAnimationFrame(frame);
+setTimeout(function(){ document.getElementById('about-panel').classList.add('faded'); }, 5000);
 </script>
 </body>
 </html>

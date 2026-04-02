@@ -197,7 +197,7 @@
 </div>
 
 <div class="about">
-  Three Wordle solvers go head to head across hundreds of games. The <strong>RL agent</strong> learns letter-placement value through Q-learning, refining a policy that balances information gain with exploitation of known letters. The <strong>LLM solver</strong> (Claude) reasons about each board state in natural language, choosing words based on semantic and positional intuition. The <strong>heuristic solver</strong> uses classic information-theoretic strategy: maximize expected entropy reduction by picking the word that eliminates the most remaining candidates. Watch them race through each puzzle side by side, track their guess distributions, and see which approach handles the variance of a five-letter word game best.
+  Four Wordle solvers go head to head across hundreds of games. <strong>Qwen 3.5 2B</strong>, a small language model, reasons about each board state in natural language, choosing words based on semantic and positional intuition. <strong>A2C</strong> and <strong>PPO</strong> are reinforcement learning agents that learn letter-placement value through policy-gradient methods, refining strategies that balance information gain with exploitation of known letters. <strong>Frequency</strong> is a baseline that ranks candidate words by English letter-frequency overlap. And <strong>Random</strong> picks a valid word uniformly at random — the control. Watch them race through each puzzle side by side, track their guess distributions, and see which approach handles the variance of a five-letter word game best.
 </div>
 
 <div class="controls">

@@ -17,9 +17,16 @@ nav{
   max-width:1100px;width:100%;margin:0 auto;
 }
 .nav-brand{color:#e6edf3;text-decoration:none;font-weight:700;font-size:16px}
-.nav-links{display:flex;gap:20px}
+.nav-links{display:flex;gap:20px;align-items:center}
 .nav-links a{color:#8b949e;text-decoration:none;font-size:14px;transition:color .15s}
 .nav-links a:hover,.nav-links a.active{color:#58a6ff}
+.nav-dropdown{position:relative}
+.nav-drop-toggle{background:none;border:none;color:#8b949e;font-size:14px;font-family:inherit;cursor:pointer;padding:0;transition:color .15s}
+.nav-drop-toggle:hover,.nav-dropdown:focus-within .nav-drop-toggle{color:#58a6ff}
+.nav-drop-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:6px 0;min-width:210px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.nav-dropdown:hover .nav-drop-menu,.nav-dropdown:focus-within .nav-drop-menu{display:block}
+.nav-drop-menu a{display:block;padding:8px 16px;font-size:14px;color:#c9d1d9;text-decoration:none}
+.nav-drop-menu a:hover,.nav-drop-menu a.active{background:#21262d;color:#58a6ff}
 
 .container{max-width:1100px;margin:0 auto;padding:40px 24px}
 h1{font-size:28px;font-weight:700;color:#e6edf3;margin-bottom:8px}
@@ -135,7 +142,15 @@ footer p{font-size:13px;color:#484f58}
     <a href="/">Home</a>
     <a href="/resume.html">Resume</a>
     <a href="/projects/distributions.html">FPL Projections</a>
-    <a href="/projects/beating-odds.html" class="active">Beating Odds</a>
+    <div class="nav-dropdown">
+      <button class="nav-drop-toggle">Projects &#9662;</button>
+      <div class="nav-drop-menu">
+        <a href="/projects/beating-odds.html" class="active">Beating Odds</a>
+        <a href="/projects/percentile_rankings.html">MLS Player Stats</a>
+        <a href="/projects/embedding_viz.html">Football Transfer Fit</a>
+        <a href="/projects/arena.html">Wordle Arena (RL v LLM)</a>
+      </div>
+    </div>
   </div>
 </nav>
 

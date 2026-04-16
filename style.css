@@ -36,6 +36,7 @@ nav {
 .nav-links {
   display: flex;
   gap: 20px;
+  align-items: center;
 }
 
 .nav-links a {
@@ -49,6 +50,29 @@ nav {
 .nav-links a.active {
   color: #58a6ff;
 }
+
+.nav-dropdown { position: relative; }
+.nav-drop-toggle {
+  background: none; border: none; color: #8b949e;
+  font-size: 14px; font-family: inherit; cursor: pointer;
+  padding: 0; transition: color 0.15s;
+}
+.nav-drop-toggle:hover,
+.nav-dropdown:focus-within .nav-drop-toggle { color: #58a6ff; }
+.nav-drop-menu {
+  display: none; position: absolute; top: calc(100% + 8px); right: 0;
+  background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  padding: 6px 0; min-width: 210px; z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.nav-dropdown:hover .nav-drop-menu,
+.nav-dropdown:focus-within .nav-drop-menu { display: block; }
+.nav-drop-menu a {
+  display: block; padding: 8px 16px; font-size: 14px;
+  color: #c9d1d9; text-decoration: none;
+}
+.nav-drop-menu a:hover,
+.nav-drop-menu a.active { background: #21262d; color: #58a6ff; }
 
 /* Main */
 main {

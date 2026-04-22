@@ -99,7 +99,7 @@
 </div>
 
 <div class="about">
-  Every MLS player with <strong>300+ minutes</strong> in the selected season is ranked against others at their position. Players are grouped into six comparison pools &mdash; goalkeepers, centre-backs, fullbacks/wingbacks, midfielders, attacking midfielders/wingers, and strikers &mdash; so a centre-back's tackles are measured against other centre-backs, not forwards. All counting stats are normalized to <strong>per-90-minute</strong> rates to account for differences in playing time. The percentile bar shows where a player sits relative to everyone else in their group: green (top third), gray (middle), red (bottom third). Use the season selector to browse previous MLS seasons.
+  Every MLS player with <strong>300+ minutes</strong> in a given season is ranked against others at their position that year. Players are grouped into six comparison pools &mdash; goalkeepers, centre-backs, fullbacks/wingbacks, midfielders, attacking midfielders/wingers, and strikers &mdash; so a centre-back's tackles are measured against other centre-backs, not forwards. All counting stats are normalized to <strong>per-90-minute</strong> rates to account for differences in playing time. The percentile bar shows where a player sits relative to everyone else in their group: green (top third), gray (middle), red (bottom third). Search for a player to see their most recent season &mdash; then use the season selector to flip through their earlier years.
 </div>
 
 <div class="container">
@@ -137,51 +137,68 @@ const PLAYERS_BY_SEASON = JSON.parse(document.getElementById('pdata').textConten
 document.getElementById('pdata').remove();
 
 const seasons = Object.keys(PLAYERS_BY_SEASON).sort();
-let currentSeason = seasons[seasons.length - 1];
-let PLAYERS = PLAYERS_BY_SEASON[currentSeason];
-let playerNames = Object.keys(PLAYERS).sort();
+
+// name -> ascending list of seasons this player appeared in (meeting min-minutes)
+const playerSeasons = {};
+seasons.forEach(s => {
+  Object.keys(PLAYERS_BY_SEASON[s]).forEach(name => {
+    if (!playerSeasons[name]) playerSeasons[name] = [];
+    playerSeasons[name].push(s);
+  });
+});
+const allPlayerNames = Object.keys(playerSeasons).sort();
+
+let currentPlayer = null;
+let currentSeason = null;
 
 const seasonSelect = document.getElementById('season-select');
 const subtitle = document.getElementById('subtitle');
-seasons.slice().reverse().forEach(s => {
-  const opt = document.createElement('option');
-  opt.value = s;
-  opt.textContent = s + ' Season';
-  seasonSelect.appendChild(opt);
-});
-seasonSelect.value = currentSeason;
-
-function updateSubtitle() {
-  subtitle.textContent = currentSeason + ' Season \u00b7 300+ Minutes \u00b7 Per 90 Stats';
-}
-updateSubtitle();
-
-seasonSelect.addEventListener('change', () => {
-  currentSeason = seasonSelect.value;
-  PLAYERS = PLAYERS_BY_SEASON[currentSeason];
-  playerNames = Object.keys(PLAYERS).sort();
-  updateSubtitle();
-  searchInput.value = '';
-  dropdown.classList.remove('open');
-  document.getElementById('player-content').classList.add('hidden');
-  document.getElementById('empty-state').classList.remove('hidden');
-});
-
 const searchInput = document.getElementById('search');
 const dropdown = document.getElementById('dropdown');
 let activeIdx = -1;
 
+seasonSelect.style.display = 'none';
+
+function updateSubtitle() {
+  if (currentPlayer && currentSeason) {
+    subtitle.textContent = currentPlayer + ' \u00b7 ' + currentSeason + ' Season \u00b7 300+ Minutes \u00b7 Per 90 Stats';
+  } else {
+    subtitle.textContent = 'Search a player to view their percentile rankings \u00b7 300+ Minutes \u00b7 Per 90 Stats';
+  }
+}
+updateSubtitle();
+
+function rebuildSeasonSelect(name) {
+  const ss = playerSeasons[name] || [];
+  seasonSelect.innerHTML = '';
+  ss.slice().reverse().forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s + ' Season';
+    seasonSelect.appendChild(opt);
+  });
+  seasonSelect.value = currentSeason;
+  seasonSelect.style.display = ss.length > 1 ? '' : 'none';
+}
+
+seasonSelect.addEventListener('change', () => {
+  if (!currentPlayer) return;
+  currentSeason = seasonSelect.value;
+  renderPlayer();
+});
+
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.trim().toLowerCase();
   if (q.length < 1) { dropdown.classList.remove('open'); return; }
-  const matches = playerNames.filter(n => n.toLowerCase().includes(q)).slice(0, 12);
+  const matches = allPlayerNames.filter(n => n.toLowerCase().includes(q)).slice(0, 12);
   if (!matches.length) { dropdown.classList.remove('open'); return; }
   activeIdx = -1;
   dropdown.innerHTML = matches.map((name, i) => {
-    const p = PLAYERS[name];
+    const latestSeason = playerSeasons[name][playerSeasons[name].length - 1];
+    const p = PLAYERS_BY_SEASON[latestSeason][name];
     return '<div class="dd-item" data-name="' + name + '" data-idx="' + i + '">' +
       '<div><span class="nm">' + name + '</span></div>' +
-      '<div class="mt">' + p.team + ' &middot; ' + (p.position_detail || p.position) + '</div>' +
+      '<div class="mt">' + p.team + ' &middot; ' + (p.position_detail || p.position) + ' &middot; ' + latestSeason + '</div>' +
     '</div>';
   }).join('');
   dropdown.classList.add('open');
@@ -217,7 +234,16 @@ function tierClass(pct) {
 function selectPlayer(name) {
   dropdown.classList.remove('open');
   searchInput.value = name;
-  const p = PLAYERS[name];
+  const ss = playerSeasons[name];
+  if (!ss || !ss.length) return;
+  currentPlayer = name;
+  currentSeason = ss[ss.length - 1];
+  rebuildSeasonSelect(name);
+  renderPlayer();
+}
+
+function renderPlayer() {
+  const p = PLAYERS_BY_SEASON[currentSeason][currentPlayer];
   if (!p) return;
 
   document.getElementById('empty-state').classList.add('hidden');
@@ -230,6 +256,8 @@ function selectPlayer(name) {
   posEl.textContent = p.position_detail || p.position;
   posEl.className = 'badge badge-' + (p.badge_class || p.position.toLowerCase());
   document.getElementById('p-mins').textContent = p.matches + ' matches, ' + p.minutes + ' min';
+
+  updateSubtitle();
 
   document.getElementById('compare-note').textContent =
     'Compared to ' + p.n_compared + ' MLS ' + (p.compare_label || p.position) + ' with 300+ minutes in ' + currentSeason;

@@ -709,7 +709,9 @@ function renderGlobalTop() {
 
 /* ── selection ────────────────────────── */
 function selectPlayer(idx) {
+  console.log('selectPlayer called with idx=', idx);
   const p = DATA.lineup[idx];
+  console.log('player:', p && p.name, 'panel exists:', !!document.getElementById('detail-panel'));
   document.querySelectorAll('.node').forEach(n => n.classList.remove('selected'));
   const node = document.querySelector(`.node[data-idx="${idx}"]`);
   if (node) node.classList.add('selected');

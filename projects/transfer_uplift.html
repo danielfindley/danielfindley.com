@@ -264,21 +264,20 @@ body {
 .detail-backdrop {
   display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
   z-index: 90;
-  animation: fadeIn 0.15s ease-out;
 }
 .detail-backdrop.open { display: block; }
 
 .detail-panel {
   display: none;
   position: fixed;
-  top: 50%;
+  top: 24px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(960px, calc(100vw - 32px));
+  margin-left: -480px;
+  width: 960px;
+  max-width: calc(100vw - 32px);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
   background: var(--surface);
@@ -286,9 +285,12 @@ body {
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   z-index: 100;
-  animation: modalIn 0.18s ease-out;
 }
 .detail-panel.open { display: block; }
+
+@media (max-width: 992px) {
+  .detail-panel { left: 16px; right: 16px; width: auto; margin-left: 0; max-width: none; }
+}
 
 .panel-close {
   position: absolute;
@@ -300,31 +302,13 @@ body {
   background: var(--surface2);
   border: 1px solid var(--border);
   color: var(--text-dim);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
+  line-height: 1;
   z-index: 1;
 }
-.panel-close:hover {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes modalIn {
-  from { opacity: 0; transform: translate(-50%, -48%); }
-  to { opacity: 1; transform: translate(-50%, -50%); }
-}
-
-body.modal-open { overflow: hidden; }
+.panel-close:hover { background: var(--red); border-color: var(--red); color: #fff; }
 
 .panel-header {
   padding: 20px 24px;
@@ -731,12 +715,8 @@ function selectPlayer(idx) {
   if (node) node.classList.add('selected');
   selectedIdx = idx;
 
-  const panel = document.getElementById('detail-panel');
-  const backdrop = document.getElementById('detail-backdrop');
-  panel.classList.add('open');
-  backdrop.classList.add('open');
-  document.body.classList.add('modal-open');
-  panel.scrollTop = 0;
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('detail-backdrop').classList.add('open');
 
   document.getElementById('panel-name').innerHTML =
     p.name + `<span class="panel-bucket badge-${p.pos_bucket}">${p.pos_bucket}</span>`;
@@ -759,16 +739,9 @@ function selectPlayer(idx) {
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
   document.getElementById('detail-backdrop').classList.remove('open');
-  document.body.classList.remove('modal-open');
   document.querySelectorAll('.node').forEach(n => n.classList.remove('selected'));
   selectedIdx = null;
 }
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('detail-panel').classList.contains('open')) {
-    closeDetail();
-  }
-});
 
 function selectPlayerByPos(pos) {
   const idx = DATA.lineup.findIndex(p => p.pos_bucket === pos);

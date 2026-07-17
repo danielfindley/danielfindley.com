@@ -331,7 +331,8 @@ textarea.notes {
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
       </div>
-      <label class="minctl">min minutes <input type="number" id="minmin" value="900" step="90" min="0"></label>
+      <label class="minctl">min minutes <input type="number" id="minmin" value="270" step="90" min="0"></label>
+      <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <span class="count" id="count"></span>
       <button class="ghost" id="reset">Clear drafted</button>
     </div>
@@ -486,7 +487,7 @@ const COLS = [
 ];
 const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp","rd"]);
 const ASC_DEFAULT = new Set(["player","team","pos","adp","rd","rk"]);
-let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 900;
+let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 270, hasAdp = true;
 
 const colsEl = document.getElementById("cols");
 COLS.forEach(([k, label, cls]) => {
@@ -531,6 +532,7 @@ function renderBoard() {
   const q = query.toLowerCase();
   let rows = DATA.filter(r =>
     (!pos || r.pos === pos) && (r.min == null || r.min >= minMin) &&
+    (!hasAdp || r.adp != null) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)));
   rows.sort((a, b) => {
     const av = a[sortKey], bv = b[sortKey];
@@ -565,6 +567,7 @@ document.getElementById("rows").addEventListener("click", e => {
 });
 document.getElementById("q").addEventListener("input", e => { query = e.target.value; renderBoard(); });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; renderBoard(); });
+document.getElementById("hasadp").addEventListener("change", e => { hasAdp = e.target.checked; renderBoard(); });
 document.getElementById("posseg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   pos = b.dataset.pos;

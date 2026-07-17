@@ -179,7 +179,22 @@ td.marks { min-width: 92px; }
 }
 .iconbtn:hover { color: var(--ink); background: var(--line-soft); }
 .rankbox, .listbox { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 12px; }
+.rankbox.scrolly { overflow-y: auto; max-height: calc(100vh - 300px); min-height: 120px; }
+.rankcols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 .rankhead { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.colhead { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink2); font-weight: 700; }
+.rankhead input[type="search"] {
+  flex: 1 1 110px; min-width: 90px; padding: 6px 9px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit;
+}
+.rankhead .seg button { padding: 6px 10px; }
+.rankrow.taken .nm { text-decoration: line-through; color: var(--taken); font-weight: 400; }
+.addbtn {
+  border: 1px solid var(--line); background: var(--accent-soft); color: var(--accent);
+  font: inherit; font-weight: 700; cursor: pointer; border-radius: 6px;
+  padding: 2px 10px; font-size: 15px; line-height: 1.3;
+}
+.addbtn:hover { background: var(--accent); color: #fff; }
 .empty { color: var(--ink2); padding: 18px 14px; background: var(--surface); }
 .newlist { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .newlist input {
@@ -219,6 +234,8 @@ textarea.notes {
   .mk { font-size: 17px; padding: 3px 5px; }
   td.marks { min-width: 118px; }
   .iconbtn { font-size: 16px; padding: 5px 9px; }
+  .rankcols { grid-template-columns: 1fr; }
+  .rankbox.scrolly { max-height: 46vh; }
   .rankrow { flex-wrap: wrap; row-gap: 3px; }
   .rankrow .grip { display: none; }
   .rankrow .nm { flex: 1 1 45%; }
@@ -276,14 +293,31 @@ textarea.notes {
 
   <section id="v-rank" hidden>
     <h2>My Ranking</h2>
-    <div class="panel rankhead">
-      <div class="sadd" id="rankadd"><input placeholder="Add player to ranking…" aria-label="Add player to ranking"></div>
-      <span class="dim" id="rankcount"></span>
-      <span class="sp" style="flex:1"></span>
-      <button class="ghost" id="rankclear">Clear ranking</button>
+    <div class="rankcols">
+      <div>
+        <div class="panel rankhead">
+          <span class="colhead">My board</span>
+          <span class="dim" id="rankcount"></span>
+          <span style="flex:1"></span>
+          <button class="ghost" id="rankclear">Clear ranking</button>
+        </div>
+        <div class="rankbox scrolly" id="ranklist"></div>
+      </div>
+      <div>
+        <div class="panel rankhead">
+          <span class="colhead">Available players</span>
+          <input type="search" id="rq" placeholder="Filter…" aria-label="Filter available players">
+          <div class="seg" id="rposseg" role="group" aria-label="Position filter">
+            <button data-pos="" class="on">All</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
+          </div>
+          <label class="minctl">min <input type="number" id="rmin" value="450" step="90" min="0"></label>
+        </div>
+        <div class="rankbox scrolly" id="availlist"></div>
+      </div>
     </div>
-    <div class="rankbox" id="ranklist"></div>
-    <p class="legend">Drag rows (or use ↑ ↓) to reorder. Your ranking is saved in this browser and survives reloads.</p>
+    <p class="legend">Click <b>+</b> to add a player to your board; drag rows (or use ↑ ↓) to reorder.
+      The pool is sorted by xFPts; players you drafted on the Board show struck through.
+      Your ranking is saved in this browser and survives reloads.</p>
   </section>
 
   <section id="v-lists" hidden>
@@ -322,8 +356,11 @@ const DATA = [{"player":"Bruno Fernandes","team":"MUN","pos":"M","gp":35,"min":3
 const TEAMS = [{"code":"ARS","name":"Arsenal"},{"code":"AVL","name":"Aston Villa"},{"code":"BOU","name":"Bournemouth"},{"code":"BRF","name":"Brentford"},{"code":"BHA","name":"Brighton and Hove Albion"},{"code":"BUR","name":"Burnley"},{"code":"CHE","name":"Chelsea"},{"code":"CRY","name":"Crystal Palace"},{"code":"EVE","name":"Everton"},{"code":"FUL","name":"Fulham"},{"code":"LEE","name":"Leeds United"},{"code":"LIV","name":"Liverpool"},{"code":"MCI","name":"Manchester City"},{"code":"MUN","name":"Manchester United"},{"code":"NEW","name":"Newcastle United"},{"code":"NOT","name":"Nottingham Forest"},{"code":"SUN","name":"Sunderland"},{"code":"TOT","name":"Tottenham Hotspur"},{"code":"WHU","name":"West Ham United"},{"code":"WOL","name":"Wolverhampton Wanderers"}];
 const SEED_NOTES = {"NOT": "hired glasner likely to switch to back 3", "CHE": "xabi back 3 and rested key players."};
 const byId = Object.fromEntries(DATA.map(r => [r.id, r]));
+// storage access can throw (e.g. sandboxed iframe) — state must still work in-memory
 const store = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
-const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const saveRaw = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+const loadRaw = k => { try { return localStorage.getItem(k); } catch { return null; } };
 
 const taken = new Set(store("dm_taken", []));
 let marks = store("dm_marks", {});   // id -> ["star","flag","up","down"]
@@ -345,7 +382,7 @@ function toggleMark(id, m) {
 }
 const curTeam = r => r.team.split("/").pop();
 const teamName = c => (TEAMS.find(t => t.code === c) || {}).name || c;
-const noteFor = c => localStorage.getItem("dm_note_" + c) ?? (SEED_NOTES[c] || "");
+const noteFor = c => loadRaw("dm_note_" + c) ?? (SEED_NOTES[c] || "");
 
 /* ---------- board ---------- */
 const COLS = [
@@ -364,6 +401,7 @@ const colsEl = document.getElementById("cols");
 COLS.forEach(([k, label, cls]) => {
   const th = document.createElement("th");
   th.className = cls; th.dataset.k = k; th.textContent = label;
+  if (k === "luck") th.title = "FPts − xFP · positive = finished above expected (ran hot) · negative = below expected (unlucky)";
   if (k !== "marks") th.addEventListener("click", () => {
     sortDir = (sortKey === k) ? -sortDir : (k === "player" || k === "team" || k === "pos" ? 1 : -1);
     sortKey = k; renderBoard();
@@ -461,11 +499,30 @@ function searchAdd(root, excluded, onPick) {
 
 /* ---------- ranking ---------- */
 const rankList = document.getElementById("ranklist");
+let rQuery = "", rPos = "", rMin = 450;
+function renderAvail() {
+  const q = rQuery.toLowerCase();
+  const ranked = new Set(rank);
+  const pool = DATA.filter(r => !ranked.has(r.id) &&
+    (!rPos || r.pos === rPos) && r.min >= rMin &&
+    (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)))
+    .sort((a, b) => (b.xfpts ?? -1) - (a.xfpts ?? -1));
+  document.getElementById("availlist").innerHTML = pool.length ? pool.map(r =>
+    `<div class="rankrow${taken.has(r.id) ? " taken" : ""}">
+      <button class="addbtn" data-add="${r.id}" title="Add to my board">+</button>
+      <span class="nm">${r.player}${mkRo(r.id)}</span>
+      <span class="tm">${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
+      <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
+      <span class="stat"><b>${r.xfp90 != null ? r.xfp90.toFixed(1) : "–"}</b> xFP/90</span>
+      <span class="stat">${r.luck != null ? luckChip(r.luck) : ""}</span>
+    </div>`).join("") : '<div class="empty">No players match these filters.</div>';
+}
 function renderRank() {
   rank = rank.filter(id => byId[id]);
+  renderAvail();
   document.getElementById("rankcount").textContent = rank.length ? `${rank.length} ranked` : "";
   if (!rank.length) {
-    rankList.innerHTML = '<div class="empty">No players ranked yet — search above to start your board.</div>';
+    rankList.innerHTML = '<div class="empty">No players ranked yet — add from the pool on the right.</div>';
     return;
   }
   rankList.innerHTML = rank.map((id, i) => {
@@ -511,8 +568,18 @@ rankList.addEventListener("drop", e => {
   if (row && dragI != null) moveRank(dragI, +row.dataset.i);
   dragI = null;
 });
-searchAdd(document.getElementById("rankadd"), () => new Set(rank),
-  id => { rank.push(id); save("dm_rank", rank); renderRank(); });
+document.getElementById("availlist").addEventListener("click", e => {
+  const b = e.target.closest(".addbtn"); if (!b) return;
+  rank.push(b.dataset.add); save("dm_rank", rank); renderRank();
+});
+document.getElementById("rq").addEventListener("input", e => { rQuery = e.target.value; renderAvail(); });
+document.getElementById("rmin").addEventListener("input", e => { rMin = +e.target.value || 0; renderAvail(); });
+document.getElementById("rposseg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  rPos = b.dataset.pos;
+  document.querySelectorAll("#rposseg button").forEach(x => x.classList.toggle("on", x === b));
+  renderAvail();
+});
 document.getElementById("rankclear").addEventListener("click", () => {
   if (rank.length && confirm("Clear your entire ranking?")) { rank = []; save("dm_rank", rank); renderRank(); }
 });
@@ -593,7 +660,7 @@ function renderTeam(code) {
 }
 document.getElementById("teamnotes").addEventListener("input", e => {
   if (!curTeamCode) return;
-  localStorage.setItem("dm_note_" + curTeamCode, e.target.value);
+  saveRaw("dm_note_" + curTeamCode, e.target.value);
   document.getElementById("teamsaved").textContent = "Saved";
   clearTimeout(savedTimer);
   savedTimer = setTimeout(() => document.getElementById("teamsaved").textContent = "", 1200);

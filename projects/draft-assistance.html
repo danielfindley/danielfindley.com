@@ -237,6 +237,9 @@ td.marks { min-width: 92px; }
 }
 .rankt { max-height: 65vh; margin-top: 12px; }
 #ranktbl th { cursor: default; }
+#ranktbl th[data-k], .listtbl th[data-k] { cursor: pointer; }
+.iconbtn:disabled { opacity: .3; cursor: default; }
+.iconbtn:disabled:hover { color: var(--ink2); background: none; }
 #ranktbl .rnum {
   position: sticky; left: 0; z-index: 2; background: var(--surface);
   width: 28px; min-width: 28px; padding: 7px 8px; text-align: right;
@@ -244,7 +247,8 @@ td.marks { min-width: 92px; }
 }
 #ranktbl th.rnum { z-index: 5; }
 #ranktbl td.player, #ranktbl th.player { left: 44px; }
-#ranktbl tr.custom td, #ranktbl tr.custom td.player, #ranktbl tr.custom .rnum { background: var(--accent-soft); }
+#ranktbl tr.custom td, #ranktbl tr.custom .rnum, .listtbl tr.custom td { background: var(--accent-soft); }
+#ranktbl tr.custom .pin, #ranktbl tr.custom .rnum, .listtbl tr.custom .pin { background: var(--line-soft); }
 #ranktbl tr.dragging td { opacity: .4; }
 #ranktbl tr[draggable="true"] { cursor: grab; }
 td.rctl { white-space: nowrap; }
@@ -387,7 +391,8 @@ textarea.notes {
       </table>
     </div>
     <p class="legend">Drag rows (or use ↑ ↓) to reorder — numbers are the spot in your full ranking even
-      when filtered by position. Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
+      when filtered by position. Click any column header to view your ranked players sorted by that stat
+      (reordering pauses; click <b>#</b> to get back to your order — same sorting works in Lists). Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
       adds someone who hasn't transferred in yet straight to your ranking. Players you crossed out on the
       board show struck through here. Saved in this browser.</p>
@@ -638,34 +643,63 @@ function searchAdd(root, excluded, onPick) {
 
 /* ---------- ranking (below the board) ---------- */
 const rankList = document.getElementById("ranklist");
-let rankPos = "";
+let rankPos = "", rankSort = null; // null = your own order
 const RN_COLS = COLS.length + 2; // rnum + COLS + controls
 const rcolsEl = document.getElementById("rcols");
-rcolsEl.innerHTML = '<th class="rnum">#</th>' +
-  COLS.map(([, label, cls]) => `<th class="${cls}">${label}</th>`).join("") + "<th></th>";
+rcolsEl.innerHTML = '<th class="rnum" data-k="__order" title="Your order — click to restore">#</th>' +
+  COLS.map(([k, label, cls]) => k === "marks"
+    ? `<th class="${cls}">${label}</th>`
+    : `<th class="${cls}" data-k="${k}">${label}</th>`).join("") + "<th></th>";
+rcolsEl.addEventListener("click", e => {
+  const th = e.target.closest("th[data-k]"); if (!th) return;
+  const k = th.dataset.k;
+  if (k === "__order") rankSort = null;
+  else if (rankSort && rankSort.k === k) rankSort.dir = -rankSort.dir;
+  else rankSort = { k, dir: ASC_DEFAULT.has(k) ? 1 : -1 };
+  renderRank();
+});
+function statCells(r, id) {
+  return COLS.map(([k, , cls]) => {
+    if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>` +
+      (r.custom ? ' <span class="badge">new</span>' : "") + "</td>";
+    return `<td class="${cls}">${fmt(k, r[k], r)}</td>`;
+  }).join("");
+}
+const nullLast = (k, dir) => (a, b) => {
+  const av = a[k], bv = b[k];
+  if (av == null) return 1; if (bv == null) return -1;
+  return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+};
 function syncAll() { renderBoard(); renderRank(); }
 function renderRank() {
   rank = rank.filter(id => byId[id]);
   document.getElementById("rankcount").textContent = rank.length ? `${rank.length} ranked` : "";
-  const entries = rank.map((id, i) => ({ id, i, r: byId[id] }))
+  let entries = rank.map((id, i) => ({ id, i, r: byId[id] }))
     .filter(e => !rankPos || e.r.pos === rankPos);
+  if (rankSort) {
+    const c = nullLast(rankSort.k, rankSort.dir);
+    entries = entries.slice().sort((a, b) => c(a.r, b.r));
+  }
+  rcolsEl.querySelectorAll("th[data-k]").forEach(th => {
+    const active = rankSort ? th.dataset.k === rankSort.k : th.dataset.k === "__order";
+    th.classList.toggle("sort", active);
+    th.innerHTML = th.textContent.replace(/ [▲▼]$/, "");
+    if (rankSort && th.dataset.k === rankSort.k)
+      th.innerHTML += ` <span class="arr">${rankSort.dir < 0 ? "▼" : "▲"}</span>`;
+  });
   if (!entries.length) {
     rankList.innerHTML = `<tr><td colspan="${RN_COLS}" class="empty l">` + (rank.length
       ? "No ranked players at this position."
       : "No players ranked yet — click <b>+</b> next to a player in the board above.") + "</td></tr>";
     return;
   }
+  const locked = !!rankSort; // reordering only makes sense in your own order
   rankList.innerHTML = entries.map(({ id, i, r }) =>
-    `<tr class="${r.custom ? "custom " : ""}${taken.has(id) ? "taken" : ""}" draggable="true" data-i="${i}" data-id="${id}">
-      <td class="rnum">${i + 1}</td>` +
-    COLS.map(([k, , cls]) => {
-      if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>` +
-        (r.custom ? ' <span class="badge">new</span>' : "") + "</td>";
-      return `<td class="${cls}">${fmt(k, r[k], r)}</td>`;
-    }).join("") +
+    `<tr class="${r.custom ? "custom " : ""}${taken.has(id) ? "taken" : ""}" draggable="${!locked}" data-i="${i}" data-id="${id}">
+      <td class="rnum">${i + 1}</td>` + statCells(r, id) +
     `<td class="rctl">
-      <button class="iconbtn" data-act="up" title="Move up">↑</button>
-      <button class="iconbtn" data-act="down" title="Move down">↓</button>
+      <button class="iconbtn" data-act="up" title="Move up"${locked ? " disabled" : ""}>↑</button>
+      <button class="iconbtn" data-act="down" title="Move down"${locked ? " disabled" : ""}>↓</button>
       <button class="iconbtn" data-act="rm" title="Remove">✕</button>
     </td></tr>`).join("");
 }
@@ -700,6 +734,7 @@ document.getElementById("rposseg").addEventListener("click", e => {
 });
 let dragI = null;
 rankList.addEventListener("dragstart", e => {
+  if (rankSort) return; // view is stat-sorted; reordering needs your own order
   const row = e.target.closest("tr"); if (!row) return;
   dragI = +row.dataset.i; row.classList.add("dragging");
 });
@@ -739,6 +774,7 @@ document.getElementById("rankclear").addEventListener("click", () => {
 
 /* ---------- lists ---------- */
 const listWrap = document.getElementById("listwrap");
+const listSort = {}; // list index -> {k, dir}; absent = insertion order
 function renderLists() {
   if (!lists.length) {
     listWrap.innerHTML = '<div class="empty" style="border:1px solid var(--line);border-radius:8px">No lists yet — create one above (late sleepers, keeper targets, avoid…).</div>';
@@ -746,31 +782,51 @@ function renderLists() {
   }
   listWrap.innerHTML = "";
   lists.forEach((L, li) => {
+    const ls = listSort[li];
+    let entries = L.ids.map(id => byId[id]).filter(Boolean);
+    if (ls) entries = entries.slice().sort(nullLast(ls.k, ls.dir));
+    const head = COLS.map(([k, label, cls]) => {
+      if (k === "marks") return `<th class="${cls}">${label}</th>`;
+      const arr = ls && ls.k === k ? ` <span class="arr">${ls.dir < 0 ? "▼" : "▲"}</span>` : "";
+      return `<th class="${cls}${ls && ls.k === k ? " sort" : ""}" data-k="${k}">${label}${arr}</th>`;
+    }).join("") + "<th></th>";
+    const body = entries.length ? entries.map(r =>
+      `<tr class="${r.custom ? "custom " : ""}${taken.has(r.id) ? "taken" : ""}">` + statCells(r, r.id) +
+      `<td class="rctl"><button class="iconbtn" data-li="${li}" data-id="${r.id}" title="Remove">✕</button></td></tr>`).join("")
+      : `<tr><td colspan="${COLS.length + 1}" class="empty l">Empty — add players above.</td></tr>`;
     const card = document.createElement("div");
     card.className = "listcard";
+    card.dataset.li = li;
     card.innerHTML = `<div class="lhead"><h3>${L.name}</h3><span class="dim">${L.ids.length}</span>
       <span style="flex:1"></span><button class="ghost" data-del="${li}">Delete list</button></div>
       <div class="sadd"><input placeholder="Add player to ${L.name}…" aria-label="Add player to ${L.name}"></div>
-      <div class="listbox">` +
-      (L.ids.length ? L.ids.map(id => {
-        const r = byId[id]; if (!r) return "";
-        return `<div class="rankrow"><span class="nm"><span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}</span>
-          <span class="tm">${tLogo(r.team.split("/").pop())}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-          <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
-          <span class="stat"><b>${r.xfp90 != null ? r.xfp90.toFixed(1) : "–"}</b> xFP/90</span>
-          <span class="stat">${r.luck != null ? luckChip(r.luck) : ""}</span>
-          <span class="sp"></span><button class="iconbtn" data-li="${li}" data-id="${id}" title="Remove">✕</button></div>`;
-      }).join("") : '<div class="empty">Empty — add players above.</div>') + "</div>";
+      <div class="tablebox rankt">
+        <table class="listtbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>
+      </div>`;
     searchAdd(card.querySelector(".sadd"), () => new Set(L.ids),
       id => { L.ids.push(id); save("dm_lists", lists); renderLists(); });
     listWrap.appendChild(card);
   });
 }
 listWrap.addEventListener("click", e => {
+  const th = e.target.closest("th[data-k]");
+  if (th) {
+    const li = +th.closest(".listcard").dataset.li;
+    const k = th.dataset.k, ls = listSort[li];
+    if (ls && ls.k === k) ls.dir = -ls.dir;
+    else listSort[li] = { k, dir: ASC_DEFAULT.has(k) ? 1 : -1 };
+    renderLists();
+    return;
+  }
+  const mk = e.target.closest(".mk");
+  if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderLists(); syncAll(); return; }
   const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.del != null) {
     const L = lists[+b.dataset.del];
-    if (confirm(`Delete list "${L.name}"?`)) { lists.splice(+b.dataset.del, 1); save("dm_lists", lists); renderLists(); }
+    if (confirm(`Delete list "${L.name}"?`)) {
+      lists.splice(+b.dataset.del, 1); delete listSort[+b.dataset.del];
+      save("dm_lists", lists); renderLists();
+    }
   } else if (b.dataset.id) {
     const L = lists[+b.dataset.li];
     L.ids = L.ids.filter(x => x !== b.dataset.id);

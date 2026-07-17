@@ -179,8 +179,6 @@ td.marks { min-width: 92px; }
 }
 .iconbtn:hover { color: var(--ink); background: var(--line-soft); }
 .rankbox, .listbox { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 12px; }
-.rankbox.scrolly { overflow-y: auto; max-height: calc(100vh - 300px); min-height: 120px; }
-.rankcols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 .rankhead { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .colhead { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink2); font-weight: 700; }
 .rankhead input[type="search"] {
@@ -189,17 +187,23 @@ td.marks { min-width: 92px; }
 }
 .rankhead .seg button { padding: 6px 10px; }
 .rankrow.taken .nm { text-decoration: line-through; color: var(--taken); font-weight: 400; }
-.addbtn {
+.rowadd {
   border: 1px solid var(--line); background: var(--accent-soft); color: var(--accent);
-  font: inherit; font-weight: 700; cursor: pointer; border-radius: 6px;
-  padding: 2px 10px; font-size: 15px; line-height: 1.3;
+  font: inherit; font-weight: 700; cursor: pointer; border-radius: 4px;
+  width: 21px; height: 21px; line-height: 1; padding: 0; margin-right: 8px; font-size: 14px;
 }
-.addbtn:hover { background: var(--accent); color: #fff; }
+.rowadd:hover { background: var(--accent); color: #fff; }
+.rankedno {
+  display: inline-block; min-width: 21px; height: 21px; line-height: 21px; text-align: center;
+  background: var(--accent); color: #fff; border-radius: 4px; font-size: 11.5px;
+  font-weight: 700; cursor: pointer; margin-right: 8px; padding: 0 3px;
+}
 .minctl select {
   padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
   background: var(--bg); color: var(--ink); font: inherit;
 }
 .addform { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.addform[hidden] { display: none; }
 .addform input, .addform select {
   padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px;
   background: var(--bg); color: var(--ink); font: inherit;
@@ -265,8 +269,6 @@ textarea.notes {
   .mk { font-size: 17px; padding: 3px 5px; }
   td.marks { min-width: 118px; }
   .iconbtn { font-size: 16px; padding: 5px 9px; }
-  .rankcols { grid-template-columns: 1fr; }
-  .rankbox.scrolly { max-height: 46vh; }
   .rankrow { flex-wrap: wrap; row-gap: 3px; }
   .rankrow .grip { display: none; }
   .rankrow .nm { flex: 1 1 45%; }
@@ -280,7 +282,6 @@ textarea.notes {
     <h1>DRAFT <span class="accent">ASSISTANCE</span></h1>
     <nav id="nav">
       <a href="#/board" data-v="board">Board</a>
-      <a href="#/rank" data-v="rank">My Ranking</a>
       <a href="#/lists" data-v="lists">Lists</a>
       <a href="#/teams" data-v="teams">Teams</a>
     </nav>
@@ -316,55 +317,29 @@ textarea.notes {
       goals and assists replaced by xG and xA (goal = 10/9/9 pts and assist = 8/6/6 pts for D/M/F).
       <b>Luck</b> = FPts − xFP: <span class="k chip over">+ hot</span> finished above expected (regression risk),
       <span class="k chip under">− cold</span> finished below it (buy-low candidate).
+      Click <b>+</b> to add a player to your ranking below (the number shows their spot — click it to remove).
       Click a <b>player's name</b> for season-by-season history back to 2019/20; click anywhere else
-      in the row to mark them drafted. Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
+      in the row to cross them out as drafted. Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort.
       Everything saves in this browser.
     </p>
-  </section>
-
-  <section id="v-rank" hidden>
-    <h2>My Ranking</h2>
-    <div class="rankcols">
-      <div>
-        <div class="panel rankhead">
-          <span class="colhead">My board</span>
-          <span class="dim" id="rankcount"></span>
-          <span style="flex:1"></span>
-          <button class="ghost" id="rankclear">Clear ranking</button>
-        </div>
-        <div class="rankbox scrolly" id="ranklist"></div>
-      </div>
-      <div>
-        <div class="panel rankhead">
-          <span class="colhead">Available players</span>
-          <input type="search" id="rq" placeholder="Filter…" aria-label="Filter available players">
-          <div class="seg" id="rposseg" role="group" aria-label="Position filter">
-            <button data-pos="" class="on">All</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
-          </div>
-          <label class="minctl">min <input type="number" id="rmin" value="450" step="90" min="0"></label>
-          <label class="minctl">sort <select id="rsort">
-            <option value="xfpts">xFPts</option><option value="xfpg">xFP/G</option>
-            <option value="xfp90">xFP/90</option><option value="fpts">FPts</option>
-            <option value="fpg">FP/G</option><option value="fp90">FP/90</option>
-            <option value="min">Minutes</option><option value="luck">Luck</option>
-            <option value="xg90">xG/90</option><option value="xa90">xA/90</option>
-          </select></label>
-          <button class="ghost" id="cpshow">＋ New player</button>
-        </div>
-        <div class="panel addform" id="addform" hidden>
-          <input id="cpname" placeholder="Player name (e.g. incoming transfer)">
-          <input id="cpteam" placeholder="Team" style="width:80px" maxlength="12">
-          <select id="cppos"><option>F</option><option>M</option><option>D</option></select>
-          <button class="btn" id="cpadd">Add</button>
-        </div>
-        <div class="rankbox scrolly" id="availlist"></div>
-      </div>
+    <div class="panel rankhead" style="margin-top:22px">
+      <span class="colhead">My Ranking</span>
+      <span class="dim" id="rankcount"></span>
+      <span style="flex:1"></span>
+      <button class="ghost" id="cpshow">＋ New player</button>
+      <button class="ghost" id="rankclear">Clear ranking</button>
     </div>
-    <p class="legend">Click <b>+</b> to add a player to your board; drag rows (or use ↑ ↓) to reorder.
-      Players you drafted on the Board show struck through. <b>＋ New player</b> adds someone who
-      hasn't transferred in yet (no PL data — they pin to the top of the pool).
-      Your ranking is saved in this browser and survives reloads.</p>
+    <div class="panel addform" id="addform" hidden>
+      <input id="cpname" placeholder="Player name (e.g. incoming transfer)">
+      <input id="cpteam" placeholder="Team" style="width:80px" maxlength="12">
+      <select id="cppos"><option>F</option><option>M</option><option>D</option></select>
+      <button class="btn" id="cpadd">Add</button>
+    </div>
+    <div class="rankbox" id="ranklist"></div>
+    <p class="legend">Drag rows (or use ↑ ↓) to reorder. <b>＋ New player</b> adds someone who hasn't
+      transferred in yet straight to your ranking. Players you crossed out on the board show struck
+      through here too. Saved in this browser.</p>
   </section>
 
   <section id="v-lists" hidden>
@@ -473,7 +448,13 @@ function luckChip(v) {
 function fmt(k, v, r) {
   if (k === "marks") return mkHtml(r.id);
   if (v == null) return '<span class="dim">–</span>';
-  if (k === "player") return `<span class="pname" data-pp="${r.id}">${v}</span>`;
+  if (k === "player") {
+    const ri = rank.indexOf(r.id);
+    const ctl = ri >= 0
+      ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in my ranking — click to remove">${ri + 1}</span>`
+      : `<button class="rowadd" data-add="${r.id}" title="Add to my ranking">+</button>`;
+    return `${ctl}<span class="pname" data-pp="${r.id}">${v}</span>`;
+  }
   if (k === "pos") return `<span class="pill ${v}">${v}</span>`;
   if (k === "luck") return luckChip(v);
   if (k === "xfp90") {
@@ -508,6 +489,10 @@ function renderBoard() {
 }
 
 document.getElementById("rows").addEventListener("click", e => {
+  const add = e.target.closest("[data-add]");
+  if (add) { rank.push(add.dataset.add); save("dm_rank", rank); syncAll(); return; }
+  const un = e.target.closest("[data-unrank]");
+  if (un) { rank = rank.filter(x => x !== un.dataset.unrank); save("dm_rank", rank); syncAll(); return; }
   if (e.target.closest(".pname")) return; // handled by the popover listener
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderBoard(); return; }
@@ -515,7 +500,7 @@ document.getElementById("rows").addEventListener("click", e => {
   const id = tr.dataset.id;
   taken.has(id) ? taken.delete(id) : taken.add(id);
   save("dm_taken", [...taken]);
-  renderBoard();
+  syncAll();
 });
 document.getElementById("q").addEventListener("input", e => { query = e.target.value; renderBoard(); });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; renderBoard(); });
@@ -556,57 +541,28 @@ function searchAdd(root, excluded, onPick) {
   input.addEventListener("blur", () => setTimeout(close, 150));
 }
 
-/* ---------- ranking ---------- */
+/* ---------- ranking (below the board) ---------- */
 const rankList = document.getElementById("ranklist");
-let rQuery = "", rPos = "", rMin = 450, rSort = "xfpts";
-function renderAvail() {
-  const q = rQuery.toLowerCase();
-  const ranked = new Set(rank);
-  const match = r => !ranked.has(r.id) && (!rPos || r.pos === rPos) &&
-    (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
-  const customs = custom.filter(match); // pinned on top, min filter doesn't apply
-  const pool = DATA.filter(r => match(r) && r.min >= rMin)
-    .sort((a, b) => (b[rSort] ?? -1e9) - (a[rSort] ?? -1e9));
-  const rows =
-    customs.map(r =>
-      `<div class="rankrow custom">
-        <button class="addbtn" data-add="${r.id}" title="Add to my board">+</button>
-        <span class="nm">${r.player}${mkRo(r.id)}</span>
-        <span class="tm">${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-        <span class="badge">new signing</span><span class="dim" style="font-size:12px">no PL data</span>
-        <span class="sp"></span>
-        <button class="iconbtn" data-delcustom="${r.id}" title="Delete custom player">✕</button>
-      </div>`).join("") +
-    pool.map(r =>
-      `<div class="rankrow${taken.has(r.id) ? " taken" : ""}">
-        <button class="addbtn" data-add="${r.id}" title="Add to my board">+</button>
-        <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
-        <span class="tm">${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-        <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
-        <span class="stat"><b>${r.xfp90 != null ? r.xfp90.toFixed(1) : "–"}</b> xFP/90</span>
-        <span class="stat">${r.luck != null ? luckChip(r.luck) : ""}</span>
-      </div>`).join("");
-  document.getElementById("availlist").innerHTML =
-    rows || '<div class="empty">No players match these filters.</div>';
-}
+function syncAll() { renderBoard(); renderRank(); }
 function renderRank() {
   rank = rank.filter(id => byId[id]);
-  renderAvail();
   document.getElementById("rankcount").textContent = rank.length ? `${rank.length} ranked` : "";
   if (!rank.length) {
-    rankList.innerHTML = '<div class="empty">No players ranked yet — add from the pool on the right.</div>';
+    rankList.innerHTML = '<div class="empty">No players ranked yet — click <b>+</b> next to a player in the board above.</div>';
     return;
   }
   rankList.innerHTML = rank.map((id, i) => {
     const r = byId[id];
-    return `<div class="rankrow${r.custom ? " custom" : ""}" draggable="true" data-i="${i}">
+    return `<div class="rankrow${r.custom ? " custom" : ""}${taken.has(id) ? " taken" : ""}" draggable="true" data-i="${i}">
       <span class="grip" aria-hidden="true">≡</span><span class="num">${i + 1}</span>
       <span class="nm"><span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}</span>
-      <span class="tm">${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-      <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
+      <span class="tm">${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>` +
+      (r.custom
+        ? `<span class="badge">new signing</span><span class="dim" style="font-size:12px">no PL data</span>`
+        : `<span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
       <span class="stat"><b>${r.xfp90 != null ? r.xfp90.toFixed(1) : "–"}</b> xFP/90</span>
-      <span class="stat">${r.luck != null ? luckChip(r.luck) : ""}</span>
-      <span class="sp"></span>
+      <span class="stat">${r.luck != null ? luckChip(r.luck) : ""}</span>`) +
+      `<span class="sp"></span>
       <button class="iconbtn" data-act="up" title="Move up">↑</button>
       <button class="iconbtn" data-act="down" title="Move down">↓</button>
       <button class="iconbtn" data-act="rm" title="Remove">✕</button>
@@ -616,14 +572,23 @@ function renderRank() {
 function moveRank(i, j) {
   if (j < 0 || j >= rank.length) return;
   const [x] = rank.splice(i, 1); rank.splice(j, 0, x);
-  save("dm_rank", rank); renderRank();
+  save("dm_rank", rank); syncAll();
 }
 rankList.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   const i = +b.closest(".rankrow").dataset.i;
   if (b.dataset.act === "up") moveRank(i, i - 1);
   else if (b.dataset.act === "down") moveRank(i, i + 1);
-  else { rank.splice(i, 1); save("dm_rank", rank); renderRank(); }
+  else {
+    const id = rank[i];
+    if (byId[id] && byId[id].custom) {
+      if (!confirm("Remove and delete this custom player?")) return;
+      custom = custom.filter(c => c.id !== id);
+      lists.forEach(L => L.ids = L.ids.filter(x => x !== id));
+      save("dm_custom", custom); save("dm_lists", lists); rebuildIndex();
+    }
+    rank.splice(i, 1); save("dm_rank", rank); syncAll();
+  }
 });
 let dragI = null;
 rankList.addEventListener("dragstart", e => {
@@ -640,21 +605,6 @@ rankList.addEventListener("drop", e => {
   if (row && dragI != null) moveRank(dragI, +row.dataset.i);
   dragI = null;
 });
-document.getElementById("availlist").addEventListener("click", e => {
-  const del = e.target.closest("[data-delcustom]");
-  if (del) {
-    const id = del.dataset.delcustom;
-    if (!confirm("Delete this custom player?")) return;
-    custom = custom.filter(c => c.id !== id);
-    rank = rank.filter(x => x !== id);
-    lists.forEach(L => L.ids = L.ids.filter(x => x !== id));
-    save("dm_custom", custom); save("dm_rank", rank); save("dm_lists", lists);
-    rebuildIndex(); renderRank();
-    return;
-  }
-  const b = e.target.closest(".addbtn"); if (!b) return;
-  rank.push(b.dataset.add); save("dm_rank", rank); renderRank();
-});
 document.getElementById("cpshow").addEventListener("click", () => {
   const f = document.getElementById("addform");
   f.hidden = !f.hidden;
@@ -663,27 +613,20 @@ document.getElementById("cpshow").addEventListener("click", () => {
 document.getElementById("cpadd").addEventListener("click", () => {
   const name = document.getElementById("cpname").value.trim();
   if (!name) return;
-  custom.push({ id: "cu" + Date.now(), player: name,
+  const id = "cu" + Date.now();
+  custom.push({ id, player: name,
     team: (document.getElementById("cpteam").value.trim() || "?").toUpperCase(),
     pos: document.getElementById("cppos").value, custom: true, min: 0 });
-  save("dm_custom", custom); rebuildIndex();
+  rank.push(id); // straight into the ranking
+  save("dm_custom", custom); save("dm_rank", rank); rebuildIndex();
   document.getElementById("cpname").value = ""; document.getElementById("cpteam").value = "";
-  renderAvail();
+  renderRank();
 });
 document.getElementById("cpname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("cpadd").click();
 });
-document.getElementById("rsort").addEventListener("change", e => { rSort = e.target.value; renderAvail(); });
-document.getElementById("rq").addEventListener("input", e => { rQuery = e.target.value; renderAvail(); });
-document.getElementById("rmin").addEventListener("input", e => { rMin = +e.target.value || 0; renderAvail(); });
-document.getElementById("rposseg").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
-  rPos = b.dataset.pos;
-  document.querySelectorAll("#rposseg button").forEach(x => x.classList.toggle("on", x === b));
-  renderAvail();
-});
 document.getElementById("rankclear").addEventListener("click", () => {
-  if (rank.length && confirm("Clear your entire ranking?")) { rank = []; save("dm_rank", rank); renderRank(); }
+  if (rank.length && confirm("Clear your entire ranking?")) { rank = []; save("dm_rank", rank); syncAll(); }
 });
 
 /* ---------- lists ---------- */
@@ -808,16 +751,15 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape") hidePop(); });
 
 /* ---------- router ---------- */
-const VIEWS = ["board", "rank", "lists", "teams", "team"];
+const VIEWS = ["board", "lists", "teams", "team"];
 function route() {
   const parts = (location.hash.slice(2) || "board").split("/");
-  let v = VIEWS.includes(parts[0]) ? parts[0] : "board";
+  let v = VIEWS.includes(parts[0]) ? parts[0] : "board"; // old #/rank falls through to board
   if (v === "team" && !TEAMS.some(t => t.code === parts[1])) v = "teams";
   VIEWS.forEach(x => document.getElementById("v-" + x).hidden = x !== v);
   document.querySelectorAll("#nav a").forEach(a =>
     a.classList.toggle("on", a.dataset.v === (v === "team" ? "teams" : v)));
-  if (v === "board") renderBoard();
-  else if (v === "rank") renderRank();
+  if (v === "board") { renderBoard(); renderRank(); }
   else if (v === "lists") renderLists();
   else if (v === "teams") renderTeams();
   else renderTeam(parts[1]);

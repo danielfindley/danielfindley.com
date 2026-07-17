@@ -92,6 +92,8 @@ input:focus, textarea:focus, button:focus-visible, a:focus-visible {
   background: transparent; color: var(--ink2); font: inherit; font-size: 13px; cursor: pointer;
 }
 .ghost:hover { color: var(--ink); border-color: var(--ink2); }
+.ghost:disabled { opacity: .35; cursor: default; }
+.ghost:disabled:hover { color: var(--ink2); border-color: var(--line); }
 .tablebox {
   overflow: auto; max-height: calc(100vh - 240px);
   border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
@@ -128,12 +130,15 @@ th.pin { z-index: 5 !important; background: var(--pin-bg); }
 .p-pos   { left: 306px; width: 46px;  min-width: 46px; }
 .p-adp   { left: 352px; width: 62px;  min-width: 62px; }
 .p-fpts  { left: 414px; width: 68px;  min-width: 68px; }
-.p-xfp90 { left: 482px; width: 76px;  min-width: 76px; border-right: 2px solid var(--line); }
+.p-fpg   { left: 482px; width: 62px;  min-width: 62px; }
+.p-xfp90 { left: 544px; width: 76px;  min-width: 76px; border-right: 2px solid var(--line); }
 #v-board tbody tr:hover .pin { background: var(--line-soft); }
 .grp-pin { position: sticky; left: 0; z-index: 6 !important; background: var(--pin-bg); }
 #ranktbl .p-team { left: 244px; } #ranktbl .p-pos  { left: 350px; }
 #ranktbl .p-adp  { left: 396px; } #ranktbl .p-fpts { left: 458px; }
-#ranktbl .p-xfp90 { left: 526px; }
+#ranktbl .p-fpg  { left: 526px; } #ranktbl .p-xfp90 { left: 588px; }
+.pager { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.pager .pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; }
 #ranktbl tr.custom .pin, #ranktbl tr.custom .rnum { background: var(--line-soft); }
 td.dim, .dim { color: var(--ink2); }
 tr.taken td, tr.taken td.player { color: var(--taken); }
@@ -340,9 +345,9 @@ textarea.notes {
       <table id="tbl">
         <thead>
           <tr class="grp">
-            <th class="grp-pin" colspan="6"></th>
+            <th class="grp-pin" colspan="7"></th>
             <th colspan="2">Draft</th><th colspan="2"></th>
-            <th colspan="2">Actual</th><th colspan="4">Expected</th>
+            <th colspan="1">Actual</th><th colspan="4">Expected</th>
             <th colspan="9">Underlying (FotMob)</th><th colspan="6">Fantrax</th><th></th>
           </tr>
           <tr class="cols" id="cols"></tr>
@@ -350,21 +355,15 @@ textarea.notes {
         <tbody id="rows"></tbody>
       </table>
     </div>
-    <p class="legend">
-      <b>How to read it:</b> <b>ADP</b> (average draft pick, from mock drafts) is the default sort;
-      <b>Rd</b> = ADP as a 12-team round (ADP/12 + 1); <b>PtsRk</b> = last season's total points rank
-      (hover the headers for details) — a PtsRk much lower than ADP is a value pick. Positions are next
-      season's Fantrax classifications. Goalkeepers show real points only (FP/90 via FotMob minutes);
-      Championship players carry ADP only. <b>xFP/90</b> is Fantrax points per 90 with actual
-      goals and assists replaced by xG and xA (goal = 10/9/9 pts and assist = 8/6/6 pts for D/M/F).
-      <b>Luck</b> = FPts − xFP: <span class="k chip over">+ hot</span> finished above expected (regression risk),
-      <span class="k chip under">− cold</span> finished below it (buy-low candidate).
-      Click <b>+</b> to add a player to your ranking below (the number shows their spot — click it to remove).
-      Click a <b>player's name</b> for season-by-season history back to 2019/20; click anywhere else
-      in the row to cross them out as drafted. Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
-      <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort.
-      Everything saves in this browser.
-    </p>
+    <div class="pager">
+      <label class="minctl">show <select id="psize">
+        <option value="25" selected>25</option><option value="50">50</option>
+        <option value="100">100</option><option value="all">All</option>
+      </select> per page</label>
+      <button class="ghost" id="pprev">‹ Prev</button>
+      <span class="pinfo" id="pinfo"></span>
+      <button class="ghost" id="pnext">Next ›</button>
+    </div>
     <div class="panel rankhead" style="margin-top:22px">
       <span class="colhead">My Ranking</span>
       <span class="dim" id="rankcount"></span>
@@ -392,6 +391,21 @@ textarea.notes {
       <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
       adds someone who hasn't transferred in yet straight to your ranking. Players you crossed out on the
       board show struck through here. Saved in this browser.</p>
+    <p class="legend">
+      <b>How to read it:</b> <b>ADP</b> (average draft pick, from mock drafts) is the default sort;
+      <b>Rd</b> = ADP as a 12-team round (ADP/12 + 1); <b>PtsRk</b> = last season's total points rank
+      (hover the headers for details) — a PtsRk much lower than ADP is a value pick. Positions are next
+      season's Fantrax classifications. Goalkeepers show real points only (FP/90 via FotMob minutes);
+      Championship players carry ADP only. <b>xFP/90</b> is Fantrax points per 90 with actual
+      goals and assists replaced by xG and xA (goal = 10/9/9 pts and assist = 8/6/6 pts for D/M/F).
+      <b>Luck</b> = FPts − xFP: <span class="k chip over">+ hot</span> finished above expected (regression risk),
+      <span class="k chip under">− cold</span> finished below it (buy-low candidate).
+      Click <b>+</b> to add a player to your ranking (the number shows their spot — click it to remove).
+      Click a <b>player's name</b> for season-by-season history back to 2019/20; click anywhere else
+      in the row to cross them out as drafted. Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
+      <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort.
+      Everything saves in this browser.
+    </p>
   </section>
 
   <section id="v-lists" hidden>
@@ -474,11 +488,12 @@ const noteFor = c => loadRaw("dm_note_" + c) ?? (SEED_NOTES[c] || "");
 const COLS = [
   // pinned pane (sticky left, order matters for the offsets in CSS)
   ["player","Player","l player pin"],["team","Team","l pin p-team"],["pos","Pos","l pin p-pos"],
-  ["adp","ADP","pin p-adp"],["fpts","FPts","pin p-fpts"],["xfp90","xFP/90","pin p-xfp90"],
+  ["adp","ADP","pin p-adp"],["fpts","FPts","pin p-fpts"],["fpg","FP/G","pin p-fpg"],
+  ["xfp90","xFP/90","pin p-xfp90"],
   // scrolling columns
   ["rd","Rd",""],["rk","PtsRk",""],
   ["gp","GP",""],["min","Min",""],
-  ["fpg","FP/G",""],["fp90","FP/90",""],
+  ["fp90","FP/90",""],
   ["xfpts","xFPts",""],["xfpg","xFP/G",""],["luck","Luck",""],["luck90","Luck/90",""],
   ["g","G",""],["xg","xG",""],["at","A",""],["xa","xA",""],
   ["xg90","xG/90",""],["xa90","xA/90",""],["npxg90","npxG/90",""],["sh90","Sh/90",""],["sot90","SoT/90",""],
@@ -488,6 +503,7 @@ const COLS = [
 const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp","rd"]);
 const ASC_DEFAULT = new Set(["player","team","pos","adp","rd","rk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 270, hasAdp = true;
+let page = 0, pageSize = 25;
 
 const colsEl = document.getElementById("cols");
 COLS.forEach(([k, label, cls]) => {
@@ -499,7 +515,7 @@ COLS.forEach(([k, label, cls]) => {
   if (k === "rd") th.title = "ADP as a draft round in a 12-team league (ADP/12 + 1)";
   if (k !== "marks") th.addEventListener("click", () => {
     sortDir = (sortKey === k) ? -sortDir : (ASC_DEFAULT.has(k) ? 1 : -1);
-    sortKey = k; renderBoard();
+    sortKey = k; page = 0; renderBoard();
   });
   colsEl.appendChild(th);
 });
@@ -539,7 +555,16 @@ function renderBoard() {
     if (av == null) return 1; if (bv == null) return -1;
     return (av < bv ? -1 : av > bv ? 1 : 0) * sortDir;
   });
-  document.getElementById("rows").innerHTML = rows.map(r =>
+  const total = rows.length;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  page = Math.min(page, pages - 1);
+  const shown = rows.slice(page * pageSize, (page + 1) * pageSize);
+  document.getElementById("pinfo").textContent = total
+    ? `${page * pageSize + 1}–${Math.min(total, (page + 1) * pageSize)} of ${total} · page ${page + 1}/${pages}`
+    : "no players match";
+  document.getElementById("pprev").disabled = page === 0;
+  document.getElementById("pnext").disabled = page >= pages - 1;
+  document.getElementById("rows").innerHTML = shown.map(r =>
     `<tr data-id="${r.id}"${taken.has(r.id) ? ' class="taken"' : ""}>` +
     COLS.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>").join("");
   document.getElementById("count").textContent =
@@ -565,15 +590,21 @@ document.getElementById("rows").addEventListener("click", e => {
   save("dm_taken", [...taken]);
   syncAll();
 });
-document.getElementById("q").addEventListener("input", e => { query = e.target.value; renderBoard(); });
-document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; renderBoard(); });
-document.getElementById("hasadp").addEventListener("change", e => { hasAdp = e.target.checked; renderBoard(); });
+document.getElementById("q").addEventListener("input", e => { query = e.target.value; page = 0; renderBoard(); });
+document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; page = 0; renderBoard(); });
+document.getElementById("hasadp").addEventListener("change", e => { hasAdp = e.target.checked; page = 0; renderBoard(); });
 document.getElementById("posseg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
-  pos = b.dataset.pos;
+  pos = b.dataset.pos; page = 0;
   document.querySelectorAll("#posseg button").forEach(x => x.classList.toggle("on", x === b));
   renderBoard();
 });
+document.getElementById("psize").addEventListener("change", e => {
+  pageSize = e.target.value === "all" ? Infinity : +e.target.value;
+  page = 0; renderBoard();
+});
+document.getElementById("pprev").addEventListener("click", () => { page--; renderBoard(); });
+document.getElementById("pnext").addEventListener("click", () => { page++; renderBoard(); });
 document.getElementById("reset").addEventListener("click", () => {
   taken.clear(); save("dm_taken", []); renderBoard();
 });

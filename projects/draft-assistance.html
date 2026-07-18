@@ -257,6 +257,41 @@ td.rctl { white-space: nowrap; }
 td.empty.l { text-align: left; }
 .pname { cursor: pointer; }
 .pname:hover { color: var(--accent); text-decoration: underline dashed; text-underline-offset: 3px; }
+.plancols { display: grid; grid-template-columns: 5fr 7fr; gap: 16px; align-items: start; }
+.planbox { overflow-y: auto; max-height: calc(100vh - 250px); }
+.rankbox.planbox { margin-top: 12px; }
+.prow {
+  display: flex; align-items: center; gap: 9px; padding: 6px 10px;
+  border-bottom: 1px solid var(--line-soft); background: var(--surface);
+  font-variant-numeric: tabular-nums; cursor: grab;
+}
+.prow.dragging { opacity: .4; }
+.prow .nm { font-weight: 600; flex: 0 1 190px; min-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prow .tm { color: var(--ink2); width: 70px; }
+.prow .stat { width: 78px; text-align: right; color: var(--ink2); font-size: 13px; }
+.prow .stat b { color: var(--ink); font-weight: 600; }
+.prow.taken .nm { text-decoration: line-through; color: var(--taken); font-weight: 400; }
+.round { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); margin-bottom: 8px; }
+.round.over { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.rhead {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  border-bottom: 1px solid var(--line-soft); font-size: 12px; font-weight: 700;
+  color: var(--ink2); letter-spacing: .05em;
+}
+.rhead .comp { display: flex; gap: 4px; margin-left: auto; }
+.rhead .comp .pill { min-width: 0; padding: 0 5px; font-size: 10.5px; }
+.rbody { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; min-height: 38px; }
+.rbody:empty::before { content: "drop players here"; color: var(--ink2); font-size: 12px; opacity: .6; padding: 2px; }
+.chip2 {
+  display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line);
+  border-radius: 6px; padding: 3px 5px 3px 8px; background: var(--pin-bg);
+  cursor: grab; font-size: 13px; font-variant-numeric: tabular-nums;
+}
+.chip2 b { font-weight: 600; }
+.chip2 .dim { font-size: 12px; }
+.chip2.taken b { text-decoration: line-through; color: var(--taken); font-weight: 400; }
+.chip2 .iconbtn { padding: 0 4px; font-size: 12px; }
+@media (max-width: 900px) { .plancols { grid-template-columns: 1fr; } .planbox { max-height: 44vh; } }
 .tlogo { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .teamcard .tlogo { width: 22px; height: 22px; vertical-align: -5px; margin-right: 8px; }
 h2 .tlogo { width: 26px; height: 26px; vertical-align: -5px; margin-right: 8px; }
@@ -329,6 +364,7 @@ textarea.notes {
     <h1>DRAFT <span class="accent">ASSISTANCE</span></h1>
     <nav id="nav">
       <a href="#/board" data-v="board">Board</a>
+      <a href="#/plan" data-v="plan">Plan</a>
       <a href="#/lists" data-v="lists">Lists</a>
       <a href="#/teams" data-v="teams">Teams</a>
     </nav>
@@ -336,7 +372,7 @@ textarea.notes {
 
   <section id="v-board">
     <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA ·
-      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-17</p>
+      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-18</p>
     <div class="controls">
       <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
@@ -372,6 +408,9 @@ textarea.notes {
     </div>
     <div class="panel rankhead" style="margin-top:22px">
       <span class="colhead">My Ranking</span>
+      <label class="minctl"><select id="rksel" aria-label="Choose ranking"></select></label>
+      <button class="ghost" id="rknew">＋ New ranking</button>
+      <button class="ghost" id="rkdel">Delete</button>
       <span class="dim" id="rankcount"></span>
       <div class="seg" id="rposseg" role="group" aria-label="Ranking position filter">
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
@@ -413,6 +452,36 @@ textarea.notes {
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort.
       Everything saves in this browser.
     </p>
+  </section>
+
+  <section id="v-plan" hidden>
+    <h2>Draft Plan</h2>
+    <div class="plancols">
+      <div>
+        <div class="panel rankhead">
+          <span class="colhead">Player pool</span>
+          <input type="search" id="pq" placeholder="Filter…" aria-label="Filter plan pool">
+          <div class="seg" id="pposseg" role="group" aria-label="Plan position filter">
+            <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
+          </div>
+          <label class="minctl">＋ adds to Rd <select id="tgtr"></select></label>
+        </div>
+        <div class="rankbox planbox" id="planpool"></div>
+      </div>
+      <div>
+        <div class="panel rankhead">
+          <span class="colhead">Rounds</span>
+          <span class="dim" id="plancount"></span>
+          <span style="flex:1"></span>
+          <button class="ghost" id="planclear">Clear plan</button>
+        </div>
+        <div class="planbox" id="rounds" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <p class="legend">Drag players from the pool onto a round to pencil them in (or use <b>+</b> with the
+      target-round picker); drag chips between rounds to move them. A player lives in one round at a time.
+      The <b>pills next to each round</b> are your cumulative squad shape through that round, counting the
+      first-listed player of each round. Players crossed out on the Board show struck here. Saved in this browser.</p>
   </section>
 
   <section id="v-lists" hidden>
@@ -465,9 +534,24 @@ const loadRaw = k => { try { return localStorage.getItem(k); } catch { return nu
 
 const taken = new Set(store("dm_taken", []));
 let marks = store("dm_marks", {});   // id -> ["star","flag","up","down"]
-let rank = store("dm_rank", []);     // [id]
 let lists = store("dm_lists", []);   // [{name, ids:[]}]
 let custom = store("dm_custom", []); // hand-added players (new signings, no PL data)
+
+// multiple named rankings; dm_rank is the pre-multi legacy key
+let ranks = store("dm_ranks", null);
+if (!Array.isArray(ranks) || !ranks.length)
+  ranks = [{ name: "My Ranking", ids: store("dm_rank", []) }];
+let activeRank = Math.min(store("dm_rank_active", 0), ranks.length - 1);
+let rank = ranks[activeRank].ids;
+const saveRank = () => {
+  ranks[activeRank].ids = rank;
+  save("dm_ranks", ranks); save("dm_rank_active", activeRank);
+};
+
+// draft plan: 16 rounds, each holding penciled candidate ids
+let plan = store("dm_plan", null);
+if (!Array.isArray(plan) || plan.length !== 16) plan = Array.from({ length: 16 }, () => []);
+const savePlan = () => save("dm_plan", plan);
 
 let byId = {};
 const rebuildIndex = () => byId = Object.fromEntries(DATA.concat(custom).map(r => [r.id, r]));
@@ -586,9 +670,9 @@ function renderBoard() {
 
 document.getElementById("rows").addEventListener("click", e => {
   const add = e.target.closest("[data-add]");
-  if (add) { rank.push(add.dataset.add); save("dm_rank", rank); syncAll(); return; }
+  if (add) { rank.push(add.dataset.add); saveRank(); syncAll(); return; }
   const un = e.target.closest("[data-unrank]");
-  if (un) { rank = rank.filter(x => x !== un.dataset.unrank); save("dm_rank", rank); syncAll(); return; }
+  if (un) { rank = rank.filter(x => x !== un.dataset.unrank); saveRank(); syncAll(); return; }
   if (e.target.closest(".pname")) return; // handled by the popover listener
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderBoard(); return; }
@@ -676,6 +760,7 @@ const nullLast = (k, dir) => (a, b) => {
 function syncAll() { renderBoard(); renderRank(); }
 function renderRank() {
   rank = rank.filter(id => byId[id]);
+  renderRankSelect();
   document.getElementById("rankcount").textContent = rank.length ? `${rank.length} ranked` : "";
   let entries = rank.map((id, i) => ({ id, i, r: byId[id] }))
     .filter(e => !rankPos || e.r.pos === rankPos);
@@ -709,7 +794,7 @@ function renderRank() {
 function moveRank(i, j) {
   if (j < 0 || j >= rank.length) return;
   const [x] = rank.splice(i, 1); rank.splice(j, 0, x);
-  save("dm_rank", rank); syncAll();
+  saveRank(); syncAll();
 }
 rankList.addEventListener("click", e => {
   const mk = e.target.closest(".mk");
@@ -726,7 +811,7 @@ rankList.addEventListener("click", e => {
       lists.forEach(L => L.ids = L.ids.filter(x => x !== id));
       save("dm_custom", custom); save("dm_lists", lists); rebuildIndex();
     }
-    rank.splice(i, 1); save("dm_rank", rank); syncAll();
+    rank.splice(i, 1); saveRank(); syncAll();
   }
 });
 document.getElementById("rposseg").addEventListener("click", e => {
@@ -764,7 +849,7 @@ document.getElementById("cpadd").addEventListener("click", () => {
     team: (document.getElementById("cpteam").value.trim() || "?").toUpperCase(),
     pos: document.getElementById("cppos").value, custom: true, min: 0 });
   rank.push(id); // straight into the ranking
-  save("dm_custom", custom); save("dm_rank", rank); rebuildIndex();
+  save("dm_custom", custom); saveRank(); rebuildIndex();
   document.getElementById("cpname").value = ""; document.getElementById("cpteam").value = "";
   renderRank();
 });
@@ -772,7 +857,7 @@ document.getElementById("cpname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("cpadd").click();
 });
 document.getElementById("rankclear").addEventListener("click", () => {
-  if (rank.length && confirm("Clear your entire ranking?")) { rank = []; save("dm_rank", rank); syncAll(); }
+  if (rank.length && confirm("Clear your entire ranking?")) { rank = []; saveRank(); syncAll(); }
 });
 
 /* ---------- lists ---------- */
@@ -847,6 +932,137 @@ document.getElementById("listname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("listcreate").click();
 });
 
+/* ---------- multiple rankings ---------- */
+function renderRankSelect() {
+  const sel = document.getElementById("rksel");
+  sel.innerHTML = "";
+  ranks.forEach((r, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = `${r.name} (${r.ids.length})`;
+    if (i === activeRank) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+document.getElementById("rksel").addEventListener("change", e => {
+  activeRank = +e.target.value;
+  rank = ranks[activeRank].ids;
+  save("dm_rank_active", activeRank);
+  rankSort = null; syncAll();
+});
+document.getElementById("rknew").addEventListener("click", () => {
+  let name = null;
+  try { name = prompt("Name for the new ranking:", `Ranking ${ranks.length + 1}`); } catch { name = `Ranking ${ranks.length + 1}`; }
+  if (name === null) return;
+  name = name.trim() || `Ranking ${ranks.length + 1}`;
+  ranks.push({ name, ids: [] });
+  activeRank = ranks.length - 1; rank = ranks[activeRank].ids;
+  saveRank(); rankSort = null; syncAll();
+});
+document.getElementById("rkdel").addEventListener("click", () => {
+  if (ranks.length === 1) { if (confirm("This is your only ranking — clear it?")) { rank = []; saveRank(); syncAll(); } return; }
+  if (!confirm(`Delete ranking "${ranks[activeRank].name}"?`)) return;
+  ranks.splice(activeRank, 1);
+  activeRank = 0; rank = ranks[0].ids;
+  saveRank(); rankSort = null; syncAll();
+});
+
+/* ---------- draft plan ---------- */
+let pQuery = "", pPos = "";
+const roundsEl = document.getElementById("rounds");
+const poolEl = document.getElementById("planpool");
+document.getElementById("tgtr").innerHTML =
+  plan.map((_, i) => `<option value="${i}">${i + 1}</option>`).join("");
+function addToPlan(id, r) {
+  if (!byId[id]) return;
+  plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
+  plan[r].push(id);
+  savePlan(); renderPlan();
+}
+function renderPlan() {
+  const planned = new Set(plan.flat());
+  const q = pQuery.toLowerCase();
+  const match = r => !planned.has(r.id) && (!pPos || r.pos === pPos) &&
+    (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
+  const pool = custom.filter(match).concat(
+    DATA.filter(r => match(r) && r.adp != null).sort((a, b) => a.adp - b.adp));
+  poolEl.innerHTML = pool.length ? pool.map(r =>
+    `<div class="prow${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
+      <button class="addbtn" data-addplan="${r.id}" title="Pencil into the selected round">+</button>
+      <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
+      <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
+      <span class="stat"><b>${r.adp != null ? r.adp.toFixed(1) : "–"}</b> ADP</span>
+      <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
+    </div>`).join("") : '<div class="empty">No unplanned players match.</div>';
+  document.getElementById("plancount").textContent =
+    planned.size ? `${planned.size} penciled` : "";
+  const comp = { G: 0, D: 0, M: 0, F: 0 };
+  roundsEl.innerHTML = plan.map((ids, i) => {
+    const first = byId[ids[0]];
+    if (first) comp[first.pos] = (comp[first.pos] || 0) + 1;
+    const compHtml = ["G", "D", "M", "F"].filter(p => comp[p])
+      .map(p => `<span class="pill ${p}">${p}${comp[p]}</span>`).join("");
+    const chips = ids.map(id => byId[id]).filter(Boolean).map(r =>
+      `<span class="chip2${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
+        <span class="pill ${r.pos}">${r.pos}</span><b>${r.player}</b>
+        <span class="dim">${r.adp != null ? r.adp.toFixed(0) : "–"}</span>
+        <button class="iconbtn" data-unplan="${r.id}" title="Remove">✕</button>
+      </span>`).join("");
+    return `<div class="round" data-r="${i}">
+      <div class="rhead">RD ${i + 1}<span class="comp">${compHtml}</span></div>
+      <div class="rbody">${chips}</div>
+    </div>`;
+  }).join("");
+}
+document.getElementById("pq").addEventListener("input", e => { pQuery = e.target.value; renderPlan(); });
+document.getElementById("pposseg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  pPos = b.dataset.pos;
+  document.querySelectorAll("#pposseg button").forEach(x => x.classList.toggle("on", x === b));
+  renderPlan();
+});
+poolEl.addEventListener("click", e => {
+  const b = e.target.closest("[data-addplan]"); if (!b) return;
+  addToPlan(b.dataset.addplan, +document.getElementById("tgtr").value);
+});
+roundsEl.addEventListener("click", e => {
+  const b = e.target.closest("[data-unplan]"); if (!b) return;
+  plan.forEach(a => { const ix = a.indexOf(b.dataset.unplan); if (ix >= 0) a.splice(ix, 1); });
+  savePlan(); renderPlan();
+});
+document.getElementById("planclear").addEventListener("click", () => {
+  if (plan.flat().length && confirm("Clear the entire plan?")) {
+    plan = Array.from({ length: 16 }, () => []);
+    savePlan(); renderPlan();
+  }
+});
+let dragPid = null;
+document.getElementById("v-plan").addEventListener("dragstart", e => {
+  const el = e.target.closest("[data-id]"); if (!el) return;
+  dragPid = el.dataset.id;
+  el.classList.add("dragging");
+  try { e.dataTransfer.setData("text/plain", dragPid); e.dataTransfer.effectAllowed = "move"; } catch {}
+});
+document.getElementById("v-plan").addEventListener("dragend", e => {
+  e.target.closest("[data-id]")?.classList.remove("dragging");
+  roundsEl.querySelectorAll(".round.over").forEach(x => x.classList.remove("over"));
+});
+roundsEl.addEventListener("dragover", e => {
+  const rd = e.target.closest(".round"); if (!rd) return;
+  e.preventDefault();
+  roundsEl.querySelectorAll(".round.over").forEach(x => { if (x !== rd) x.classList.remove("over"); });
+  rd.classList.add("over");
+});
+roundsEl.addEventListener("dragleave", e => {
+  const rd = e.target.closest(".round");
+  if (rd && !rd.contains(e.relatedTarget)) rd.classList.remove("over");
+});
+roundsEl.addEventListener("drop", e => {
+  const rd = e.target.closest(".round"); if (!rd) return;
+  e.preventDefault();
+  if (dragPid) addToPlan(dragPid, +rd.dataset.r);
+  dragPid = null;
+});
+
 /* ---------- teams ---------- */
 function renderTeams() {
   document.getElementById("teamgrid").innerHTML = TEAMS.map(t => {
@@ -918,7 +1134,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape") hidePop(); });
 
 /* ---------- router ---------- */
-const VIEWS = ["board", "lists", "teams", "team"];
+const VIEWS = ["board", "plan", "lists", "teams", "team"];
 function route() {
   const parts = (location.hash.slice(2) || "board").split("/");
   let v = VIEWS.includes(parts[0]) ? parts[0] : "board"; // old #/rank falls through to board
@@ -927,6 +1143,7 @@ function route() {
   document.querySelectorAll("#nav a").forEach(a =>
     a.classList.toggle("on", a.dataset.v === (v === "team" ? "teams" : v)));
   if (v === "board") { renderBoard(); renderRank(); }
+  else if (v === "plan") renderPlan();
   else if (v === "lists") renderLists();
   else if (v === "teams") renderTeams();
   else renderTeam(parts[1]);

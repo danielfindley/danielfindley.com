@@ -291,6 +291,18 @@ td.empty.l { text-align: left; }
 .chip2 .dim { font-size: 12px; }
 .chip2.taken b { text-decoration: line-through; color: var(--taken); font-weight: 400; }
 .chip2 .iconbtn { padding: 0 4px; font-size: 12px; }
+.chip2.pick { border-color: var(--accent); background: var(--accent-soft); }
+.pickbadge {
+  font-size: 9.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: #fff; background: var(--accent); border-radius: 3px; padding: 1px 5px;
+}
+.chip2.cand { border-style: dashed; opacity: .8; cursor: pointer; }
+.chip2.cand:hover { opacity: 1; border-color: var(--ink2); }
+.cdiv {
+  align-self: center; font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink2); border-left: 2px solid var(--line);
+  padding-left: 10px; margin-left: 4px;
+}
 @media (max-width: 900px) { .plancols { grid-template-columns: 1fr; } .planbox { max-height: 44vh; } }
 .tlogo { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .teamcard .tlogo { width: 22px; height: 22px; vertical-align: -5px; margin-right: 8px; }
@@ -480,8 +492,9 @@ textarea.notes {
     </div>
     <p class="legend">Drag players from the pool onto a round to pencil them in (or use <b>+</b> with the
       target-round picker); drag chips between rounds to move them. A player lives in one round at a time.
-      The <b>pills next to each round</b> are your cumulative squad shape through that round, counting the
-      first-listed player of each round. Players crossed out on the Board show struck here. Saved in this browser.</p>
+      In each round the highlighted <b>pick</b> chip is what the squad-shape pills count; everything after the
+      divider is a backup <b>candidate</b> — click a candidate to make it the pick. Players crossed out on the
+      Board show struck here. Saved in this browser.</p>
   </section>
 
   <section id="v-lists" hidden>
@@ -1001,8 +1014,11 @@ function renderPlan() {
     if (first) comp[first.pos] = (comp[first.pos] || 0) + 1;
     const compHtml = ["G", "D", "M", "F"].filter(p => comp[p])
       .map(p => `<span class="pill ${p}">${p}${comp[p]}</span>`).join("");
-    const chips = ids.map(id => byId[id]).filter(Boolean).map(r =>
-      `<span class="chip2${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
+    const chips = ids.map(id => byId[id]).filter(Boolean).map((r, ci) =>
+      (ci === 1 ? '<span class="cdiv">candidates</span>' : "") +
+      `<span class="chip2 ${ci === 0 ? "pick" : "cand"}${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}"
+        ${ci > 0 ? ' title="Click to make this the pick"' : ""}>
+        ${ci === 0 ? '<span class="pickbadge">pick</span>' : ""}
         <span class="pill ${r.pos}">${r.pos}</span><b>${r.player}</b>
         <span class="dim">${r.adp != null ? r.adp.toFixed(0) : "–"}</span>
         <button class="iconbtn" data-unplan="${r.id}" title="Remove">✕</button>
@@ -1025,9 +1041,18 @@ poolEl.addEventListener("click", e => {
   addToPlan(b.dataset.addplan, +document.getElementById("tgtr").value);
 });
 roundsEl.addEventListener("click", e => {
-  const b = e.target.closest("[data-unplan]"); if (!b) return;
-  plan.forEach(a => { const ix = a.indexOf(b.dataset.unplan); if (ix >= 0) a.splice(ix, 1); });
-  savePlan(); renderPlan();
+  const b = e.target.closest("[data-unplan]");
+  if (b) {
+    plan.forEach(a => { const ix = a.indexOf(b.dataset.unplan); if (ix >= 0) a.splice(ix, 1); });
+    savePlan(); renderPlan();
+    return;
+  }
+  const chip = e.target.closest(".chip2.cand");
+  if (chip) { // promote candidate to the pick
+    const r = +chip.closest(".round").dataset.r;
+    const ix = plan[r].indexOf(chip.dataset.id);
+    if (ix > 0) { plan[r].splice(ix, 1); plan[r].unshift(chip.dataset.id); savePlan(); renderPlan(); }
+  }
 });
 document.getElementById("planclear").addEventListener("click", () => {
   if (plan.flat().length && confirm("Clear the entire plan?")) {

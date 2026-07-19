@@ -269,6 +269,7 @@ td.empty.l { text-align: left; }
 .prow .nm { font-weight: 600; flex: 0 1 190px; min-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prow .tm { color: var(--ink2); width: 70px; }
 .prow .stat { width: 78px; text-align: right; color: var(--ink2); font-size: 13px; }
+.prow .stat.sm { width: 46px; }
 .prow .stat b { color: var(--ink); font-weight: 600; }
 .prow.taken .nm { text-decoration: line-through; color: var(--taken); font-weight: 400; }
 .round { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); margin-bottom: 8px; }
@@ -402,7 +403,7 @@ textarea.notes {
         <thead>
           <tr class="grp">
             <th class="grp-pin" colspan="8"></th>
-            <th colspan="3">Draft</th><th colspan="2"></th>
+            <th colspan="4">Draft</th><th colspan="2"></th>
             <th colspan="1">Actual</th><th colspan="4">Expected</th>
             <th colspan="9">Underlying (FotMob)</th><th colspan="6">Fantrax</th><th></th>
           </tr>
@@ -479,12 +480,22 @@ textarea.notes {
             <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
           </div>
           <label class="minctl">＋ adds to Rd <select id="tgtr"></select></label>
+          <label class="minctl">sort <select id="psort">
+            <option value="adprk">ADPRk</option><option value="myrk">MyRk</option>
+            <option value="xfpg">xFP/G</option><option value="xfp90">xFP/90</option>
+            <option value="npxga90">npxGI/90</option><option value="fpts">FPts</option>
+            <option value="fpg">FP/G</option><option value="fp90">FP/90</option>
+            <option value="rk">PtsRk</option><option value="luck">Luck</option>
+          </select></label>
         </div>
         <div class="rankbox planbox" id="planpool"></div>
       </div>
       <div>
         <div class="panel rankhead">
           <span class="colhead">Rounds</span>
+          <label class="minctl"><select id="plsel" aria-label="Choose plan"></select></label>
+          <button class="ghost" id="plnew">＋ New plan</button>
+          <button class="ghost" id="pldel">Delete</button>
           <span class="dim" id="plancount"></span>
           <label class="minctl">my slot <input type="number" id="slot" min="1" max="12" step="1"
             title="Your position in the 12-team snake draft"></label>
@@ -567,10 +578,19 @@ const saveRank = () => {
   save("dm_ranks", ranks); save("dm_rank_active", activeRank);
 };
 
-// draft plan: 16 rounds, each holding penciled candidate ids
-let plan = store("dm_plan", null);
-if (!Array.isArray(plan) || plan.length !== 16) plan = Array.from({ length: 16 }, () => []);
-const savePlan = () => save("dm_plan", plan);
+// draft plans: each 16 rounds of penciled candidate ids; dm_plan is legacy
+const emptyRounds = () => Array.from({ length: 16 }, () => []);
+let plans = store("dm_plans", null);
+if (!Array.isArray(plans) || !plans.length) {
+  const legacy = store("dm_plan", null);
+  plans = [{ name: "Plan A", rounds: (Array.isArray(legacy) && legacy.length === 16) ? legacy : emptyRounds() }];
+}
+let activePlan = Math.min(store("dm_plan_active", 0), plans.length - 1);
+let plan = plans[activePlan].rounds;
+const savePlan = () => {
+  plans[activePlan].rounds = plan;
+  save("dm_plans", plans); save("dm_plan_active", activePlan);
+};
 
 let byId = {};
 const rebuildIndex = () => byId = Object.fromEntries(DATA.concat(custom).map(r => [r.id, r]));
@@ -601,7 +621,7 @@ const COLS = [
   ["adp","ADP","pin p-adp"],["fpts","FPts","pin p-fpts"],["fpg","FP/G","pin p-fpg"],
   ["xfp90","xFP/90","pin p-xfp90"],["npxga90","npxGI/90","pin p-npxga"],
   // scrolling columns
-  ["adprk","ADPRk",""],["rd","Rd",""],["rk","PtsRk",""],
+  ["myrk","MyRk",""],["adprk","ADPRk",""],["rd","Rd",""],["rk","PtsRk",""],
   ["gp","GP",""],["min","Min",""],
   ["fp90","FP/90",""],
   ["xfpts","xFPts",""],["xfpg","xFP/G",""],["luck","Luck",""],["luck90","Luck/90",""],
@@ -611,7 +631,7 @@ const COLS = [
   ["marks","Tags","l marks nosort"],
 ];
 const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp"]);
-const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rk"]);
+const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rk","myrk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 270, hasAdp = true;
 let page = 0, pageSize = 25;
 
@@ -622,6 +642,7 @@ COLS.forEach(([k, label, cls]) => {
   if (k === "luck") th.title = "FPts − xFP · positive = finished above expected (ran hot) · negative = below expected (unlucky)";
   if (k === "rk") th.title = "Last season's total points rank — 1 = most FPts in 2025/26. Compare against ADP to spot value.";
   if (k === "adp") th.title = "Average draft pick across 2026-27 mock drafts (lower = drafted earlier)";
+  if (k === "myrk") th.title = "The player's spot in your active ranking";
   if (k === "adprk") th.title = "Order off the board: rank by ADP (1 = first pick in mocks)";
   if (k === "rd") th.title = "The 12-team round that ADP rank falls in (ranks 1–12 = round 1, 13–24 = round 2, …)";
   if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
@@ -656,7 +677,13 @@ function fmt(k, v, r) {
   return Number.isInteger(v) ? v : v.toFixed(2);
 }
 
+function updateMyRk() { // materialize active-ranking spots so every table can sort on it
+  DATA.forEach(r => r.myrk = null);
+  custom.forEach(r => r.myrk = null);
+  rank.forEach((id, i) => { if (byId[id]) byId[id].myrk = i + 1; });
+}
 function renderBoard() {
+  updateMyRk();
   const q = query.toLowerCase();
   let rows = DATA.filter(r =>
     (!pos || r.pos === pos) && (r.min == null || r.min >= minMin) &&
@@ -780,6 +807,7 @@ const nullLast = (k, dir) => (a, b) => {
 function syncAll() { renderBoard(); renderRank(); }
 function renderRank() {
   rank = rank.filter(id => byId[id]);
+  updateMyRk();
   renderRankSelect();
   document.getElementById("rankcount").textContent = rank.length ? `${rank.length} ranked` : "";
   let entries = rank.map((id, i) => ({ id, i, r: byId[id] }))
@@ -884,6 +912,7 @@ document.getElementById("rankclear").addEventListener("click", () => {
 const listWrap = document.getElementById("listwrap");
 const listSort = {}; // list index -> {k, dir}; absent = insertion order
 function renderLists() {
+  updateMyRk();
   if (!lists.length) {
     listWrap.innerHTML = '<div class="empty" style="border:1px solid var(--line);border-radius:8px">No lists yet — create one above (late sleepers, keeper targets, avoid…).</div>';
     return;
@@ -987,7 +1016,7 @@ document.getElementById("rkdel").addEventListener("click", () => {
 });
 
 /* ---------- draft plan ---------- */
-let pQuery = "", pPos = "";
+let pQuery = "", pPos = "", pSort = "adprk";
 let slot = store("dm_slot", 6); // spot in the 12-team snake draft
 document.getElementById("slot").value = slot;
 const pickNo = r => (r * 12) + (r % 2 === 0 ? slot : 13 - slot); // r 0-indexed
@@ -1001,18 +1030,33 @@ function addToPlan(id, r) {
   plan[r].push(id);
   savePlan(); renderPlan();
 }
+function renderPlanSelect() {
+  const sel = document.getElementById("plsel");
+  sel.innerHTML = "";
+  plans.forEach((p, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = `${p.name} (${p.rounds.flat().length})`;
+    if (i === activePlan) o.selected = true;
+    sel.appendChild(o);
+  });
+}
 function renderPlan() {
+  updateMyRk();
+  renderPlanSelect();
   const planned = new Set(plan.flat());
   const q = pQuery.toLowerCase();
   const match = r => !planned.has(r.id) && (!pPos || r.pos === pPos) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
   const pool = custom.filter(match).concat(
-    DATA.filter(r => match(r) && r.adp != null).sort((a, b) => a.adp - b.adp));
+    DATA.filter(r => match(r) && r.adp != null)
+      .sort(nullLast(pSort, ASC_DEFAULT.has(pSort) ? 1 : -1)));
   poolEl.innerHTML = pool.length ? pool.map(r =>
     `<div class="prow${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
       <button class="addbtn" data-addplan="${r.id}" title="Pencil into the selected round">+</button>
       <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
       <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
+      <span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>
+      <span class="stat sm"><b>${r.rd != null ? r.rd : "–"}</b> Rd</span>
       <span class="stat"><b>${r.adp != null ? r.adp.toFixed(1) : "–"}</b> ADP</span>
       <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
     </div>`).join("") : '<div class="empty">No unplanned players match.</div>';
@@ -1049,6 +1093,7 @@ document.getElementById("slot").addEventListener("input", e => {
   slot = Math.max(1, Math.min(12, +e.target.value || 6));
   save("dm_slot", slot); renderPlan();
 });
+document.getElementById("psort").addEventListener("change", e => { pSort = e.target.value; renderPlan(); });
 document.getElementById("pq").addEventListener("input", e => { pQuery = e.target.value; renderPlan(); });
 document.getElementById("pposseg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
@@ -1075,10 +1120,32 @@ roundsEl.addEventListener("click", e => {
   }
 });
 document.getElementById("planclear").addEventListener("click", () => {
-  if (plan.flat().length && confirm("Clear the entire plan?")) {
-    plan = Array.from({ length: 16 }, () => []);
+  if (plan.flat().length && confirm(`Clear all rounds of "${plans[activePlan].name}"?`)) {
+    plan = emptyRounds();
     savePlan(); renderPlan();
   }
+});
+document.getElementById("plsel").addEventListener("change", e => {
+  activePlan = +e.target.value;
+  plan = plans[activePlan].rounds;
+  save("dm_plan_active", activePlan);
+  renderPlan();
+});
+document.getElementById("plnew").addEventListener("click", () => {
+  let name = null;
+  try { name = prompt("Name for the new plan:", `Plan ${plans.length + 1}`); } catch { name = `Plan ${plans.length + 1}`; }
+  if (name === null) return;
+  name = name.trim() || `Plan ${plans.length + 1}`;
+  plans.push({ name, rounds: emptyRounds() });
+  activePlan = plans.length - 1; plan = plans[activePlan].rounds;
+  savePlan(); renderPlan();
+});
+document.getElementById("pldel").addEventListener("click", () => {
+  if (plans.length === 1) { if (confirm("This is your only plan — clear it?")) { plan = emptyRounds(); savePlan(); renderPlan(); } return; }
+  if (!confirm(`Delete plan "${plans[activePlan].name}"?`)) return;
+  plans.splice(activePlan, 1);
+  activePlan = 0; plan = plans[0].rounds;
+  savePlan(); renderPlan();
 });
 let dragPid = null;
 document.getElementById("v-plan").addEventListener("dragstart", e => {

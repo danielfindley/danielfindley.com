@@ -270,6 +270,12 @@ td.empty.l { text-align: left; }
 .prow .tm { color: var(--ink2); width: 70px; }
 .prow .stat { width: 78px; text-align: right; color: var(--ink2); font-size: 13px; }
 .prow .stat.sm { width: 46px; }
+.prow .stat.sortcol b { color: var(--accent); }
+.pooldiv {
+  padding: 5px 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink2); background: var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
 .prow .stat b { color: var(--ink); font-weight: 600; }
 .prow.taken .nm { text-decoration: line-through; color: var(--taken); font-weight: 400; }
 .round { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); margin-bottom: 8px; }
@@ -839,6 +845,34 @@ function poolSortOptions(sel, current) { // stat options + one per ranking
   sel.value = [...sel.options].some(o => o.value === current) ? current : "adprk";
   return sel.value;
 }
+const statLabel = k => (POOL_SORT_STATS.find(x => x[0] === k) || [k, k])[1];
+const rankPosMap = key => key.startsWith("rank:")
+  ? new Map((ranks[+key.slice(5)] || { ids: [] }).ids.map((id, i) => [id, i])) : null;
+function sortStatHtml(r, key, rankPos) { // the chosen sort, shown highlighted
+  if (rankPos) {
+    const p = rankPos.get(r.id);
+    return `<span class="stat sortcol"><b>${p != null ? p + 1 : "–"}</b> Rk</span>`;
+  }
+  const v = r[key];
+  const txt = v == null ? "–" : key === "adprk" ? "#" + v
+    : Number.isInteger(v) ? v : v.toFixed(key === "fpts" ? 1 : 2);
+  return `<span class="stat sortcol"><b>${txt}</b> ${statLabel(key)}</span>`;
+}
+// rows + a divider where the sorted values run out (rest falls back to ADP)
+function poolHtml(customs, sorted, key, rankPos, rowHtml) {
+  let html = customs.map(rowHtml).join("");
+  let divDone = !rankPos && !POOL_SORT_STATS.some(([k]) => k === key);
+  sorted.forEach((r, i) => {
+    if (!divDone && i > 0 && (rankPos ? !rankPos.has(r.id) : r[key] == null)) {
+      html += `<div class="pooldiv">${rankPos
+        ? `end of “${ranks[+key.slice(5)].name}” — rest by ADP rank`
+        : `no ${statLabel(key)} — rest unsorted`}</div>`;
+      divDone = true;
+    }
+    html += rowHtml(r);
+  });
+  return html;
+}
 function poolComparator(key) {
   if (key.startsWith("rank:")) { // ranking order first, then ADP rank
     const ids = (ranks[+key.slice(5)] || { ids: [] }).ids;
@@ -980,17 +1014,20 @@ function renderListPool() {
   const q = lQuery.toLowerCase();
   const match = r => !inList.has(r.id) && (!lPos || r.pos === lPos) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
-  const pool = custom.filter(match).concat(
-    DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(lSort)));
-  poolEl2.innerHTML = pool.length ? pool.map(r =>
+  const rankPos = rankPosMap(lSort);
+  const customs = custom.filter(match);
+  const sorted = DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(lSort));
+  const rowHtml = r =>
     `<div class="prow${taken.has(r.id) ? " taken" : ""}">
       <button class="addbtn" data-addlist="${r.id}" title="Add to ${lists[tgtList].name}">+</button>
       <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
       <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-      <span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>
-      <span class="stat"><b>${r.myrk != null ? r.myrk : "–"}</b> MyRk</span>
-      <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
-    </div>`).join("") : '<div class="empty">No players match.</div>';
+      ${sortStatHtml(r, lSort, rankPos)}
+      ${lSort === "adprk" ? "" : `<span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>`}
+      ${lSort === "xfpg" ? "" : `<span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>`}
+    </div>`;
+  poolEl2.innerHTML = poolHtml(customs, sorted, lSort, rankPos, rowHtml)
+    || '<div class="empty">No players match.</div>';
 }
 function renderLists() {
   updateMyRk();
@@ -1144,18 +1181,21 @@ function renderPlan() {
   const q = pQuery.toLowerCase();
   const match = r => !planned.has(r.id) && (!pPos || r.pos === pPos) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
-  const pool = custom.filter(match).concat(
-    DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(pSort)));
-  poolEl.innerHTML = pool.length ? pool.map(r =>
+  const rankPos = rankPosMap(pSort);
+  const customs = custom.filter(match);
+  const sorted = DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(pSort));
+  const rowHtml = r =>
     `<div class="prow${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
       <button class="addbtn" data-addplan="${r.id}" title="Pencil into the selected round">+</button>
       <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
       <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-      <span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>
+      ${sortStatHtml(r, pSort, rankPos)}
+      ${pSort === "adprk" ? "" : `<span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>`}
       <span class="stat sm"><b>${r.rd != null ? r.rd : "–"}</b> Rd</span>
-      <span class="stat"><b>${r.adp != null ? r.adp.toFixed(1) : "–"}</b> ADP</span>
-      <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
-    </div>`).join("") : '<div class="empty">No unplanned players match.</div>';
+      ${pSort === "xfpg" ? "" : `<span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>`}
+    </div>`;
+  poolEl.innerHTML = poolHtml(customs, sorted, pSort, rankPos, rowHtml)
+    || '<div class="empty">No unplanned players match.</div>';
   document.getElementById("plancount").textContent =
     planned.size ? `${planned.size} penciled` : "";
   const comp = { G: 0, D: 0, M: 0, F: 0 };

@@ -139,8 +139,7 @@ th.pin { z-index: 5 !important; background: var(--pin-bg); }
 #ranktbl .p-adp  { left: 396px; } #ranktbl .p-fpts { left: 458px; }
 #ranktbl .p-fpg  { left: 526px; } #ranktbl .p-xfp90 { left: 588px; }
 #ranktbl .p-npxga { left: 664px; }
-.pager { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
-.pager .pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; }
+.pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 #ranktbl tr.custom .pin, #ranktbl tr.custom .rnum { background: var(--line-soft); }
 td.dim, .dim { color: var(--ink2); }
 tr.taken td, tr.taken td.player { color: var(--taken); }
@@ -294,7 +293,8 @@ td.empty.l { text-align: left; }
   border-radius: 6px; padding: 3px 5px 3px 8px; background: var(--pin-bg);
   cursor: grab; font-size: 13px; font-variant-numeric: tabular-nums;
 }
-.chip2 b { font-weight: 600; }
+.chip2 b { font-weight: 600; cursor: pointer; }
+.chip2 b:hover { color: var(--accent); }
 .chip2 .dim { font-size: 12px; }
 .chip2.taken b { text-decoration: line-through; color: var(--taken); font-weight: 400; }
 .chip2 .iconbtn { padding: 0 4px; font-size: 12px; }
@@ -431,6 +431,13 @@ textarea.notes {
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl">order <select id="rankorder" title="Sort by one of your rankings — ranked first, rest by ADP"></select></label>
       <span class="count" id="count"></span>
+      <label class="minctl">show <select id="psize">
+        <option value="25" selected>25</option><option value="50">50</option>
+        <option value="100">100</option><option value="all">All</option>
+      </select></label>
+      <button class="ghost" id="pprev" title="Previous page">‹</button>
+      <span class="pinfo" id="pinfo"></span>
+      <button class="ghost" id="pnext" title="Next page">›</button>
       <button class="ghost" id="reset">Clear drafted</button>
     </div>
     <div class="tablebox">
@@ -446,15 +453,6 @@ textarea.notes {
         </thead>
         <tbody id="rows"></tbody>
       </table>
-    </div>
-    <div class="pager">
-      <label class="minctl">show <select id="psize">
-        <option value="25" selected>25</option><option value="50">50</option>
-        <option value="100">100</option><option value="all">All</option>
-      </select> per page</label>
-      <button class="ghost" id="pprev">‹ Prev</button>
-      <span class="pinfo" id="pinfo"></span>
-      <button class="ghost" id="pnext">Next ›</button>
     </div>
     <nav class="subtabs" id="subtabs">
       <button data-sub="rank" class="on">My Ranking</button>
@@ -740,8 +738,8 @@ function renderBoard() {
   page = Math.min(page, pages - 1);
   const shown = rows.slice(page * pageSize, (page + 1) * pageSize);
   document.getElementById("pinfo").textContent = total
-    ? `${page * pageSize + 1}–${Math.min(total, (page + 1) * pageSize)} of ${total} · page ${page + 1}/${pages}`
-    : "no players match";
+    ? `${page * pageSize + 1}–${Math.min(total, (page + 1) * pageSize)} / ${total}`
+    : "0 match";
   document.getElementById("pprev").disabled = page === 0;
   document.getElementById("pnext").disabled = page >= pages - 1;
   let html = "";
@@ -767,7 +765,9 @@ const hideMenu = () => amenu.hidden = true;
 function refreshAfterAct() { renderBoard(); renderRank(); renderPlan(); renderLists(); }
 function applyAct(act, id) {
   const tgtRd = +document.getElementById("tgtr").value;
-  if (act === "rank") { rank.push(id); saveRank(); }
+  if (act === "draft") { taken.add(id); save("dm_taken", [...taken]); }
+  else if (act === "undraft") { taken.delete(id); save("dm_taken", [...taken]); }
+  else if (act === "rank") { rank.push(id); saveRank(); }
   else if (act === "unrank") { rank = rank.filter(x => x !== id); saveRank(); }
   else if (act === "plancand") { addToPlan(id, tgtRd); }
   else if (act === "planpick") {
@@ -800,6 +800,9 @@ function showMenu(id, e) {
   if (lists.length) items.push(inL
     ? ["unlist", `Remove from list “${lists[tgtList].name}”`]
     : ["list", `Add to list “${lists[tgtList].name}”`]);
+  items.push(taken.has(id)
+    ? ["undraft", "Un-cross (not drafted after all)"]
+    : ["draft", "Cross out as drafted"]);
   amenu.innerHTML = `<div class="mhead">${r.player}</div>`;
   items.forEach(([act, label]) => {
     const b = document.createElement("button");
@@ -1198,7 +1201,7 @@ function renderPlan() {
       `<span class="chip2 ${ci === 0 ? "pick" : "cand"}${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}"
         ${ci > 0 ? ' title="Click to make this the pick"' : ""}>
         ${ci === 0 ? '<span class="pickbadge">pick</span>' : ""}
-        <span class="pill ${r.pos}">${r.pos}</span><b>${r.player}</b>
+        <span class="pill ${r.pos}">${r.pos}</span><b data-menu="${r.id}" title="Actions: draft, rank, list…">${r.player}</b>
         <span class="dim${gone ? " gone" : ""}"${tip ? ` title="${tip}"` : ""}>${lbl}</span>
         <button class="iconbtn" data-unplan="${r.id}" title="Remove">✕</button>
       </span>`;
@@ -1215,6 +1218,8 @@ document.getElementById("slot").addEventListener("input", e => {
 });
 document.getElementById("tgtr").addEventListener("change", () => renderBoard()); // + tooltips
 roundsEl.addEventListener("click", e => {
+  const m = e.target.closest("[data-menu]");
+  if (m) { showMenu(m.dataset.menu, e); return; }
   const b = e.target.closest("[data-unplan]");
   if (b) { removeFromPlan(b.dataset.unplan); renderBoard(); return; }
   const chip = e.target.closest(".chip2.cand");

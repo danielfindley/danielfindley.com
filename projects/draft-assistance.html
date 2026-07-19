@@ -489,8 +489,8 @@ textarea.notes {
       </table>
     </div>
     <p class="legend">Drag rows (or use ↑ ↓) to reorder — numbers are the spot in your full ranking even
-      when filtered by position. To sort by stats, use the board above (columns, or the <b>order</b>
-      control for ranking order). Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
+      when filtered by position. Click a column header to view sorted by that stat (reordering pauses;
+      click <b>#</b> to get back to your order). Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
       adds someone who hasn't transferred in yet straight to your ranking. Crossed-out players show struck
       through here. Saved in this browser.</p>
@@ -522,11 +522,10 @@ textarea.notes {
     <div class="newlist" style="margin-top:14px">
       <input id="listname" placeholder="New list name — e.g. Late sleepers" aria-label="New list name">
       <button class="btn" id="listcreate">Create list</button>
-      <label class="minctl">target list <select id="tgtlist"></select></label>
     </div>
     <div id="listwrap"></div>
-    <p class="legend">Pick a target list, then add players from the table's <b>⋯ options</b> menu.
-      Each list card is a full-stat table (sort with the board above) with its own search-to-add.</p>
+    <p class="legend">Add players from the table's <b>⋯ options → Lists</b> menu — toggle them in or out
+      of any list. Each list card is a full-stat sortable table with its own search-to-add.</p>
     </div><!-- /sub-lists -->
 
     <p class="legend">
@@ -540,7 +539,7 @@ textarea.notes {
       <span class="k chip under">− cold</span> finished below it (buy-low candidate).
       <b>+</b> adds straight to your active ranking (the numbered badge shows their spot — click it to
       remove); <b>⋯</b> opens options: cross out as drafted, rank, pencil into a plan round (you pick the
-      round in the follow-up), or add to the target list. Click a <b>player's name</b> for season-by-season
+      round in the follow-up), or toggle any of your lists. Click a <b>player's name</b> for season-by-season
       history back to 2019/20.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
@@ -806,16 +805,21 @@ function buildMenuMain() {
     menuItem("Plan: pick for round ▸", () => buildMenuRounds("pick"));
     menuItem("Plan: candidate for round ▸", () => buildMenuRounds("cand"));
   }
-  if (lists.length) {
-    const inL = lists[tgtList].ids.includes(id);
-    menuItem(inL
-      ? `Remove from list “${lists[tgtList].name}”`
-      : `Add to list “${lists[tgtList].name}”`, () => {
-      inL ? lists[tgtList].ids = lists[tgtList].ids.filter(x => x !== id)
-          : lists[tgtList].ids.push(id);
-      save("dm_lists", lists); menuDone();
+  if (lists.length) menuItem("Lists ▸", () => buildMenuLists());
+}
+function buildMenuLists() { // toggle membership in any list; stays open
+  const id = menuId, r = byId[id];
+  amenu.innerHTML = `<div class="mhead">${r.player} — lists</div>`;
+  lists.forEach(L => {
+    const inL = L.ids.includes(id);
+    menuItem(`${inL ? "✓ " : " "}${L.name}`, () => {
+      inL ? L.ids = L.ids.filter(x => x !== id) : L.ids.push(id);
+      save("dm_lists", lists);
+      refreshAfterAct();
+      buildMenuLists();
     });
-  }
+  });
+  menuItem("‹ Back", buildMenuMain);
 }
 function buildMenuRounds(role) { // follow-up: pick which round
   const id = menuId, r = byId[id];
@@ -909,11 +913,21 @@ function searchAdd(root, excluded, onPick) {
 
 /* ---------- ranking (below the board) ---------- */
 const rankList = document.getElementById("ranklist");
-let rankPos = "";
+let rankPos = "", rankSort = null; // null = your own order
 const RN_COLS = COLS.length + 2; // rnum + COLS + controls
 const rcolsEl = document.getElementById("rcols");
-rcolsEl.innerHTML = '<th class="rnum">#</th>' +
-  COLS.map(([, label, cls]) => `<th class="${cls}">${label}</th>`).join("") + "<th></th>";
+rcolsEl.innerHTML = '<th class="rnum" data-k="__order" title="Your order — click to restore">#</th>' +
+  COLS.map(([k, label, cls]) => k === "marks"
+    ? `<th class="${cls}">${label}</th>`
+    : `<th class="${cls}" data-k="${k}">${label}</th>`).join("") + "<th></th>";
+rcolsEl.addEventListener("click", e => {
+  const th = e.target.closest("th[data-k]"); if (!th) return;
+  const k = th.dataset.k;
+  if (k === "__order") rankSort = null;
+  else if (rankSort && rankSort.k === k) rankSort.dir = -rankSort.dir;
+  else rankSort = { k, dir: ASC_DEFAULT.has(k) ? 1 : -1 };
+  renderRank();
+});
 function statCells(r, id) {
   return COLS.map(([k, , cls]) => {
     if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>` +
@@ -947,20 +961,32 @@ function renderRank() {
   updateMyRk();
   renderRankSelect();
   document.getElementById("rankcount").textContent = rank.length ? `${rank.length} ranked` : "";
-  const entries = rank.map((id, i) => ({ id, i, r: byId[id] }))
+  let entries = rank.map((id, i) => ({ id, i, r: byId[id] }))
     .filter(e => !rankPos || e.r.pos === rankPos);
+  if (rankSort) {
+    const c = nullLast(rankSort.k, rankSort.dir);
+    entries = entries.slice().sort((a, b) => c(a.r, b.r));
+  }
+  rcolsEl.querySelectorAll("th[data-k]").forEach(th => {
+    const active = rankSort ? th.dataset.k === rankSort.k : th.dataset.k === "__order";
+    th.classList.toggle("sort", active);
+    th.innerHTML = th.textContent.replace(/ [▲▼]$/, "");
+    if (rankSort && th.dataset.k === rankSort.k)
+      th.innerHTML += ` <span class="arr">${rankSort.dir < 0 ? "▼" : "▲"}</span>`;
+  });
   if (!entries.length) {
     rankList.innerHTML = `<tr><td colspan="${RN_COLS}" class="empty l">` + (rank.length
       ? "No ranked players at this position."
       : "No players ranked yet — click <b>+</b> next to a player in the board above.") + "</td></tr>";
     return;
   }
+  const locked = !!rankSort; // reordering needs your own order
   rankList.innerHTML = entries.map(({ id, i, r }) =>
-    `<tr class="${r.custom ? "custom " : ""}${taken.has(id) ? "taken" : ""}" draggable="true" data-i="${i}" data-id="${id}">
+    `<tr class="${r.custom ? "custom " : ""}${taken.has(id) ? "taken" : ""}" draggable="${!locked}" data-i="${i}" data-id="${id}">
       <td class="rnum">${i + 1}</td>` + statCells(r, id) +
     `<td class="rctl">
-      <button class="iconbtn" data-act="up" title="Move up">↑</button>
-      <button class="iconbtn" data-act="down" title="Move down">↓</button>
+      <button class="iconbtn" data-act="up" title="Move up"${locked ? " disabled" : ""}>↑</button>
+      <button class="iconbtn" data-act="down" title="Move down"${locked ? " disabled" : ""}>↓</button>
       <button class="iconbtn" data-act="rm" title="Remove">✕</button>
     </td></tr>`).join("");
 }
@@ -995,6 +1021,7 @@ document.getElementById("rposseg").addEventListener("click", e => {
 });
 let dragI = null;
 rankList.addEventListener("dragstart", e => {
+  if (rankSort) return; // view is stat-sorted; reordering needs your own order
   const row = e.target.closest("tr"); if (!row) return;
   dragI = +row.dataset.i; row.classList.add("dragging");
 });
@@ -1034,29 +1061,23 @@ document.getElementById("rankclear").addEventListener("click", () => {
 
 /* ---------- lists ---------- */
 const listWrap = document.getElementById("listwrap");
-let tgtList = 0;
-function renderTgtList() {
-  const sel = document.getElementById("tgtlist");
-  sel.innerHTML = "";
-  lists.forEach((L, i) => {
-    const o = document.createElement("option");
-    o.value = i; o.textContent = L.name;
-    sel.appendChild(o);
-  });
-  tgtList = Math.min(tgtList, Math.max(0, lists.length - 1));
-  sel.value = tgtList;
-}
+const listSort = {}; // list index -> {k, dir}; absent = insertion order
 function renderLists() {
   updateMyRk();
-  renderTgtList();
   if (!lists.length) {
     listWrap.innerHTML = '<div class="empty" style="border:1px solid var(--line);border-radius:8px">No lists yet — create one above (late sleepers, keeper targets, avoid…).</div>';
     return;
   }
   listWrap.innerHTML = "";
   lists.forEach((L, li) => {
-    const entries = L.ids.map(id => byId[id]).filter(Boolean);
-    const head = COLS.map(([, label, cls]) => `<th class="${cls}">${label}</th>`).join("") + "<th></th>";
+    const ls = listSort[li];
+    let entries = L.ids.map(id => byId[id]).filter(Boolean);
+    if (ls) entries = entries.slice().sort(nullLast(ls.k, ls.dir));
+    const head = COLS.map(([k, label, cls]) => {
+      if (k === "marks") return `<th class="${cls}">${label}</th>`;
+      const arr = ls && ls.k === k ? ` <span class="arr">${ls.dir < 0 ? "▼" : "▲"}</span>` : "";
+      return `<th class="${cls}${ls && ls.k === k ? " sort" : ""}" data-k="${k}">${label}${arr}</th>`;
+    }).join("") + "<th></th>";
     const body = entries.length ? entries.map(r =>
       `<tr class="${r.custom ? "custom " : ""}${taken.has(r.id) ? "taken" : ""}">` + statCells(r, r.id) +
       `<td class="rctl"><button class="iconbtn" data-li="${li}" data-id="${r.id}" title="Remove">✕</button></td></tr>`).join("")
@@ -1076,13 +1097,22 @@ function renderLists() {
   });
 }
 listWrap.addEventListener("click", e => {
+  const th = e.target.closest("th[data-k]");
+  if (th) {
+    const li = +th.closest(".listcard").dataset.li;
+    const k = th.dataset.k, ls = listSort[li];
+    if (ls && ls.k === k) ls.dir = -ls.dir;
+    else listSort[li] = { k, dir: ASC_DEFAULT.has(k) ? 1 : -1 };
+    renderLists();
+    return;
+  }
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderLists(); syncAll(); return; }
   const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.del != null) {
     const L = lists[+b.dataset.del];
     if (confirm(`Delete list "${L.name}"?`)) {
-      lists.splice(+b.dataset.del, 1);
+      lists.splice(+b.dataset.del, 1); delete listSort[+b.dataset.del];
       save("dm_lists", lists); renderLists();
     }
   } else if (b.dataset.id) {
@@ -1100,9 +1130,6 @@ document.getElementById("listcreate").addEventListener("click", () => {
 });
 document.getElementById("listname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("listcreate").click();
-});
-document.getElementById("tgtlist").addEventListener("change", e => {
-  tgtList = +e.target.value; renderBoard(); // refresh the ✓/+ badges
 });
 
 /* ---------- multiple rankings ---------- */

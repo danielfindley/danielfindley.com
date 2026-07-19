@@ -312,6 +312,28 @@ td.empty.l { text-align: left; }
 }
 .rhead .mypick { color: var(--accent); font-weight: 700; }
 .chip2 .gone { color: var(--over); font-weight: 600; }
+.subtabs { display: flex; gap: 4px; margin-top: 24px; border-bottom: 1px solid var(--line); }
+.subtabs button {
+  padding: 8px 16px; border: none; background: none; color: var(--ink2);
+  font: inherit; font-weight: 650; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.subtabs button:hover { color: var(--ink); }
+.subtabs button.on { color: var(--accent); border-bottom-color: var(--accent); }
+#amenu {
+  position: fixed; z-index: 60; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; box-shadow: 0 12px 36px #0006; padding: 5px; min-width: 230px;
+}
+#amenu .mhead {
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 700;
+  color: var(--ink2); padding: 5px 10px 4px;
+}
+#amenu button {
+  display: block; width: 100%; text-align: left; padding: 7px 10px; border: none;
+  background: none; color: var(--ink); font: inherit; font-size: 13px;
+  border-radius: 5px; cursor: pointer;
+}
+#amenu button:hover { background: var(--accent-soft); color: var(--accent); }
 @media (max-width: 900px) { .plancols { grid-template-columns: 1fr; } .planbox { max-height: 44vh; } }
 .tlogo { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .teamcard .tlogo { width: 22px; height: 22px; vertical-align: -5px; margin-right: 8px; }
@@ -393,8 +415,6 @@ textarea.notes {
     <h1>DRAFT <span class="accent">ASSISTANCE</span></h1>
     <nav id="nav">
       <a href="#/board" data-v="board">Board</a>
-      <a href="#/plan" data-v="plan">Plan</a>
-      <a href="#/lists" data-v="lists">Lists</a>
       <a href="#/teams" data-v="teams">Teams</a>
     </nav>
   </header>
@@ -409,6 +429,7 @@ textarea.notes {
       </div>
       <label class="minctl">min minutes <input type="number" id="minmin" value="270" step="90" min="0"></label>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
+      <label class="minctl">order <select id="rankorder" title="Sort by one of your rankings — ranked first, rest by ADP"></select></label>
       <span class="count" id="count"></span>
       <button class="ghost" id="reset">Clear drafted</button>
     </div>
@@ -435,7 +456,13 @@ textarea.notes {
       <span class="pinfo" id="pinfo"></span>
       <button class="ghost" id="pnext">Next ›</button>
     </div>
-    <div class="panel rankhead" style="margin-top:22px">
+    <nav class="subtabs" id="subtabs">
+      <button data-sub="rank" class="on">My Ranking</button>
+      <button data-sub="plan">Draft Plan</button>
+      <button data-sub="lists">Lists</button>
+    </nav>
+    <div id="sub-rank">
+    <div class="panel rankhead" style="margin-top:14px">
       <span class="colhead">My Ranking</span>
       <label class="minctl"><select id="rksel" aria-label="Choose ranking"></select></label>
       <button class="ghost" id="rknew">＋ New ranking</button>
@@ -466,85 +493,59 @@ textarea.notes {
       <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
       adds someone who hasn't transferred in yet straight to your ranking. Players you crossed out on the
       board show struck through here. Saved in this browser.</p>
+    </div><!-- /sub-rank -->
+
+    <div id="sub-plan" hidden>
+    <div class="panel rankhead" style="margin-top:14px">
+      <span class="colhead">Rounds</span>
+      <label class="minctl"><select id="plsel" aria-label="Choose plan"></select></label>
+      <button class="ghost" id="plnew">＋ New plan</button>
+      <button class="ghost" id="pldel">Delete</button>
+      <span class="dim" id="plancount"></span>
+      <label class="minctl">＋ adds to Rd <select id="tgtr"></select></label>
+      <label class="minctl">my slot <input type="number" id="slot" min="1" max="12" step="1"
+        title="Your position in the 12-team snake draft"></label>
+      <span style="flex:1"></span>
+      <button class="ghost" id="planclear">Clear plan</button>
+    </div>
+    <div id="rounds" style="margin-top:12px"></div>
+    <p class="legend">Use the <b>+ / badge menu</b> in the table above to pencil a player into the selected
+      round as the pick or a candidate; drag chips between rounds to move them. A player lives in one round
+      at a time. The highlighted <b>pick</b> chip is what the squad-shape pills count; everything after the
+      divider is a backup <b>candidate</b> — click a candidate to make it the pick.
+      Set <b>my slot</b> and each round shows your overall pick number (12-team snake); a chip's
+      <b>#ADP-rank</b> turns amber when it's earlier than that pick — they may not make it back to you.
+      Crossed-out players show struck here. Saved in this browser.</p>
+    </div><!-- /sub-plan -->
+
+    <div id="sub-lists" hidden>
+    <div class="newlist" style="margin-top:14px">
+      <input id="listname" placeholder="New list name — e.g. Late sleepers" aria-label="New list name">
+      <button class="btn" id="listcreate">Create list</button>
+      <label class="minctl">target list <select id="tgtlist"></select></label>
+    </div>
+    <div id="listwrap"></div>
+    <p class="legend">Pick a target list, then add players from the table's <b>+ / badge menu</b>.
+      Each list card is a full-stat sortable table with its own search-to-add.</p>
+    </div><!-- /sub-lists -->
+
     <p class="legend">
       <b>How to read it:</b> <b>ADP</b> (average draft pick, from mock drafts) is the default sort;
-      <b>Rd</b> = ADP as a 12-team round (ADP/12 + 1); <b>PtsRk</b> = last season's total points rank
+      <b>Rd</b> = ADP as a 12-team round; <b>PtsRk</b> = last season's total points rank
       (hover the headers for details) — a PtsRk much lower than ADP is a value pick. Positions are next
       season's Fantrax classifications. Goalkeepers show real points only (FP/90 via FotMob minutes);
       Championship players carry ADP only. <b>xFP/90</b> is Fantrax points per 90 with actual
       goals and assists replaced by xG and xA (goal = 10/9/9 pts and assist = 8/6/6 pts for D/M/F).
       <b>Luck</b> = FPts − xFP: <span class="k chip over">+ hot</span> finished above expected (regression risk),
       <span class="k chip under">− cold</span> finished below it (buy-low candidate).
-      Click <b>+</b> to add a player to your ranking (the number shows their spot — click it to remove).
-      Click a <b>player's name</b> for season-by-season history back to 2019/20; click anywhere else
-      in the row to cross them out as drafted. Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
-      <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort.
+      Click the <b>+ (or numbered badge)</b> for actions: add to your ranking, pencil into a plan round as
+      pick or candidate, or add to a list. Click a <b>player's name</b> for season-by-season history back
+      to 2019/20; click anywhere else in the row to cross them out as drafted.
+      Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
+      <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
+      the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP).
       Everything saves in this browser.
     </p>
-  </section>
-
-  <section id="v-plan" hidden>
-    <h2>Draft Plan</h2>
-    <div class="plancols">
-      <div>
-        <div class="panel rankhead">
-          <span class="colhead">Player pool</span>
-          <input type="search" id="pq" placeholder="Filter…" aria-label="Filter plan pool">
-          <div class="seg" id="pposseg" role="group" aria-label="Plan position filter">
-            <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
-          </div>
-          <label class="minctl">＋ adds to Rd <select id="tgtr"></select></label>
-          <label class="minctl">sort <select id="psort"></select></label>
-        </div>
-        <div class="rankbox planbox" id="planpool"></div>
-      </div>
-      <div>
-        <div class="panel rankhead">
-          <span class="colhead">Rounds</span>
-          <label class="minctl"><select id="plsel" aria-label="Choose plan"></select></label>
-          <button class="ghost" id="plnew">＋ New plan</button>
-          <button class="ghost" id="pldel">Delete</button>
-          <span class="dim" id="plancount"></span>
-          <label class="minctl">my slot <input type="number" id="slot" min="1" max="12" step="1"
-            title="Your position in the 12-team snake draft"></label>
-          <span style="flex:1"></span>
-          <button class="ghost" id="planclear">Clear plan</button>
-        </div>
-        <div class="planbox" id="rounds" style="margin-top:12px"></div>
-      </div>
-    </div>
-    <p class="legend">Drag players from the pool onto a round to pencil them in (or use <b>+</b> with the
-      target-round picker); drag chips between rounds to move them. A player lives in one round at a time.
-      In each round the highlighted <b>pick</b> chip is what the squad-shape pills count; everything after the
-      divider is a backup <b>candidate</b> — click a candidate to make it the pick. Set <b>my slot</b> and each
-      round shows your overall pick number (12-team snake); a chip's <b>#ADP-rank</b> turns amber when it's
-      earlier than that pick — they may not make it back to you. Players crossed out on the Board show struck here.
-      Saved in this browser.</p>
-  </section>
-
-  <section id="v-lists" hidden>
-    <h2>Lists</h2>
-    <div class="newlist">
-      <input id="listname" placeholder="New list name — e.g. Late sleepers" aria-label="New list name">
-      <button class="btn" id="listcreate">Create list</button>
-    </div>
-    <div class="plancols">
-      <div>
-        <div class="panel rankhead">
-          <span class="colhead">Player pool</span>
-          <input type="search" id="lq" placeholder="Filter…" aria-label="Filter list pool">
-          <div class="seg" id="lposseg" role="group" aria-label="List pool position filter">
-            <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
-          </div>
-          <label class="minctl">＋ adds to <select id="tgtlist"></select></label>
-          <label class="minctl">sort <select id="lsort"></select></label>
-        </div>
-        <div class="rankbox planbox" id="listpool"></div>
-      </div>
-      <div id="listwrap"></div>
-    </div>
-    <p class="legend">Pick a target list, then <b>+</b> players straight from the pool (sortable by any
-      ranking — ranked players first, then ADP). Each list card still has its own search-to-add.</p>
   </section>
 
   <section id="v-teams" hidden>
@@ -570,6 +571,7 @@ textarea.notes {
     </div>
   </section>
 </div>
+<div id="amenu" hidden></div>
 <div id="pop" hidden>
   <div class="pophead"><b id="popname"></b><span class="dim" id="popmeta"></span>
     <span style="flex:1"></span><button class="iconbtn" id="popclose" aria-label="Close">✕</button></div>
@@ -660,6 +662,7 @@ const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp"]);
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rk","myrk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 270, hasAdp = true;
 let page = 0, pageSize = 25;
+let viewMode = "rank", rankOrder = ""; // rankOrder "rank:i" overrides column sort
 
 const colsEl = document.getElementById("cols");
 COLS.forEach(([k, label, cls]) => {
@@ -673,6 +676,7 @@ COLS.forEach(([k, label, cls]) => {
   if (k === "rd") th.title = "The 12-team round that ADP rank falls in (ranks 1–12 = round 1, 13–24 = round 2, …)";
   if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
   if (k !== "marks") th.addEventListener("click", () => {
+    rankOrder = ""; // column click leaves ranking-order mode
     sortDir = (sortKey === k) ? -sortDir : (ASC_DEFAULT.has(k) ? 1 : -1);
     sortKey = k; page = 0; renderBoard();
   });
@@ -689,9 +693,10 @@ function fmt(k, v, r) {
   if (k === "player") {
     const ri = rank.indexOf(r.id);
     const ctl = ri >= 0
-      ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in my ranking — click to remove">${ri + 1}</span>`
-      : `<button class="rowadd" data-add="${r.id}" title="Add to my ranking">+</button>`;
-    return `${ctl}<span class="pname" data-pp="${r.id}">${v}</span>`;
+      ? `<span class="rankedno" data-menu="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click for actions">${ri + 1}</span>`
+      : `<button class="rowadd" data-menu="${r.id}" title="Actions: rank, plan, list">+</button>`;
+    return `${ctl}<span class="pname" data-pp="${r.id}">${v}</span>` +
+      (r.custom ? ' <span class="badge">new</span>' : "");
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
   if (k === "pos") return `<span class="pill ${v}">${v}</span>`;
@@ -710,12 +715,22 @@ function updateMyRk() { // materialize active-ranking spots so every table can s
 }
 function renderBoard() {
   updateMyRk();
+  const roSel = document.getElementById("rankorder");
+  roSel.innerHTML = "";
+  [["", "columns"], ...ranks.map((r, i) => ["rank:" + i, "Rk: " + r.name])].forEach(([v, l]) => {
+    const o = document.createElement("option");
+    o.value = v; o.textContent = l; roSel.appendChild(o);
+  });
+  if (![...roSel.options].some(o => o.value === rankOrder)) rankOrder = "";
+  roSel.value = rankOrder;
   const q = query.toLowerCase();
-  let rows = DATA.filter(r =>
-    (!pos || r.pos === pos) && (r.min == null || r.min >= minMin) &&
-    (!hasAdp || r.adp != null) &&
+  let rows = DATA.concat(custom).filter(r =>
+    (!pos || r.pos === pos) &&
+    (r.custom || ((r.min == null || r.min >= minMin) && (!hasAdp || r.adp != null))) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)));
-  rows.sort((a, b) => {
+  const rp = rankOrder ? rankPosMap(rankOrder) : null;
+  if (rp) rows.sort(poolComparator(rankOrder));
+  else rows.sort((a, b) => {
     const av = a[sortKey], bv = b[sortKey];
     if (av == null) return 1; if (bv == null) return -1;
     return (av < bv ? -1 : av > bv ? 1 : 0) * sortDir;
@@ -729,31 +744,93 @@ function renderBoard() {
     : "no players match";
   document.getElementById("pprev").disabled = page === 0;
   document.getElementById("pnext").disabled = page >= pages - 1;
-  document.getElementById("rows").innerHTML = shown.map(r =>
-    `<tr data-id="${r.id}"${taken.has(r.id) ? ' class="taken"' : ""}>` +
-    COLS.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>").join("");
+  let html = "";
+  shown.forEach((r, i) => {
+    if (rp && !rp.has(r.id) && (i > 0 ? rp.has(shown[i - 1].id) : false))
+      html += `<tr class="divrow"><td colspan="${COLS.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}” — rest by ADP rank</td></tr>`;
+    html += `<tr data-id="${r.id}"${taken.has(r.id) ? ' class="taken"' : ""}>` +
+      COLS.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>";
+  });
+  document.getElementById("rows").innerHTML = html;
   document.getElementById("count").textContent =
     `${rows.length} players · ${rows.filter(r => taken.has(r.id)).length} drafted`;
   colsEl.querySelectorAll("th").forEach(th => {
-    th.classList.toggle("sort", th.dataset.k === sortKey);
+    th.classList.toggle("sort", !rp && th.dataset.k === sortKey);
     th.innerHTML = th.textContent.replace(/ [▲▼]$/, "");
-    if (th.dataset.k === sortKey) th.innerHTML += ` <span class="arr">${sortDir < 0 ? "▼" : "▲"}</span>`;
+    if (!rp && th.dataset.k === sortKey) th.innerHTML += ` <span class="arr">${sortDir < 0 ? "▼" : "▲"}</span>`;
   });
 }
 
+/* per-row actions menu: rank / plan pick / plan candidate / list */
+const amenu = document.getElementById("amenu");
+const hideMenu = () => amenu.hidden = true;
+function refreshAfterAct() { renderBoard(); renderRank(); renderPlan(); renderLists(); }
+function applyAct(act, id) {
+  const tgtRd = +document.getElementById("tgtr").value;
+  if (act === "rank") { rank.push(id); saveRank(); }
+  else if (act === "unrank") { rank = rank.filter(x => x !== id); saveRank(); }
+  else if (act === "plancand") { addToPlan(id, tgtRd); }
+  else if (act === "planpick") {
+    plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
+    plan[tgtRd].unshift(id); savePlan();
+  }
+  else if (act === "unplan") { removeFromPlan(id); }
+  else if (act === "list") { lists[tgtList].ids.push(id); save("dm_lists", lists); }
+  else if (act === "unlist") {
+    lists[tgtList].ids = lists[tgtList].ids.filter(x => x !== id);
+    save("dm_lists", lists);
+  }
+  hideMenu(); refreshAfterAct();
+}
+function showMenu(id, e) {
+  const r = byId[id]; if (!r) return;
+  const ri = rank.indexOf(id);
+  const rd = plan.findIndex(a => a.includes(id));
+  const tgtRd = +document.getElementById("tgtr").value;
+  const inL = lists.length && lists[tgtList].ids.includes(id);
+  const items = [];
+  items.push(ri >= 0
+    ? ["unrank", `Remove from “${ranks[activeRank].name}” (#${ri + 1})`]
+    : ["rank", `Add to ranking “${ranks[activeRank].name}”`]);
+  if (rd >= 0) items.push(["unplan", `Remove from plan (Rd ${rd + 1})`]);
+  else {
+    items.push(["planpick", `Plan: pick for Rd ${tgtRd + 1}`]);
+    items.push(["plancand", `Plan: candidate for Rd ${tgtRd + 1}`]);
+  }
+  if (lists.length) items.push(inL
+    ? ["unlist", `Remove from list “${lists[tgtList].name}”`]
+    : ["list", `Add to list “${lists[tgtList].name}”`]);
+  amenu.innerHTML = `<div class="mhead">${r.player}</div>`;
+  items.forEach(([act, label]) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.addEventListener("click", () => applyAct(act, id));
+    amenu.appendChild(b);
+  });
+  amenu.hidden = false;
+  amenu.style.visibility = "hidden";
+  const place = () => {
+    const x = Math.max(8, Math.min(e.clientX + 6, innerWidth - amenu.offsetWidth - 8));
+    const y = Math.max(8, Math.min(e.clientY + 8, innerHeight - amenu.offsetHeight - 8));
+    amenu.style.left = x + "px"; amenu.style.top = y + "px";
+    amenu.style.visibility = "";
+  };
+  typeof requestAnimationFrame === "function" ? requestAnimationFrame(place) : place();
+}
 document.getElementById("rows").addEventListener("click", e => {
-  const add = e.target.closest("[data-add]");
-  if (add) { rank.push(add.dataset.add); saveRank(); syncAll(); return; }
-  const un = e.target.closest("[data-unrank]");
-  if (un) { rank = rank.filter(x => x !== un.dataset.unrank); saveRank(); syncAll(); return; }
+  const m = e.target.closest("[data-menu]");
+  if (m) { showMenu(m.dataset.menu, e); return; }
   if (e.target.closest(".pname")) return; // handled by the popover listener
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderBoard(); return; }
-  const tr = e.target.closest("tr"); if (!tr) return;
+  const tr = e.target.closest("tr"); if (!tr || !tr.dataset.id) return;
   const id = tr.dataset.id;
   taken.has(id) ? taken.delete(id) : taken.add(id);
   save("dm_taken", [...taken]);
   syncAll();
+});
+document.getElementById("rankorder").addEventListener("change", e => {
+  rankOrder = e.target.value; page = 0; renderBoard();
 });
 document.getElementById("q").addEventListener("input", e => { query = e.target.value; page = 0; renderBoard(); });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; page = 0; renderBoard(); });
@@ -830,49 +907,8 @@ const nullLast = (k, dir) => (a, b) => {
   if (av == null) return 1; if (bv == null) return -1;
   return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
 };
-const POOL_SORT_STATS = [["adprk","ADPRk"],["xfpg","xFP/G"],["xfp90","xFP/90"],
-  ["npxga90","npxGI/90"],["fpts","FPts"],["fpg","FP/G"],["fp90","FP/90"],
-  ["rk","PtsRk"],["luck","Luck"]];
-function poolSortOptions(sel, current) { // stat options + one per ranking
-  sel.innerHTML = "";
-  const add = (v, label) => {
-    const o = document.createElement("option");
-    o.value = v; o.textContent = label; sel.appendChild(o);
-  };
-  add("adprk", "ADPRk");
-  ranks.forEach((r, i) => add("rank:" + i, "Rk: " + r.name));
-  POOL_SORT_STATS.slice(1).forEach(([v, l]) => add(v, l));
-  sel.value = [...sel.options].some(o => o.value === current) ? current : "adprk";
-  return sel.value;
-}
-const statLabel = k => (POOL_SORT_STATS.find(x => x[0] === k) || [k, k])[1];
 const rankPosMap = key => key.startsWith("rank:")
   ? new Map((ranks[+key.slice(5)] || { ids: [] }).ids.map((id, i) => [id, i])) : null;
-function sortStatHtml(r, key, rankPos) { // the chosen sort, shown highlighted
-  if (rankPos) {
-    const p = rankPos.get(r.id);
-    return `<span class="stat sortcol"><b>${p != null ? p + 1 : "–"}</b> Rk</span>`;
-  }
-  const v = r[key];
-  const txt = v == null ? "–" : key === "adprk" ? "#" + v
-    : Number.isInteger(v) ? v : v.toFixed(key === "fpts" ? 1 : 2);
-  return `<span class="stat sortcol"><b>${txt}</b> ${statLabel(key)}</span>`;
-}
-// rows + a divider where the sorted values run out (rest falls back to ADP)
-function poolHtml(customs, sorted, key, rankPos, rowHtml) {
-  let html = customs.map(rowHtml).join("");
-  let divDone = !rankPos && !POOL_SORT_STATS.some(([k]) => k === key);
-  sorted.forEach((r, i) => {
-    if (!divDone && i > 0 && (rankPos ? !rankPos.has(r.id) : r[key] == null)) {
-      html += `<div class="pooldiv">${rankPos
-        ? `end of “${ranks[+key.slice(5)].name}” — rest by ADP rank`
-        : `no ${statLabel(key)} — rest unsorted`}</div>`;
-      divDone = true;
-    }
-    html += rowHtml(r);
-  });
-  return html;
-}
 function poolComparator(key) {
   if (key.startsWith("rank:")) { // ranking order first, then ADP rank
     const ids = (ranks[+key.slice(5)] || { ids: [] }).ids;
@@ -993,9 +1029,8 @@ document.getElementById("rankclear").addEventListener("click", () => {
 /* ---------- lists ---------- */
 const listWrap = document.getElementById("listwrap");
 const listSort = {}; // list index -> {k, dir}; absent = insertion order
-let lQuery = "", lPos = "", lSort = "adprk", tgtList = 0;
-function renderListPool() {
-  lSort = poolSortOptions(document.getElementById("lsort"), lSort);
+let tgtList = 0;
+function renderTgtList() {
   const sel = document.getElementById("tgtlist");
   sel.innerHTML = "";
   lists.forEach((L, i) => {
@@ -1005,33 +1040,10 @@ function renderListPool() {
   });
   tgtList = Math.min(tgtList, Math.max(0, lists.length - 1));
   sel.value = tgtList;
-  const poolEl2 = document.getElementById("listpool");
-  if (!lists.length) {
-    poolEl2.innerHTML = '<div class="empty">Create a list first, then add players from here.</div>';
-    return;
-  }
-  const inList = new Set(lists[tgtList].ids);
-  const q = lQuery.toLowerCase();
-  const match = r => !inList.has(r.id) && (!lPos || r.pos === lPos) &&
-    (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
-  const rankPos = rankPosMap(lSort);
-  const customs = custom.filter(match);
-  const sorted = DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(lSort));
-  const rowHtml = r =>
-    `<div class="prow${taken.has(r.id) ? " taken" : ""}">
-      <button class="addbtn" data-addlist="${r.id}" title="Add to ${lists[tgtList].name}">+</button>
-      <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
-      <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-      ${sortStatHtml(r, lSort, rankPos)}
-      ${lSort === "adprk" ? "" : `<span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>`}
-      ${lSort === "xfpg" ? "" : `<span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>`}
-    </div>`;
-  poolEl2.innerHTML = poolHtml(customs, sorted, lSort, rankPos, rowHtml)
-    || '<div class="empty">No players match.</div>';
 }
 function renderLists() {
   updateMyRk();
-  renderListPool();
+  renderTgtList();
   if (!lists.length) {
     listWrap.innerHTML = '<div class="empty" style="border:1px solid var(--line);border-radius:8px">No lists yet — create one above (late sleepers, keeper targets, avoid…).</div>';
     return;
@@ -1099,19 +1111,8 @@ document.getElementById("listcreate").addEventListener("click", () => {
 document.getElementById("listname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("listcreate").click();
 });
-document.getElementById("listpool").addEventListener("click", e => {
-  const b = e.target.closest("[data-addlist]"); if (!b || !lists.length) return;
-  lists[tgtList].ids.push(b.dataset.addlist);
-  save("dm_lists", lists); renderLists();
-});
-document.getElementById("tgtlist").addEventListener("change", e => { tgtList = +e.target.value; renderListPool(); });
-document.getElementById("lsort").addEventListener("change", e => { lSort = e.target.value; renderListPool(); });
-document.getElementById("lq").addEventListener("input", e => { lQuery = e.target.value; renderListPool(); });
-document.getElementById("lposseg").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
-  lPos = b.dataset.pos;
-  document.querySelectorAll("#lposseg button").forEach(x => x.classList.toggle("on", x === b));
-  renderListPool();
+document.getElementById("tgtlist").addEventListener("change", e => {
+  tgtList = +e.target.value; renderBoard(); // refresh the ✓/+ badges
 });
 
 /* ---------- multiple rankings ---------- */
@@ -1149,18 +1150,20 @@ document.getElementById("rkdel").addEventListener("click", () => {
 });
 
 /* ---------- draft plan ---------- */
-let pQuery = "", pPos = "", pSort = "adprk";
 let slot = store("dm_slot", 6); // spot in the 12-team snake draft
 document.getElementById("slot").value = slot;
 const pickNo = r => (r * 12) + (r % 2 === 0 ? slot : 13 - slot); // r 0-indexed
 const roundsEl = document.getElementById("rounds");
-const poolEl = document.getElementById("planpool");
 document.getElementById("tgtr").innerHTML =
   plan.map((_, i) => `<option value="${i}">${i + 1}</option>`).join("");
 function addToPlan(id, r) {
   if (!byId[id]) return;
   plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
   plan[r].push(id);
+  savePlan(); renderPlan();
+}
+function removeFromPlan(id) {
+  plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
   savePlan(); renderPlan();
 }
 function renderPlanSelect() {
@@ -1176,26 +1179,7 @@ function renderPlanSelect() {
 function renderPlan() {
   updateMyRk();
   renderPlanSelect();
-  pSort = poolSortOptions(document.getElementById("psort"), pSort);
   const planned = new Set(plan.flat());
-  const q = pQuery.toLowerCase();
-  const match = r => !planned.has(r.id) && (!pPos || r.pos === pPos) &&
-    (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
-  const rankPos = rankPosMap(pSort);
-  const customs = custom.filter(match);
-  const sorted = DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(pSort));
-  const rowHtml = r =>
-    `<div class="prow${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
-      <button class="addbtn" data-addplan="${r.id}" title="Pencil into the selected round">+</button>
-      <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
-      <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
-      ${sortStatHtml(r, pSort, rankPos)}
-      ${pSort === "adprk" ? "" : `<span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>`}
-      <span class="stat sm"><b>${r.rd != null ? r.rd : "–"}</b> Rd</span>
-      ${pSort === "xfpg" ? "" : `<span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>`}
-    </div>`;
-  poolEl.innerHTML = poolHtml(customs, sorted, pSort, rankPos, rowHtml)
-    || '<div class="empty">No unplanned players match.</div>';
   document.getElementById("plancount").textContent =
     planned.size ? `${planned.size} penciled` : "";
   const comp = { G: 0, D: 0, M: 0, F: 0 };
@@ -1229,25 +1213,10 @@ document.getElementById("slot").addEventListener("input", e => {
   slot = Math.max(1, Math.min(12, +e.target.value || 6));
   save("dm_slot", slot); renderPlan();
 });
-document.getElementById("psort").addEventListener("change", e => { pSort = e.target.value; renderPlan(); });
-document.getElementById("pq").addEventListener("input", e => { pQuery = e.target.value; renderPlan(); });
-document.getElementById("pposseg").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
-  pPos = b.dataset.pos;
-  document.querySelectorAll("#pposseg button").forEach(x => x.classList.toggle("on", x === b));
-  renderPlan();
-});
-poolEl.addEventListener("click", e => {
-  const b = e.target.closest("[data-addplan]"); if (!b) return;
-  addToPlan(b.dataset.addplan, +document.getElementById("tgtr").value);
-});
+document.getElementById("tgtr").addEventListener("change", () => renderBoard()); // + tooltips
 roundsEl.addEventListener("click", e => {
   const b = e.target.closest("[data-unplan]");
-  if (b) {
-    plan.forEach(a => { const ix = a.indexOf(b.dataset.unplan); if (ix >= 0) a.splice(ix, 1); });
-    savePlan(); renderPlan();
-    return;
-  }
+  if (b) { removeFromPlan(b.dataset.unplan); renderBoard(); return; }
   const chip = e.target.closest(".chip2.cand");
   if (chip) { // promote candidate to the pick
     const r = +chip.closest(".round").dataset.r;
@@ -1284,13 +1253,13 @@ document.getElementById("pldel").addEventListener("click", () => {
   savePlan(); renderPlan();
 });
 let dragPid = null;
-document.getElementById("v-plan").addEventListener("dragstart", e => {
+roundsEl.addEventListener("dragstart", e => {
   const el = e.target.closest("[data-id]"); if (!el) return;
   dragPid = el.dataset.id;
   el.classList.add("dragging");
   try { e.dataTransfer.setData("text/plain", dragPid); e.dataTransfer.effectAllowed = "move"; } catch {}
 });
-document.getElementById("v-plan").addEventListener("dragend", e => {
+roundsEl.addEventListener("dragend", e => {
   e.target.closest("[data-id]")?.classList.remove("dragging");
   roundsEl.querySelectorAll(".round.over").forEach(x => x.classList.remove("over"));
 });
@@ -1386,21 +1355,38 @@ document.addEventListener("click", e => {
   const p = e.target.closest(".pname");
   if (p) { showPop(p.dataset.pp, e); return; }
   if (!e.target.closest("#pop")) hidePop();
+  if (!e.target.closest("#amenu") && !e.target.closest("[data-menu]")) hideMenu();
 });
-document.addEventListener("keydown", e => { if (e.key === "Escape") hidePop(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { hidePop(); hideMenu(); } });
 
-/* ---------- router ---------- */
-const VIEWS = ["board", "plan", "lists", "teams", "team"];
+/* ---------- router + subtabs ---------- */
+const VIEWS = ["board", "teams", "team"];
+const SUBS = ["rank", "plan", "lists"];
+function setSub(s) {
+  viewMode = s;
+  SUBS.forEach(x => document.getElementById("sub-" + x).hidden = x !== s);
+  document.querySelectorAll("#subtabs button").forEach(b =>
+    b.classList.toggle("on", b.dataset.sub === s));
+  if (s === "rank") renderRank();
+  else if (s === "plan") renderPlan();
+  else renderLists();
+}
+document.getElementById("subtabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSub(b.dataset.sub);
+});
 function route() {
   const parts = (location.hash.slice(2) || "board").split("/");
-  let v = VIEWS.includes(parts[0]) ? parts[0] : "board"; // old #/rank falls through to board
+  let v = parts[0], sub = null;
+  if (v === "rank") { v = "board"; sub = "rank"; }        // legacy hashes
+  else if (v === "plan") { v = "board"; sub = "plan"; }
+  else if (v === "lists") { v = "board"; sub = "lists"; }
+  if (!VIEWS.includes(v)) v = "board";
   if (v === "team" && !TEAMS.some(t => t.code === parts[1])) v = "teams";
   VIEWS.forEach(x => document.getElementById("v-" + x).hidden = x !== v);
   document.querySelectorAll("#nav a").forEach(a =>
     a.classList.toggle("on", a.dataset.v === (v === "team" ? "teams" : v)));
-  if (v === "board") { renderBoard(); renderRank(); }
-  else if (v === "plan") renderPlan();
-  else if (v === "lists") renderLists();
+  if (v === "board") { renderBoard(); setSub(sub || viewMode); }
   else if (v === "teams") renderTeams();
   else renderTeam(parts[1]);
 }

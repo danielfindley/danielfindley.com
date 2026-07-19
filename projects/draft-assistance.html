@@ -430,7 +430,7 @@ textarea.notes {
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
       </div>
-      <label class="minctl">min minutes <input type="number" id="minmin" value="270" step="90" min="0"></label>
+      <label class="minctl">min minutes <input type="number" id="minmin" value="0" step="90" min="0"></label>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl">order <select id="rankorder" title="Sort by one of your rankings — ranked first, rest by ADP"></select></label>
       <span class="count" id="count"></span>
@@ -660,7 +660,7 @@ const COLS = [
 ];
 const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp"]);
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rk","myrk"]);
-let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 270, hasAdp = true;
+let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
 let page = 0, pageSize = 25;
 let viewMode = "rank", rankOrder = ""; // rankOrder "rank:i" overrides column sort
 
@@ -727,7 +727,7 @@ function renderBoard() {
   const q = query.toLowerCase();
   let rows = DATA.concat(custom).filter(r =>
     (!pos || r.pos === pos) &&
-    (r.custom || ((r.min == null || r.min >= minMin) && (!hasAdp || r.adp != null))) &&
+    (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) && (!hasAdp || r.adp != null))) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)));
   const rp = rankOrder ? rankPosMap(rankOrder) : null;
   if (rp) rows.sort(poolComparator(rankOrder));

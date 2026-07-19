@@ -120,24 +120,24 @@ tbody td {
 }
 #v-board tbody tr:hover td { background: var(--accent-soft); }
 td.player {
-  font-weight: 600; width: 200px; min-width: 200px; max-width: 200px;
+  font-weight: 600; width: 224px; min-width: 224px; max-width: 224px;
   overflow: hidden; text-overflow: ellipsis;
 }
 .pin { position: sticky; left: 0; z-index: 2; background: var(--pin-bg); }
 th.pin { z-index: 5 !important; background: var(--pin-bg); }
-.p-team  { left: 200px; width: 106px; min-width: 106px; }
-.p-pos   { left: 306px; width: 46px;  min-width: 46px; }
-.p-adp   { left: 352px; width: 62px;  min-width: 62px; }
-.p-fpts  { left: 414px; width: 68px;  min-width: 68px; }
-.p-fpg   { left: 482px; width: 62px;  min-width: 62px; }
-.p-xfp90 { left: 544px; width: 76px;  min-width: 76px; }
-.p-npxga { left: 620px; width: 84px;  min-width: 84px; border-right: 2px solid var(--line); }
+.p-team  { left: 224px; width: 106px; min-width: 106px; }
+.p-pos   { left: 330px; width: 46px;  min-width: 46px; }
+.p-adp   { left: 376px; width: 62px;  min-width: 62px; }
+.p-fpts  { left: 438px; width: 68px;  min-width: 68px; }
+.p-fpg   { left: 506px; width: 62px;  min-width: 62px; }
+.p-xfp90 { left: 568px; width: 76px;  min-width: 76px; }
+.p-npxga { left: 644px; width: 84px;  min-width: 84px; border-right: 2px solid var(--line); }
 #v-board tbody tr:hover .pin { background: var(--line-soft); }
 .grp-pin { position: sticky; left: 0; z-index: 6 !important; background: var(--pin-bg); }
-#ranktbl .p-team { left: 244px; } #ranktbl .p-pos  { left: 350px; }
-#ranktbl .p-adp  { left: 396px; } #ranktbl .p-fpts { left: 458px; }
-#ranktbl .p-fpg  { left: 526px; } #ranktbl .p-xfp90 { left: 588px; }
-#ranktbl .p-npxga { left: 664px; }
+#ranktbl .p-team { left: 268px; } #ranktbl .p-pos  { left: 374px; }
+#ranktbl .p-adp  { left: 420px; } #ranktbl .p-fpts { left: 482px; }
+#ranktbl .p-fpg  { left: 550px; } #ranktbl .p-xfp90 { left: 612px; }
+#ranktbl .p-npxga { left: 688px; }
 .pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 #ranktbl tr.custom .pin, #ranktbl tr.custom .rnum { background: var(--line-soft); }
 td.dim, .dim { color: var(--ink2); }
@@ -211,13 +211,17 @@ td.marks { min-width: 92px; }
 .rowadd {
   border: 1px solid var(--line); background: var(--accent-soft); color: var(--accent);
   font: inherit; font-weight: 700; cursor: pointer; border-radius: 4px;
-  width: 21px; height: 21px; line-height: 1; padding: 0; margin-right: 8px; font-size: 14px;
+  width: 21px; height: 21px; line-height: 1; padding: 0; margin-right: 4px; font-size: 14px;
 }
 .rowadd:hover { background: var(--accent); color: #fff; }
+.rowadd.opts { background: none; color: var(--ink2); letter-spacing: 1px; margin-right: 8px; margin-left: -4px; }
+.rowadd.opts:hover { background: var(--line-soft); color: var(--ink); }
+#amenu .rgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 2px; }
+#amenu .rgrid button { text-align: center; padding: 6px 4px; font-variant-numeric: tabular-nums; }
 .rankedno {
   display: inline-block; min-width: 21px; height: 21px; line-height: 21px; text-align: center;
   background: var(--accent); color: #fff; border-radius: 4px; font-size: 11.5px;
-  font-weight: 700; cursor: pointer; margin-right: 8px; padding: 0 3px;
+  font-weight: 700; cursor: pointer; margin-right: 4px; padding: 0 3px;
 }
 .minctl select {
   padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
@@ -394,7 +398,7 @@ textarea.notes {
   .wrap { padding: 14px 10px 44px; }
   .pin:not(.player), .grp-pin { position: static; width: auto; min-width: 0; }
   .p-xfp90 { border-right: none; }
-  td.player, th.player { width: 150px; min-width: 150px; max-width: 150px; }
+  td.player, th.player { width: 172px; min-width: 172px; max-width: 172px; }
   .count { margin-left: 0; }
   .tablebox { max-height: none; }
   .controls input[type="search"] { max-width: none; }
@@ -499,15 +503,14 @@ textarea.notes {
       <button class="ghost" id="plnew">＋ New plan</button>
       <button class="ghost" id="pldel">Delete</button>
       <span class="dim" id="plancount"></span>
-      <label class="minctl">＋ adds to Rd <select id="tgtr"></select></label>
       <label class="minctl">my slot <input type="number" id="slot" min="1" max="12" step="1"
         title="Your position in the 12-team snake draft"></label>
       <span style="flex:1"></span>
       <button class="ghost" id="planclear">Clear plan</button>
     </div>
     <div id="rounds" style="margin-top:12px"></div>
-    <p class="legend">Use the <b>+ / badge menu</b> in the table above to pencil a player into the selected
-      round as the pick or a candidate; drag chips between rounds to move them. A player lives in one round
+    <p class="legend">Use the <b>⋯ options</b> in the table above to pencil a player in — you pick the
+      round (and pick vs candidate) in the follow-up menu; drag chips between rounds to move them. A player lives in one round
       at a time. The highlighted <b>pick</b> chip is what the squad-shape pills count; everything after the
       divider is a backup <b>candidate</b> — click a candidate to make it the pick.
       Set <b>my slot</b> and each round shows your overall pick number (12-team snake); a chip's
@@ -522,7 +525,7 @@ textarea.notes {
       <label class="minctl">target list <select id="tgtlist"></select></label>
     </div>
     <div id="listwrap"></div>
-    <p class="legend">Pick a target list, then add players from the table's <b>+ / badge menu</b>.
+    <p class="legend">Pick a target list, then add players from the table's <b>⋯ options</b> menu.
       Each list card is a full-stat table (sort with the board above) with its own search-to-add.</p>
     </div><!-- /sub-lists -->
 
@@ -535,9 +538,10 @@ textarea.notes {
       goals and assists replaced by xG and xA (goal = 10/9/9 pts and assist = 8/6/6 pts for D/M/F).
       <b>Luck</b> = FPts − xFP: <span class="k chip over">+ hot</span> finished above expected (regression risk),
       <span class="k chip under">− cold</span> finished below it (buy-low candidate).
-      Click the <b>+ (or numbered badge)</b> for all actions: cross out as drafted, add to your ranking,
-      pencil into a plan round as pick or candidate, or add to a list. Click a <b>player's name</b> for
-      season-by-season history back to 2019/20.
+      <b>+</b> adds straight to your active ranking (the numbered badge shows their spot — click it to
+      remove); <b>⋯</b> opens options: cross out as drafted, rank, pencil into a plan round (you pick the
+      round in the follow-up), or add to the target list. Click a <b>player's name</b> for season-by-season
+      history back to 2019/20.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
       the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP).
@@ -689,10 +693,11 @@ function fmt(k, v, r) {
   if (v == null) return '<span class="dim">–</span>';
   if (k === "player") {
     const ri = rank.indexOf(r.id);
-    const ctl = ri >= 0
-      ? `<span class="rankedno" data-menu="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click for actions">${ri + 1}</span>`
-      : `<button class="rowadd" data-menu="${r.id}" title="Actions: rank, plan, list">+</button>`;
-    return `${ctl}<span class="pname" data-pp="${r.id}">${v}</span>` +
+    const rankCtl = ri >= 0
+      ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click to remove">${ri + 1}</span>`
+      : `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`;
+    const opts = `<button class="rowadd opts" data-menu="${r.id}" title="Options: draft, plan, list…">⋯</button>`;
+    return `${rankCtl}${opts}<span class="pname" data-pp="${r.id}">${v}</span>` +
       (r.custom ? ' <span class="badge">new</span>' : "");
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
@@ -762,53 +767,72 @@ function renderBoard() {
 const amenu = document.getElementById("amenu");
 const hideMenu = () => amenu.hidden = true;
 function refreshAfterAct() { renderBoard(); renderRank(); renderPlan(); renderLists(); }
-function applyAct(act, id) {
-  const tgtRd = +document.getElementById("tgtr").value;
-  if (act === "draft") { taken.add(id); save("dm_taken", [...taken]); }
-  else if (act === "undraft") { taken.delete(id); save("dm_taken", [...taken]); }
-  else if (act === "rank") { rank.push(id); saveRank(); }
-  else if (act === "unrank") { rank = rank.filter(x => x !== id); saveRank(); }
-  else if (act === "plancand") { addToPlan(id, tgtRd); }
-  else if (act === "planpick") {
-    plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
-    plan[tgtRd].unshift(id); savePlan();
+let menuId = null;
+const menuDone = () => { hideMenu(); refreshAfterAct(); };
+function menuItem(label, fn) {
+  const b = document.createElement("button");
+  b.textContent = label;
+  b.addEventListener("click", fn);
+  amenu.appendChild(b);
+}
+function placeInPlan(id, r, role) {
+  plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
+  role === "pick" ? plan[r].unshift(id) : plan[r].push(id);
+  savePlan();
+}
+function buildMenuMain() {
+  const id = menuId, r = byId[id];
+  amenu.innerHTML = `<div class="mhead">${r.player}</div>`;
+  menuItem(taken.has(id) ? "Un-cross (not drafted after all)" : "Cross out as drafted", () => {
+    taken.has(id) ? taken.delete(id) : taken.add(id);
+    save("dm_taken", [...taken]); menuDone();
+  });
+  const ri = rank.indexOf(id);
+  menuItem(ri >= 0
+    ? `Remove from “${ranks[activeRank].name}” (#${ri + 1})`
+    : `Add to ranking “${ranks[activeRank].name}”`, () => {
+    ri >= 0 ? rank = rank.filter(x => x !== id) : rank.push(id);
+    saveRank(); menuDone();
+  });
+  const rd = plan.findIndex(a => a.includes(id));
+  if (rd >= 0) {
+    menuItem(`Remove from plan (Rd ${rd + 1})`, () => { removeFromPlan(id); menuDone(); });
+    menuItem("Plan: move to round ▸", () => buildMenuRounds("move"));
+  } else {
+    menuItem("Plan: pick for round ▸", () => buildMenuRounds("pick"));
+    menuItem("Plan: candidate for round ▸", () => buildMenuRounds("cand"));
   }
-  else if (act === "unplan") { removeFromPlan(id); }
-  else if (act === "list") { lists[tgtList].ids.push(id); save("dm_lists", lists); }
-  else if (act === "unlist") {
-    lists[tgtList].ids = lists[tgtList].ids.filter(x => x !== id);
-    save("dm_lists", lists);
+  if (lists.length) {
+    const inL = lists[tgtList].ids.includes(id);
+    menuItem(inL
+      ? `Remove from list “${lists[tgtList].name}”`
+      : `Add to list “${lists[tgtList].name}”`, () => {
+      inL ? lists[tgtList].ids = lists[tgtList].ids.filter(x => x !== id)
+          : lists[tgtList].ids.push(id);
+      save("dm_lists", lists); menuDone();
+    });
   }
-  hideMenu(); refreshAfterAct();
+}
+function buildMenuRounds(role) { // follow-up: pick which round
+  const id = menuId, r = byId[id];
+  const verb = role === "pick" ? "pick for round…" : role === "cand" ? "candidate for round…" : "move to round…";
+  amenu.innerHTML = `<div class="mhead">${r.player} — ${verb}</div>`;
+  const grid = document.createElement("div");
+  grid.className = "rgrid";
+  plan.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.textContent = `Rd ${i + 1}`;
+    b.title = `your pick ${pickNo(i)}`;
+    b.addEventListener("click", () => { placeInPlan(id, i, role === "pick" ? "pick" : "cand"); menuDone(); });
+    grid.appendChild(b);
+  });
+  amenu.appendChild(grid);
+  menuItem("‹ Back", buildMenuMain);
 }
 function showMenu(id, e) {
-  const r = byId[id]; if (!r) return;
-  const ri = rank.indexOf(id);
-  const rd = plan.findIndex(a => a.includes(id));
-  const tgtRd = +document.getElementById("tgtr").value;
-  const inL = lists.length && lists[tgtList].ids.includes(id);
-  const items = [];
-  items.push(ri >= 0
-    ? ["unrank", `Remove from “${ranks[activeRank].name}” (#${ri + 1})`]
-    : ["rank", `Add to ranking “${ranks[activeRank].name}”`]);
-  if (rd >= 0) items.push(["unplan", `Remove from plan (Rd ${rd + 1})`]);
-  else {
-    items.push(["planpick", `Plan: pick for Rd ${tgtRd + 1}`]);
-    items.push(["plancand", `Plan: candidate for Rd ${tgtRd + 1}`]);
-  }
-  if (lists.length) items.push(inL
-    ? ["unlist", `Remove from list “${lists[tgtList].name}”`]
-    : ["list", `Add to list “${lists[tgtList].name}”`]);
-  items.push(taken.has(id)
-    ? ["undraft", "Un-cross (not drafted after all)"]
-    : ["draft", "Cross out as drafted"]);
-  amenu.innerHTML = `<div class="mhead">${r.player}</div>`;
-  items.forEach(([act, label]) => {
-    const b = document.createElement("button");
-    b.textContent = label;
-    b.addEventListener("click", () => applyAct(act, id));
-    amenu.appendChild(b);
-  });
+  if (!byId[id]) return;
+  menuId = id;
+  buildMenuMain();
   amenu.hidden = false;
   amenu.style.visibility = "hidden";
   const place = () => {
@@ -820,11 +844,15 @@ function showMenu(id, e) {
   typeof requestAnimationFrame === "function" ? requestAnimationFrame(place) : place();
 }
 document.getElementById("rows").addEventListener("click", e => {
+  const add = e.target.closest("[data-add]");
+  if (add) { rank.push(add.dataset.add); saveRank(); syncAll(); return; }
+  const un = e.target.closest("[data-unrank]");
+  if (un) { rank = rank.filter(x => x !== un.dataset.unrank); saveRank(); syncAll(); return; }
   const m = e.target.closest("[data-menu]");
   if (m) { showMenu(m.dataset.menu, e); return; }
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderBoard(); }
-  // row clicks do nothing else — drafting/ranking/planning/listing all live in the +/badge menu
+  // everything else lives in the + (rank) and ⋯ (options) buttons
 });
 document.getElementById("rankorder").addEventListener("change", e => {
   rankOrder = e.target.value; page = 0; renderBoard();
@@ -1112,8 +1140,6 @@ let slot = store("dm_slot", 6); // spot in the 12-team snake draft
 document.getElementById("slot").value = slot;
 const pickNo = r => (r * 12) + (r % 2 === 0 ? slot : 13 - slot); // r 0-indexed
 const roundsEl = document.getElementById("rounds");
-document.getElementById("tgtr").innerHTML =
-  plan.map((_, i) => `<option value="${i}">${i + 1}</option>`).join("");
 function addToPlan(id, r) {
   if (!byId[id]) return;
   plan.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); });
@@ -1171,7 +1197,6 @@ document.getElementById("slot").addEventListener("input", e => {
   slot = Math.max(1, Math.min(12, +e.target.value || 6));
   save("dm_slot", slot); renderPlan();
 });
-document.getElementById("tgtr").addEventListener("change", () => renderBoard()); // + tooltips
 roundsEl.addEventListener("click", e => {
   const m = e.target.closest("[data-menu]");
   if (m) { showMenu(m.dataset.menu, e); return; }

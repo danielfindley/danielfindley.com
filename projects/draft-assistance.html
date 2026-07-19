@@ -677,8 +677,11 @@ COLS.forEach(([k, label, cls]) => {
   if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
   if (k !== "marks") th.addEventListener("click", () => {
     rankOrder = ""; // column click leaves ranking-order mode
-    sortDir = (sortKey === k) ? -sortDir : (ASC_DEFAULT.has(k) ? 1 : -1);
-    sortKey = k; page = 0; renderBoard();
+    const base = ASC_DEFAULT.has(k) ? 1 : -1;
+    if (sortKey !== k) { sortKey = k; sortDir = base; }
+    else if (sortDir === base) sortDir = -base;
+    else { sortKey = "adp"; sortDir = 1; } // third click: back to the original order
+    page = 0; renderBoard();
   });
   colsEl.appendChild(th);
 });
@@ -923,9 +926,10 @@ rcolsEl.innerHTML = '<th class="rnum" data-k="__order" title="Your order — cli
 rcolsEl.addEventListener("click", e => {
   const th = e.target.closest("th[data-k]"); if (!th) return;
   const k = th.dataset.k;
-  if (k === "__order") rankSort = null;
-  else if (rankSort && rankSort.k === k) rankSort.dir = -rankSort.dir;
-  else rankSort = { k, dir: ASC_DEFAULT.has(k) ? 1 : -1 };
+  const base = ASC_DEFAULT.has(k) ? 1 : -1;
+  if (k === "__order" || (rankSort && rankSort.k === k && rankSort.dir !== base)) rankSort = null;
+  else if (rankSort && rankSort.k === k) rankSort.dir = -base;
+  else rankSort = { k, dir: base };
   renderRank();
 });
 function statCells(r, id) {
@@ -1101,8 +1105,10 @@ listWrap.addEventListener("click", e => {
   if (th) {
     const li = +th.closest(".listcard").dataset.li;
     const k = th.dataset.k, ls = listSort[li];
-    if (ls && ls.k === k) ls.dir = -ls.dir;
-    else listSort[li] = { k, dir: ASC_DEFAULT.has(k) ? 1 : -1 };
+    const base = ASC_DEFAULT.has(k) ? 1 : -1;
+    if (ls && ls.k === k && ls.dir !== base) delete listSort[li];
+    else if (ls && ls.k === k) ls.dir = -base;
+    else listSort[li] = { k, dir: base };
     renderLists();
     return;
   }

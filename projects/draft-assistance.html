@@ -488,13 +488,7 @@ textarea.notes {
             <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
           </div>
           <label class="minctl">＋ adds to Rd <select id="tgtr"></select></label>
-          <label class="minctl">sort <select id="psort">
-            <option value="adprk">ADPRk</option><option value="myrk">MyRk</option>
-            <option value="xfpg">xFP/G</option><option value="xfp90">xFP/90</option>
-            <option value="npxga90">npxGI/90</option><option value="fpts">FPts</option>
-            <option value="fpg">FP/G</option><option value="fp90">FP/90</option>
-            <option value="rk">PtsRk</option><option value="luck">Luck</option>
-          </select></label>
+          <label class="minctl">sort <select id="psort"></select></label>
         </div>
         <div class="rankbox planbox" id="planpool"></div>
       </div>
@@ -528,7 +522,23 @@ textarea.notes {
       <input id="listname" placeholder="New list name — e.g. Late sleepers" aria-label="New list name">
       <button class="btn" id="listcreate">Create list</button>
     </div>
-    <div id="listwrap"></div>
+    <div class="plancols">
+      <div>
+        <div class="panel rankhead">
+          <span class="colhead">Player pool</span>
+          <input type="search" id="lq" placeholder="Filter…" aria-label="Filter list pool">
+          <div class="seg" id="lposseg" role="group" aria-label="List pool position filter">
+            <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
+          </div>
+          <label class="minctl">＋ adds to <select id="tgtlist"></select></label>
+          <label class="minctl">sort <select id="lsort"></select></label>
+        </div>
+        <div class="rankbox planbox" id="listpool"></div>
+      </div>
+      <div id="listwrap"></div>
+    </div>
+    <p class="legend">Pick a target list, then <b>+</b> players straight from the pool (sortable by any
+      ranking — ranked players first, then ADP). Each list card still has its own search-to-add.</p>
   </section>
 
   <section id="v-teams" hidden>
@@ -814,6 +824,34 @@ const nullLast = (k, dir) => (a, b) => {
   if (av == null) return 1; if (bv == null) return -1;
   return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
 };
+const POOL_SORT_STATS = [["adprk","ADPRk"],["xfpg","xFP/G"],["xfp90","xFP/90"],
+  ["npxga90","npxGI/90"],["fpts","FPts"],["fpg","FP/G"],["fp90","FP/90"],
+  ["rk","PtsRk"],["luck","Luck"]];
+function poolSortOptions(sel, current) { // stat options + one per ranking
+  sel.innerHTML = "";
+  const add = (v, label) => {
+    const o = document.createElement("option");
+    o.value = v; o.textContent = label; sel.appendChild(o);
+  };
+  add("adprk", "ADPRk");
+  ranks.forEach((r, i) => add("rank:" + i, "Rk: " + r.name));
+  POOL_SORT_STATS.slice(1).forEach(([v, l]) => add(v, l));
+  sel.value = [...sel.options].some(o => o.value === current) ? current : "adprk";
+  return sel.value;
+}
+function poolComparator(key) {
+  if (key.startsWith("rank:")) { // ranking order first, then ADP rank
+    const ids = (ranks[+key.slice(5)] || { ids: [] }).ids;
+    const pos = new Map(ids.map((id, i) => [id, i]));
+    return (a, b) => {
+      const pa = pos.has(a.id) ? pos.get(a.id) : Infinity;
+      const pb = pos.has(b.id) ? pos.get(b.id) : Infinity;
+      if (pa !== pb) return pa - pb;
+      return (a.adprk ?? 1e9) - (b.adprk ?? 1e9);
+    };
+  }
+  return nullLast(key, ASC_DEFAULT.has(key) ? 1 : -1);
+}
 function syncAll() { renderBoard(); renderRank(); }
 function renderRank() {
   rank = rank.filter(id => byId[id]);
@@ -921,8 +959,42 @@ document.getElementById("rankclear").addEventListener("click", () => {
 /* ---------- lists ---------- */
 const listWrap = document.getElementById("listwrap");
 const listSort = {}; // list index -> {k, dir}; absent = insertion order
+let lQuery = "", lPos = "", lSort = "adprk", tgtList = 0;
+function renderListPool() {
+  lSort = poolSortOptions(document.getElementById("lsort"), lSort);
+  const sel = document.getElementById("tgtlist");
+  sel.innerHTML = "";
+  lists.forEach((L, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = L.name;
+    sel.appendChild(o);
+  });
+  tgtList = Math.min(tgtList, Math.max(0, lists.length - 1));
+  sel.value = tgtList;
+  const poolEl2 = document.getElementById("listpool");
+  if (!lists.length) {
+    poolEl2.innerHTML = '<div class="empty">Create a list first, then add players from here.</div>';
+    return;
+  }
+  const inList = new Set(lists[tgtList].ids);
+  const q = lQuery.toLowerCase();
+  const match = r => !inList.has(r.id) && (!lPos || r.pos === lPos) &&
+    (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
+  const pool = custom.filter(match).concat(
+    DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(lSort)));
+  poolEl2.innerHTML = pool.length ? pool.map(r =>
+    `<div class="prow${taken.has(r.id) ? " taken" : ""}">
+      <button class="addbtn" data-addlist="${r.id}" title="Add to ${lists[tgtList].name}">+</button>
+      <span class="nm"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</span>
+      <span class="tm">${tLogo(curTeam(r))}${r.team}</span><span class="pill ${r.pos}">${r.pos}</span>
+      <span class="stat"><b>${r.adprk != null ? "#" + r.adprk : "–"}</b> ADPRk</span>
+      <span class="stat"><b>${r.myrk != null ? r.myrk : "–"}</b> MyRk</span>
+      <span class="stat"><b>${r.xfpg != null ? r.xfpg.toFixed(1) : "–"}</b> xFP/G</span>
+    </div>`).join("") : '<div class="empty">No players match.</div>';
+}
 function renderLists() {
   updateMyRk();
+  renderListPool();
   if (!lists.length) {
     listWrap.innerHTML = '<div class="empty" style="border:1px solid var(--line);border-radius:8px">No lists yet — create one above (late sleepers, keeper targets, avoid…).</div>';
     return;
@@ -990,6 +1062,20 @@ document.getElementById("listcreate").addEventListener("click", () => {
 document.getElementById("listname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("listcreate").click();
 });
+document.getElementById("listpool").addEventListener("click", e => {
+  const b = e.target.closest("[data-addlist]"); if (!b || !lists.length) return;
+  lists[tgtList].ids.push(b.dataset.addlist);
+  save("dm_lists", lists); renderLists();
+});
+document.getElementById("tgtlist").addEventListener("change", e => { tgtList = +e.target.value; renderListPool(); });
+document.getElementById("lsort").addEventListener("change", e => { lSort = e.target.value; renderListPool(); });
+document.getElementById("lq").addEventListener("input", e => { lQuery = e.target.value; renderListPool(); });
+document.getElementById("lposseg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  lPos = b.dataset.pos;
+  document.querySelectorAll("#lposseg button").forEach(x => x.classList.toggle("on", x === b));
+  renderListPool();
+});
 
 /* ---------- multiple rankings ---------- */
 function renderRankSelect() {
@@ -1053,13 +1139,13 @@ function renderPlanSelect() {
 function renderPlan() {
   updateMyRk();
   renderPlanSelect();
+  pSort = poolSortOptions(document.getElementById("psort"), pSort);
   const planned = new Set(plan.flat());
   const q = pQuery.toLowerCase();
   const match = r => !planned.has(r.id) && (!pPos || r.pos === pPos) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q));
   const pool = custom.filter(match).concat(
-    DATA.filter(r => match(r) && r.adp != null)
-      .sort(nullLast(pSort, ASC_DEFAULT.has(pSort) ? 1 : -1)));
+    DATA.filter(r => match(r) && r.adp != null).sort(poolComparator(pSort)));
   poolEl.innerHTML = pool.length ? pool.map(r =>
     `<div class="prow${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}">
       <button class="addbtn" data-addplan="${r.id}" title="Pencil into the selected round">+</button>

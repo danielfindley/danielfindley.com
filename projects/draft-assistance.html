@@ -564,7 +564,7 @@ textarea.notes {
       <table>
         <thead><tr class="cols">
           <th class="l player">Player</th><th class="l">Pos</th><th>Min</th><th>FPts</th>
-          <th>FP/G</th><th>xFP/G</th><th>xFP/90</th><th>Luck</th><th class="l nosort">Tags</th>
+          <th>FP/G</th><th>xFP/G</th><th>xFP/90</th><th>Luck</th>
         </tr></thead>
         <tbody id="teamrows"></tbody>
       </table>
@@ -696,7 +696,7 @@ function fmt(k, v, r) {
       ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click to remove">${ri + 1}</span>`
       : `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`;
     const opts = `<button class="rowadd opts" data-menu="${r.id}" title="Options: draft, plan, list…">⋯</button>`;
-    return `${rankCtl}${opts}<span class="pname" data-pp="${r.id}">${v}</span>` +
+    return `${rankCtl}${opts}<span class="pname" data-pp="${r.id}">${v}</span>${mkRo(r.id)}` +
       (r.custom ? ' <span class="badge">new</span>' : "");
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
@@ -901,7 +901,7 @@ function searchAdd(root, excluded, onPick) {
     drop.className = "drop";
     hits.forEach(r => {
       const d = document.createElement("div");
-      d.innerHTML = `<b>${r.player}</b> <span class="t">${r.team} · ${r.pos}` +
+      d.innerHTML = `<b>${r.player}</b>${mkRo(r.id)} <span class="t">${r.team} · ${r.pos}` +
         (r.xfpg != null ? ` · ${r.xfpg.toFixed(1)} xFP/G` : "") + `</span>`;
       d.addEventListener("mousedown", ev => { ev.preventDefault(); onPick(r.id); input.value = ""; close(); });
       drop.appendChild(d);
@@ -930,7 +930,7 @@ rcolsEl.addEventListener("click", e => {
 });
 function statCells(r, id) {
   return COLS.map(([k, , cls]) => {
-    if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>` +
+    if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}` +
       (r.custom ? ' <span class="badge">new</span>' : "") + "</td>";
     return `<td class="${cls}">${fmt(k, r[k], r)}</td>`;
   }).join("");
@@ -1213,7 +1213,7 @@ function renderPlan() {
       `<span class="chip2 ${ci === 0 ? "pick" : "cand"}${taken.has(r.id) ? " taken" : ""}" draggable="true" data-id="${r.id}"
         ${ci > 0 ? ' title="Click to make this the pick"' : ""}>
         ${ci === 0 ? '<span class="pickbadge">pick</span>' : ""}
-        <span class="pill ${r.pos}">${r.pos}</span><b data-menu="${r.id}" title="Actions: draft, rank, list…">${r.player}</b>
+        <span class="pill ${r.pos}">${r.pos}</span><b data-menu="${r.id}" title="Actions: draft, rank, list…">${r.player}</b>${mkRo(r.id)}
         <span class="dim${gone ? " gone" : ""}"${tip ? ` title="${tip}"` : ""}>${lbl}</span>
         <button class="iconbtn" data-unplan="${r.id}" title="Remove">✕</button>
       </span>`;
@@ -1322,10 +1322,10 @@ function renderTeam(code) {
   const players = DATA.filter(r => curTeam(r) === code && r.min > 0)
     .sort((a, b) => (b.xfpts ?? -1) - (a.xfpts ?? -1));
   document.getElementById("teamrows").innerHTML = players.map(r =>
-    `<tr><td class="l player"><span class="pname" data-pp="${r.id}">${r.player}</span></td><td class="l"><span class="pill ${r.pos}">${r.pos}</span></td>
+    `<tr><td class="l player"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</td><td class="l"><span class="pill ${r.pos}">${r.pos}</span></td>
     <td>${r.min}</td><td>${r.fpts.toFixed(1)}</td><td>${r.fpg.toFixed(2)}</td>
     <td>${r.xfpg != null ? r.xfpg.toFixed(2) : "–"}</td><td>${r.xfp90 != null ? r.xfp90.toFixed(2) : "–"}</td>
-    <td>${r.luck != null ? luckChip(r.luck) : "–"}</td><td class="l">${mkRo(r.id) || '<span class="dim">–</span>'}</td></tr>`).join("");
+    <td>${r.luck != null ? luckChip(r.luck) : "–"}</td></tr>`).join("");
 }
 document.getElementById("teamnotes").addEventListener("input", e => {
   if (!curTeamCode) return;
@@ -1342,7 +1342,7 @@ const HCOLS = [["season","Season","l"],["team","Team","l"],["gp","GP",""],["min"
   ["xfpg","xFP/G",""],["xfp90","xFP/90",""],["luck","Luck",""]];
 function showPop(id, e) {
   const r = byId[id]; if (!r) return;
-  document.getElementById("popname").textContent = r.player;
+  document.getElementById("popname").innerHTML = r.player + mkRo(id);
   document.getElementById("popmeta").textContent = `${r.team} · ${r.pos}`;
   const h = HIST[id];
   document.getElementById("popbody").innerHTML = (h && h.length) ?

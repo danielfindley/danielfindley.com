@@ -765,6 +765,10 @@ function renderBoard() {
 
 /* per-row actions menu: rank / plan pick / plan candidate / list */
 const amenu = document.getElementById("amenu");
+// submenu transitions replace the menu's DOM mid-click; the document-level
+// outside-click closer would then see a detached target and hide the menu —
+// swallow clicks inside the menu before they bubble
+amenu.addEventListener("click", e => e.stopPropagation());
 const hideMenu = () => amenu.hidden = true;
 function refreshAfterAct() { renderBoard(); renderRank(); renderPlan(); renderLists(); }
 let menuId = null;

@@ -424,7 +424,7 @@ textarea.notes {
 
   <section id="v-board">
     <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA ·
-      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-18</p>
+      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-19</p>
     <div class="controls">
       <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
@@ -662,7 +662,7 @@ const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp"]);
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rk","myrk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
 let page = 0, pageSize = 25;
-let viewMode = "rank", rankOrder = ""; // rankOrder "rank:i" overrides column sort
+let viewMode = "rank", rankOrder = "rank:" + activeRank; // default: your ranking, ADP fallback
 
 const colsEl = document.getElementById("cols");
 COLS.forEach(([k, label, cls]) => {
@@ -676,11 +676,11 @@ COLS.forEach(([k, label, cls]) => {
   if (k === "rd") th.title = "The 12-team round that ADP rank falls in (ranks 1–12 = round 1, 13–24 = round 2, …)";
   if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
   if (k !== "marks") th.addEventListener("click", () => {
-    rankOrder = ""; // column click leaves ranking-order mode
     const base = ASC_DEFAULT.has(k) ? 1 : -1;
-    if (sortKey !== k) { sortKey = k; sortDir = base; }
+    if (rankOrder) { rankOrder = ""; sortKey = k; sortDir = base; } // leave ranking-order mode
+    else if (sortKey !== k) { sortKey = k; sortDir = base; }
     else if (sortDir === base) sortDir = -base;
-    else { sortKey = "adp"; sortDir = 1; } // third click: back to the original order
+    else { sortKey = "adp"; sortDir = 1; rankOrder = "rank:" + activeRank; } // back to default
     page = 0; renderBoard();
   });
   colsEl.appendChild(th);

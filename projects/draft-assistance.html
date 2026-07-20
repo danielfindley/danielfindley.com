@@ -214,7 +214,11 @@ td.marks { min-width: 92px; }
   width: 21px; height: 21px; line-height: 1; padding: 0; margin-right: 4px; font-size: 14px;
 }
 .rowadd:hover { background: var(--accent); color: #fff; }
-.rowadd.opts { background: none; color: var(--ink2); letter-spacing: 1px; margin-right: 8px; margin-left: -4px; }
+.rowadd.opts { background: none; color: var(--ink2); letter-spacing: 1px; margin-right: 2px; margin-left: -4px; }
+.rowadd.mv { background: none; border: none; color: var(--ink2); width: 14px; font-size: 11px; margin-right: 1px; }
+.rowadd.mv:hover { background: var(--line-soft); color: var(--accent); }
+.rowadd.mv:disabled { opacity: .25; cursor: default; background: none; }
+.rowadd.mv:last-of-type { margin-right: 6px; }
 .rowadd.opts:hover { background: var(--line-soft); color: var(--ink); }
 #amenu .rgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 2px; }
 #amenu .rgrid button { text-align: center; padding: 6px 4px; font-variant-numeric: tabular-nums; }
@@ -699,7 +703,11 @@ function fmt(k, v, r) {
       ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click to remove">${ri + 1}</span>`
       : `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`;
     const opts = `<button class="rowadd opts" data-menu="${r.id}" title="Options: draft, plan, list…">⋯</button>`;
-    return `${rankCtl}${opts}<span class="pname" data-pp="${r.id}">${v}</span>${mkRo(r.id)}` +
+    const mv = ri >= 0
+      ? `<button class="rowadd mv" data-mvup="${r.id}" title="Move up in ranking"${ri === 0 ? " disabled" : ""}>↑</button>` +
+        `<button class="rowadd mv" data-mvdn="${r.id}" title="Move down in ranking"${ri === rank.length - 1 ? " disabled" : ""}>↓</button>`
+      : "";
+    return `${rankCtl}${opts}${mv}<span class="pname" data-pp="${r.id}">${v}</span>${mkRo(r.id)}` +
       (r.custom ? ' <span class="badge">new</span>' : "");
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
@@ -861,6 +869,10 @@ document.getElementById("rows").addEventListener("click", e => {
   if (un) { rank = rank.filter(x => x !== un.dataset.unrank); saveRank(); syncAll(); return; }
   const m = e.target.closest("[data-menu]");
   if (m) { showMenu(m.dataset.menu, e); return; }
+  const up = e.target.closest("[data-mvup]");
+  if (up) { const i = rank.indexOf(up.dataset.mvup); moveRank(i, i - 1); return; }
+  const dn = e.target.closest("[data-mvdn]");
+  if (dn) { const i = rank.indexOf(dn.dataset.mvdn); moveRank(i, i + 1); return; }
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderBoard(); }
   // everything else lives in the + (rank) and ⋯ (options) buttons

@@ -446,8 +446,7 @@ textarea.notes {
   </header>
 
   <section id="v-board">
-    <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA ·
-      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-24</p>
+    <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA · built 2026-07-24</p>
     <div class="controls">
       <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
@@ -469,6 +468,7 @@ textarea.notes {
       <span class="pinfo" id="pinfo"></span>
       <button class="ghost" id="pnext" title="Next page">›</button>
       <button class="ghost" id="reset">Clear drafted</button>
+      <button class="ghost" id="resetrank" title="Empty the active ranking">Clear ranking</button>
     </div>
     <div class="tablebox">
       <table id="tbl">
@@ -1004,6 +1004,9 @@ document.getElementById("pnext").addEventListener("click", () => { page++; rende
 document.getElementById("reset").addEventListener("click", () => {
   taken.clear(); save("dm_taken", []); renderBoard();
 });
+document.getElementById("resetrank").addEventListener("click", () => {
+  if (rank.length && confirm(`Clear the ranking "${ranks[activeRank].name}"?`)) { rank = []; saveRank(); syncAll(); }
+});
 
 /* ---------- search-to-add widget ---------- */
 function searchAdd(root, excluded, onPick) {
@@ -1269,27 +1272,29 @@ function renderRankSelect() {
     sel.appendChild(o);
   });
 }
+// board ordered by a ranking? keep it pointed at the one being edited
+const followRank = () => { if (rankOrder.startsWith("rank:")) rankOrder = "rank:" + activeRank; };
 document.getElementById("rksel").addEventListener("change", e => {
   activeRank = +e.target.value;
   rank = ranks[activeRank].ids;
   save("dm_rank_active", activeRank);
-  syncAll();
+  followRank(); syncAll();
 });
 document.getElementById("rknew").addEventListener("click", () => {
   let name = null;
-  try { name = prompt("Name for the new ranking:", `Ranking ${ranks.length + 1}`); } catch { name = `Ranking ${ranks.length + 1}`; }
+  try { name = prompt("Name for the new ranking:", "Defender Rankings"); } catch { name = `Ranking ${ranks.length + 1}`; }
   if (name === null) return;
   name = name.trim() || `Ranking ${ranks.length + 1}`;
   ranks.push({ name, ids: [] });
   activeRank = ranks.length - 1; rank = ranks[activeRank].ids;
-  saveRank(); syncAll();
+  saveRank(); followRank(); syncAll();
 });
 document.getElementById("rkdel").addEventListener("click", () => {
   if (ranks.length === 1) { if (confirm("This is your only ranking — clear it?")) { rank = []; saveRank(); syncAll(); } return; }
   if (!confirm(`Delete ranking "${ranks[activeRank].name}"?`)) return;
   ranks.splice(activeRank, 1);
   activeRank = 0; rank = ranks[0].ids;
-  saveRank(); syncAll();
+  saveRank(); followRank(); syncAll();
 });
 
 /* ---------- draft plan ---------- */

@@ -341,6 +341,25 @@ td.empty.l { text-align: left; }
   border-radius: 5px; cursor: pointer;
 }
 #amenu button:hover { background: var(--accent-soft); color: var(--accent); }
+.statspick { position: relative; }
+.spanel[hidden] { display: none; }
+.spanel {
+  position: absolute; top: calc(100% + 5px); right: 0; z-index: 55;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  box-shadow: 0 12px 36px #0006; padding: 10px 14px 12px;
+  display: flex; gap: 16px; flex-wrap: wrap; width: max-content;
+  max-width: min(92vw, 620px);
+}
+.spanel .sgrp { min-width: 84px; }
+.spanel .sglab {
+  font-size: 10px; letter-spacing: .06em; text-transform: uppercase; font-weight: 700;
+  color: var(--ink2); margin-bottom: 3px; white-space: nowrap;
+}
+.spanel label {
+  display: flex; gap: 6px; align-items: center; font-size: 12.5px;
+  padding: 1px 0; cursor: pointer; white-space: nowrap;
+}
+.spanel .sall { flex-basis: 100%; }
 @media (max-width: 900px) { .plancols { grid-template-columns: 1fr; } .planbox { max-height: 44vh; } }
 .tlogo { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .teamcard .tlogo { width: 22px; height: 22px; vertical-align: -5px; margin-right: 8px; }
@@ -428,7 +447,7 @@ textarea.notes {
 
   <section id="v-board">
     <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA ·
-      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-23</p>
+      xFP = FPts with goals/assists swapped for xG/xA at your league's back-solved weights · built 2026-07-24</p>
     <div class="controls">
       <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
@@ -437,6 +456,10 @@ textarea.notes {
       <label class="minctl">min minutes <input type="number" id="minmin" value="0" step="90" min="0"></label>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl">order <select id="rankorder" title="Sort by one of your rankings — ranked first, rest by ADP"></select></label>
+      <div class="statspick">
+        <button class="ghost" id="statsbtn" title="Choose which stat columns to show">stats ▾</button>
+        <div class="spanel" id="spanel" hidden></div>
+      </div>
       <span class="count" id="count"></span>
       <label class="minctl">show <select id="psize">
         <option value="25" selected>25</option><option value="50">50</option>
@@ -450,12 +473,7 @@ textarea.notes {
     <div class="tablebox">
       <table id="tbl">
         <thead>
-          <tr class="grp">
-            <th class="grp-pin" colspan="8"></th>
-            <th colspan="4">Draft</th><th colspan="2"></th>
-            <th colspan="1">Actual</th><th colspan="4">Expected</th>
-            <th colspan="9">Underlying (FotMob)</th><th colspan="6">Fantrax</th><th></th>
-          </tr>
+          <tr class="grp" id="grp"></tr>
           <tr class="cols" id="cols"></tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -470,6 +488,10 @@ textarea.notes {
     <div class="panel rankhead" style="margin-top:14px">
       <span class="colhead">My Ranking</span>
       <label class="minctl"><select id="rksel" aria-label="Choose ranking"></select></label>
+      <label class="minctl">scope <select id="rkpos" title="Position scope for the next new ranking — a scoped ranking only takes players of that position">
+        <option value="">All positions</option><option value="G">G only</option>
+        <option value="D">D only</option><option value="M">M only</option><option value="F">F only</option>
+      </select></label>
       <button class="ghost" id="rknew">＋ New ranking</button>
       <button class="ghost" id="rkdel">Delete</button>
       <span class="dim" id="rankcount"></span>
@@ -496,7 +518,9 @@ textarea.notes {
       when filtered by position. Click a column header to view sorted by that stat (reordering pauses;
       click <b>#</b> to get back to your order). Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
-      adds someone who hasn't transferred in yet straight to your ranking. Crossed-out players show struck
+      adds someone who hasn't transferred in yet straight to your ranking. Set <b>scope</b> before
+      <b>＋ New ranking</b> to make a position-only ranking (e.g. just defenders) — the board's <b>+</b>
+      then only takes players of that position. Crossed-out players show struck
       through here. Saved in this browser.</p>
     </div><!-- /sub-rank -->
 
@@ -547,7 +571,8 @@ textarea.notes {
       history back to 2019/20.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
-      the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP).
+      the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP); the
+      <b>stats</b> control picks which stat columns are shown (applies to every table).
       Everything saves in this browser.
     </p>
   </section>
@@ -668,27 +693,90 @@ let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = tru
 let page = 0, pageSize = 25;
 let viewMode = "rank", rankOrder = "rank:" + activeRank; // default: your ranking, ADP fallback
 
+// stat column picker — hidden keys apply to board, ranking, and list tables;
+// the 8 pinned columns are always shown (their sticky offsets are hardcoded)
+const N_PIN = 8;
+const SGROUPS = [ // [picker label, group-header label, keys]
+  ["Draft", "Draft", ["myrk","adprk","rd","rk"]],
+  ["Playing time", "", ["gp","min"]],
+  ["Actual", "Actual", ["fp90"]],
+  ["Expected", "Expected", ["xfpts","xfpg","luck","luck90"]],
+  ["Underlying (FotMob)", "Underlying (FotMob)", ["g","xg","at","xa","xg90","xa90","npxg90","sh90","sot90"]],
+  ["Fantrax", "Fantrax", ["kp","tkw","int","acnc","cos","aer"]],
+  ["Tags", "", ["marks"]],
+];
+const GRPOF = {};
+SGROUPS.forEach(([, h, ks]) => ks.forEach(k => GRPOF[k] = h));
+let hiddenCols = new Set(store("dm_cols", []));
+const VCOLS = () => COLS.filter(([k]) => !hiddenCols.has(k));
+
 const colsEl = document.getElementById("cols");
-COLS.forEach(([k, label, cls]) => {
-  const th = document.createElement("th");
-  th.className = cls; th.dataset.k = k; th.textContent = label;
-  if (k === "luck") th.title = "FPts − xFP · positive = finished above expected (ran hot) · negative = below expected (unlucky)";
-  if (k === "rk") th.title = "Last season's total points rank — 1 = most FPts in 2025/26. Compare against ADP to spot value.";
-  if (k === "adp") th.title = "Average draft pick across 2026-27 mock drafts (lower = drafted earlier)";
-  if (k === "myrk") th.title = "The player's spot in your active ranking";
-  if (k === "adprk") th.title = "Order off the board: rank by ADP (1 = first pick in mocks)";
-  if (k === "rd") th.title = "The 12-team round that ADP rank falls in (ranks 1–12 = round 1, 13–24 = round 2, …)";
-  if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
-  if (k !== "marks") th.addEventListener("click", () => {
-    const base = ASC_DEFAULT.has(k) ? 1 : -1;
-    if (rankOrder) { rankOrder = ""; sortKey = k; sortDir = base; } // leave ranking-order mode
-    else if (sortKey !== k) { sortKey = k; sortDir = base; }
-    else if (sortDir === base) sortDir = -base;
-    else { sortKey = "adp"; sortDir = 1; rankOrder = "rank:" + activeRank; } // back to default
-    page = 0; renderBoard();
+function buildBoardHead() {
+  const vis = VCOLS();
+  let grpHtml = `<th class="grp-pin" colspan="${N_PIN}"></th>`, cur = null, n = 0;
+  vis.slice(N_PIN).forEach(([k]) => {
+    const g = GRPOF[k];
+    if (g === cur) n++;
+    else { if (cur !== null) grpHtml += `<th colspan="${n}">${cur}</th>`; cur = g; n = 1; }
   });
-  colsEl.appendChild(th);
+  if (cur !== null) grpHtml += `<th colspan="${n}">${cur}</th>`;
+  document.getElementById("grp").innerHTML = grpHtml;
+  colsEl.innerHTML = "";
+  vis.forEach(([k, label, cls]) => {
+    const th = document.createElement("th");
+    th.className = cls; th.dataset.k = k; th.textContent = label;
+    if (k === "luck") th.title = "FPts − xFP · positive = finished above expected (ran hot) · negative = below expected (unlucky)";
+    if (k === "rk") th.title = "Last season's total points rank — 1 = most FPts in 2025/26. Compare against ADP to spot value.";
+    if (k === "adp") th.title = "Average draft pick across 2026-27 mock drafts (lower = drafted earlier)";
+    if (k === "myrk") th.title = "The player's spot in your active ranking";
+    if (k === "adprk") th.title = "Order off the board: rank by ADP (1 = first pick in mocks)";
+    if (k === "rd") th.title = "The 12-team round that ADP rank falls in (ranks 1–12 = round 1, 13–24 = round 2, …)";
+    if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
+    if (k !== "marks") th.addEventListener("click", () => {
+      const base = ASC_DEFAULT.has(k) ? 1 : -1;
+      if (rankOrder) { rankOrder = ""; sortKey = k; sortDir = base; } // leave ranking-order mode
+      else if (sortKey !== k) { sortKey = k; sortDir = base; }
+      else if (sortDir === base) sortDir = -base;
+      else { sortKey = "adp"; sortDir = 1; rankOrder = "rank:" + activeRank; } // back to default
+      page = 0; renderBoard();
+    });
+    colsEl.appendChild(th);
+  });
+}
+buildBoardHead();
+
+const spanel = document.getElementById("spanel");
+function buildStatsPanel() {
+  spanel.innerHTML = "";
+  SGROUPS.forEach(([label, , keys]) => {
+    const d = document.createElement("div");
+    d.className = "sgrp";
+    d.innerHTML = `<div class="sglab">${label}</div>` + keys.map(k => {
+      const c = COLS.find(x => x[0] === k);
+      return `<label><input type="checkbox" data-k="${k}"${hiddenCols.has(k) ? "" : " checked"}> ${c[1]}</label>`;
+    }).join("");
+    spanel.appendChild(d);
+  });
+  const all = document.createElement("button");
+  all.className = "ghost sall"; all.textContent = "Show all";
+  all.addEventListener("click", () => { hiddenCols.clear(); save("dm_cols", []); applyCols(); });
+  spanel.appendChild(all);
+}
+function applyCols() {
+  buildStatsPanel(); buildBoardHead(); buildRankHead();
+  renderBoard(); renderRank(); renderLists();
+}
+spanel.addEventListener("change", e => {
+  const k = e.target.dataset.k; if (!k) return;
+  e.target.checked ? hiddenCols.delete(k) : hiddenCols.add(k);
+  if (!rankOrder && hiddenCols.has(sortKey)) { sortKey = "adp"; sortDir = 1; rankOrder = "rank:" + activeRank; }
+  save("dm_cols", [...hiddenCols]);
+  applyCols();
 });
+document.getElementById("statsbtn").addEventListener("click", () => {
+  spanel.hidden = !spanel.hidden;
+});
+buildStatsPanel();
 
 function luckChip(v, t = 10, dp = 0) {
   const cls = v > t ? "over" : v < -t ? "under" : "flat";
@@ -699,9 +787,12 @@ function fmt(k, v, r) {
   if (v == null) return '<span class="dim">–</span>';
   if (k === "player") {
     const ri = rank.indexOf(r.id);
+    const scope = ranks[activeRank].pos || "";
     const rankCtl = ri >= 0
       ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click to remove">${ri + 1}</span>`
-      : `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`;
+      : (!scope || r.pos === scope)
+        ? `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`
+        : `<button class="rowadd" disabled title="“${ranks[activeRank].name}” is ${scope}-only">+</button>`;
     const opts = `<button class="rowadd opts" data-menu="${r.id}" title="Options: draft, plan, list…">⋯</button>`;
     const mv = ri >= 0
       ? `<button class="rowadd mv" data-mvup="${r.id}" title="Move up in ranking"${ri === 0 ? " disabled" : ""}>↑</button>` +
@@ -729,7 +820,7 @@ function renderBoard() {
   updateMyRk();
   const roSel = document.getElementById("rankorder");
   roSel.innerHTML = "";
-  [["", "columns"], ...ranks.map((r, i) => ["rank:" + i, "Rk: " + r.name])].forEach(([v, l]) => {
+  [["", "columns"], ...ranks.map((r, i) => ["rank:" + i, "Rk: " + r.name + (r.pos ? ` (${r.pos})` : "")])].forEach(([v, l]) => {
     const o = document.createElement("option");
     o.value = v; o.textContent = l; roSel.appendChild(o);
   });
@@ -757,11 +848,12 @@ function renderBoard() {
   document.getElementById("pprev").disabled = page === 0;
   document.getElementById("pnext").disabled = page >= pages - 1;
   let html = "";
+  const VC = VCOLS();
   shown.forEach((r, i) => {
     if (rp && !rp.has(r.id) && (i > 0 ? rp.has(shown[i - 1].id) : false))
-      html += `<tr class="divrow"><td colspan="${COLS.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}” — rest by ADP rank</td></tr>`;
+      html += `<tr class="divrow"><td colspan="${VC.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}” — rest by ADP rank</td></tr>`;
     html += `<tr data-id="${r.id}"${taken.has(r.id) ? ' class="taken"' : ""}>` +
-      COLS.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>";
+      VC.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>";
   });
   document.getElementById("rows").innerHTML = html;
   document.getElementById("count").textContent =
@@ -802,12 +894,14 @@ function buildMenuMain() {
     save("dm_taken", [...taken]); menuDone();
   });
   const ri = rank.indexOf(id);
-  menuItem(ri >= 0
-    ? `Remove from “${ranks[activeRank].name}” (#${ri + 1})`
-    : `Add to ranking “${ranks[activeRank].name}”`, () => {
-    ri >= 0 ? rank = rank.filter(x => x !== id) : rank.push(id);
-    saveRank(); menuDone();
-  });
+  const scope = ranks[activeRank].pos || "";
+  if (ri >= 0 || !scope || r.pos === scope)
+    menuItem(ri >= 0
+      ? `Remove from “${ranks[activeRank].name}” (#${ri + 1})`
+      : `Add to ranking “${ranks[activeRank].name}”`, () => {
+      ri >= 0 ? rank = rank.filter(x => x !== id) : rank.push(id);
+      saveRank(); menuDone();
+    });
   const rd = plan.findIndex(a => a.includes(id));
   if (rd >= 0) {
     menuItem(`Remove from plan (Rd ${rd + 1})`, () => { removeFromPlan(id); menuDone(); });
@@ -929,12 +1023,14 @@ function searchAdd(root, excluded, onPick) {
 /* ---------- ranking (below the board) ---------- */
 const rankList = document.getElementById("ranklist");
 let rankPos = "", rankSort = null; // null = your own order
-const RN_COLS = COLS.length + 2; // rnum + COLS + controls
 const rcolsEl = document.getElementById("rcols");
-rcolsEl.innerHTML = '<th class="rnum" data-k="__order" title="Your order — click to restore">#</th>' +
-  COLS.map(([k, label, cls]) => k === "marks"
-    ? `<th class="${cls}">${label}</th>`
-    : `<th class="${cls}" data-k="${k}">${label}</th>`).join("") + "<th></th>";
+function buildRankHead() {
+  rcolsEl.innerHTML = '<th class="rnum" data-k="__order" title="Your order — click to restore">#</th>' +
+    VCOLS().map(([k, label, cls]) => k === "marks"
+      ? `<th class="${cls}">${label}</th>`
+      : `<th class="${cls}" data-k="${k}">${label}</th>`).join("") + "<th></th>";
+}
+buildRankHead();
 rcolsEl.addEventListener("click", e => {
   const th = e.target.closest("th[data-k]"); if (!th) return;
   const k = th.dataset.k;
@@ -945,7 +1041,7 @@ rcolsEl.addEventListener("click", e => {
   renderRank();
 });
 function statCells(r, id) {
-  return COLS.map(([k, , cls]) => {
+  return VCOLS().map(([k, , cls]) => {
     if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}` +
       (r.custom ? ' <span class="badge">new</span>' : "") + "</td>";
     return `<td class="${cls}">${fmt(k, r[k], r)}</td>`;
@@ -991,7 +1087,7 @@ function renderRank() {
       th.innerHTML += ` <span class="arr">${rankSort.dir < 0 ? "▼" : "▲"}</span>`;
   });
   if (!entries.length) {
-    rankList.innerHTML = `<tr><td colspan="${RN_COLS}" class="empty l">` + (rank.length
+    rankList.innerHTML = `<tr><td colspan="${VCOLS().length + 2}" class="empty l">` + (rank.length
       ? "No ranked players at this position."
       : "No players ranked yet — click <b>+</b> next to a player in the board above.") + "</td></tr>";
     return;
@@ -1054,7 +1150,11 @@ rankList.addEventListener("drop", e => {
 document.getElementById("cpshow").addEventListener("click", () => {
   const f = document.getElementById("addform");
   f.hidden = !f.hidden;
-  if (!f.hidden) document.getElementById("cpname").focus();
+  if (!f.hidden) {
+    const scope = ranks[activeRank].pos;
+    if (scope) document.getElementById("cppos").value = scope;
+    document.getElementById("cpname").focus();
+  }
 });
 document.getElementById("cpadd").addEventListener("click", () => {
   const name = document.getElementById("cpname").value.trim();
@@ -1089,7 +1189,7 @@ function renderLists() {
     const ls = listSort[li];
     let entries = L.ids.map(id => byId[id]).filter(Boolean);
     if (ls) entries = entries.slice().sort(nullLast(ls.k, ls.dir));
-    const head = COLS.map(([k, label, cls]) => {
+    const head = VCOLS().map(([k, label, cls]) => {
       if (k === "marks") return `<th class="${cls}">${label}</th>`;
       const arr = ls && ls.k === k ? ` <span class="arr">${ls.dir < 0 ? "▼" : "▲"}</span>` : "";
       return `<th class="${cls}${ls && ls.k === k ? " sort" : ""}" data-k="${k}">${label}${arr}</th>`;
@@ -1097,7 +1197,7 @@ function renderLists() {
     const body = entries.length ? entries.map(r =>
       `<tr class="${r.custom ? "custom " : ""}${taken.has(r.id) ? "taken" : ""}">` + statCells(r, r.id) +
       `<td class="rctl"><button class="iconbtn" data-li="${li}" data-id="${r.id}" title="Remove">✕</button></td></tr>`).join("")
-      : `<tr><td colspan="${COLS.length + 1}" class="empty l">Empty — add players above.</td></tr>`;
+      : `<tr><td colspan="${VCOLS().length + 1}" class="empty l">Empty — add players above.</td></tr>`;
     const card = document.createElement("div");
     card.className = "listcard";
     card.dataset.li = li;
@@ -1156,7 +1256,7 @@ function renderRankSelect() {
   sel.innerHTML = "";
   ranks.forEach((r, i) => {
     const o = document.createElement("option");
-    o.value = i; o.textContent = `${r.name} (${r.ids.length})`;
+    o.value = i; o.textContent = `${r.name}${r.pos ? " · " + r.pos + " only" : ""} (${r.ids.length})`;
     if (i === activeRank) o.selected = true;
     sel.appendChild(o);
   });
@@ -1168,11 +1268,13 @@ document.getElementById("rksel").addEventListener("change", e => {
   syncAll();
 });
 document.getElementById("rknew").addEventListener("click", () => {
+  const rpos = document.getElementById("rkpos").value;
+  const defName = rpos ? `${rpos} ranking` : `Ranking ${ranks.length + 1}`;
   let name = null;
-  try { name = prompt("Name for the new ranking:", `Ranking ${ranks.length + 1}`); } catch { name = `Ranking ${ranks.length + 1}`; }
+  try { name = prompt("Name for the new ranking:", defName); } catch { name = defName; }
   if (name === null) return;
-  name = name.trim() || `Ranking ${ranks.length + 1}`;
-  ranks.push({ name, ids: [] });
+  name = name.trim() || defName;
+  ranks.push({ name, pos: rpos, ids: [] });
   activeRank = ranks.length - 1; rank = ranks[activeRank].ids;
   saveRank(); syncAll();
 });
@@ -1391,6 +1493,7 @@ document.addEventListener("click", e => {
   if (p) { showPop(p.dataset.pp, e); return; }
   if (!e.target.closest("#pop")) hidePop();
   if (!e.target.closest("#amenu") && !e.target.closest("[data-menu]")) hideMenu();
+  if (!e.target.closest(".statspick")) spanel.hidden = true;
 });
 document.addEventListener("keydown", e => { if (e.key === "Escape") { hidePop(); hideMenu(); } });
 

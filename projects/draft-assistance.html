@@ -488,10 +488,6 @@ textarea.notes {
     <div class="panel rankhead" style="margin-top:14px">
       <span class="colhead">My Ranking</span>
       <label class="minctl"><select id="rksel" aria-label="Choose ranking"></select></label>
-      <label class="minctl">scope <select id="rkpos" title="Position scope for the next new ranking — a scoped ranking only takes players of that position">
-        <option value="">All positions</option><option value="G">G only</option>
-        <option value="D">D only</option><option value="M">M only</option><option value="F">F only</option>
-      </select></label>
       <button class="ghost" id="rknew">＋ New ranking</button>
       <button class="ghost" id="rkdel">Delete</button>
       <span class="dim" id="rankcount"></span>
@@ -518,9 +514,7 @@ textarea.notes {
       when filtered by position. Click a column header to view sorted by that stat (reordering pauses;
       click <b>#</b> to get back to your order). Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
-      adds someone who hasn't transferred in yet straight to your ranking. Set <b>scope</b> before
-      <b>＋ New ranking</b> to make a position-only ranking (e.g. just defenders) — the board's <b>+</b>
-      then only takes players of that position. Crossed-out players show struck
+      adds someone who hasn't transferred in yet straight to your ranking. Crossed-out players show struck
       through here. Saved in this browser.</p>
     </div><!-- /sub-rank -->
 
@@ -694,9 +688,11 @@ let page = 0, pageSize = 25;
 let viewMode = "rank", rankOrder = "rank:" + activeRank; // default: your ranking, ADP fallback
 
 // stat column picker — hidden keys apply to board, ranking, and list tables;
-// the 8 pinned columns are always shown (their sticky offsets are hardcoded)
+// every column except the player name is toggleable. Pinned columns keep
+// position:sticky, so their left offsets are recomputed from what's visible.
 const N_PIN = 8;
 const SGROUPS = [ // [picker label, group-header label, keys]
+  ["Pinned", "", ["team","pos","adp","fpts","fpg","xfp90","npxga90"]],
   ["Draft", "Draft", ["myrk","adprk","rd","rk"]],
   ["Playing time", "", ["gp","min"]],
   ["Actual", "Actual", ["fp90"]],
@@ -710,11 +706,31 @@ SGROUPS.forEach(([, h, ks]) => ks.forEach(k => GRPOF[k] = h));
 let hiddenCols = new Set(store("dm_cols", []));
 const VCOLS = () => COLS.filter(([k]) => !hiddenCols.has(k));
 
+// sticky offsets: cumulative widths of the visible pinned columns
+const PIN_W = { player: 224, team: 106, pos: 46, adp: 62, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
+const PIN_CLS = { team: "p-team", pos: "p-pos", adp: "p-adp", fpts: "p-fpts", fpg: "p-fpg", xfp90: "p-xfp90", npxga90: "p-npxga" };
+const pinStyle = document.createElement("style");
+// must come after the template's own <style> (same specificity, last wins)
+document.body.appendChild(pinStyle);
+function buildPinCss() {
+  let css = "", left = PIN_W.player, last = null;
+  COLS.slice(1, N_PIN).forEach(([k]) => {
+    if (hiddenCols.has(k)) return;
+    const c = PIN_CLS[k];
+    css += `.${c}{left:${left}px}#ranktbl .${c}{left:${left + 44}px}`;
+    left += PIN_W[k]; last = c;
+  });
+  if (hiddenCols.has("npxga90")) // pane-edge border normally lives on .p-npxga
+    css += `${last ? "." + last : ".player.pin"}{border-right:2px solid var(--line)}`;
+  pinStyle.textContent = `@media (min-width: 701px){${css}}`;
+}
+
 const colsEl = document.getElementById("cols");
 function buildBoardHead() {
   const vis = VCOLS();
-  let grpHtml = `<th class="grp-pin" colspan="${N_PIN}"></th>`, cur = null, n = 0;
-  vis.slice(N_PIN).forEach(([k]) => {
+  const nPin = vis.filter(([, , cls]) => cls.split(" ").includes("pin")).length;
+  let grpHtml = `<th class="grp-pin" colspan="${nPin}"></th>`, cur = null, n = 0;
+  vis.slice(nPin).forEach(([k]) => {
     const g = GRPOF[k];
     if (g === cur) n++;
     else { if (cur !== null) grpHtml += `<th colspan="${n}">${cur}</th>`; cur = g; n = 1; }
@@ -743,6 +759,7 @@ function buildBoardHead() {
     colsEl.appendChild(th);
   });
 }
+buildPinCss();
 buildBoardHead();
 
 const spanel = document.getElementById("spanel");
@@ -763,7 +780,7 @@ function buildStatsPanel() {
   spanel.appendChild(all);
 }
 function applyCols() {
-  buildStatsPanel(); buildBoardHead(); buildRankHead();
+  buildStatsPanel(); buildPinCss(); buildBoardHead(); buildRankHead();
   renderBoard(); renderRank(); renderLists();
 }
 spanel.addEventListener("change", e => {
@@ -787,12 +804,9 @@ function fmt(k, v, r) {
   if (v == null) return '<span class="dim">–</span>';
   if (k === "player") {
     const ri = rank.indexOf(r.id);
-    const scope = ranks[activeRank].pos || "";
     const rankCtl = ri >= 0
       ? `<span class="rankedno" data-unrank="${r.id}" title="#${ri + 1} in “${ranks[activeRank].name}” — click to remove">${ri + 1}</span>`
-      : (!scope || r.pos === scope)
-        ? `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`
-        : `<button class="rowadd" disabled title="“${ranks[activeRank].name}” is ${scope}-only">+</button>`;
+      : `<button class="rowadd" data-add="${r.id}" title="Add to ranking “${ranks[activeRank].name}”">+</button>`;
     const opts = `<button class="rowadd opts" data-menu="${r.id}" title="Options: draft, plan, list…">⋯</button>`;
     const mv = ri >= 0
       ? `<button class="rowadd mv" data-mvup="${r.id}" title="Move up in ranking"${ri === 0 ? " disabled" : ""}>↑</button>` +
@@ -820,7 +834,7 @@ function renderBoard() {
   updateMyRk();
   const roSel = document.getElementById("rankorder");
   roSel.innerHTML = "";
-  [["", "columns"], ...ranks.map((r, i) => ["rank:" + i, "Rk: " + r.name + (r.pos ? ` (${r.pos})` : "")])].forEach(([v, l]) => {
+  [["", "columns"], ...ranks.map((r, i) => ["rank:" + i, "Rk: " + r.name])].forEach(([v, l]) => {
     const o = document.createElement("option");
     o.value = v; o.textContent = l; roSel.appendChild(o);
   });
@@ -894,14 +908,12 @@ function buildMenuMain() {
     save("dm_taken", [...taken]); menuDone();
   });
   const ri = rank.indexOf(id);
-  const scope = ranks[activeRank].pos || "";
-  if (ri >= 0 || !scope || r.pos === scope)
-    menuItem(ri >= 0
-      ? `Remove from “${ranks[activeRank].name}” (#${ri + 1})`
-      : `Add to ranking “${ranks[activeRank].name}”`, () => {
-      ri >= 0 ? rank = rank.filter(x => x !== id) : rank.push(id);
-      saveRank(); menuDone();
-    });
+  menuItem(ri >= 0
+    ? `Remove from “${ranks[activeRank].name}” (#${ri + 1})`
+    : `Add to ranking “${ranks[activeRank].name}”`, () => {
+    ri >= 0 ? rank = rank.filter(x => x !== id) : rank.push(id);
+    saveRank(); menuDone();
+  });
   const rd = plan.findIndex(a => a.includes(id));
   if (rd >= 0) {
     menuItem(`Remove from plan (Rd ${rd + 1})`, () => { removeFromPlan(id); menuDone(); });
@@ -1150,11 +1162,7 @@ rankList.addEventListener("drop", e => {
 document.getElementById("cpshow").addEventListener("click", () => {
   const f = document.getElementById("addform");
   f.hidden = !f.hidden;
-  if (!f.hidden) {
-    const scope = ranks[activeRank].pos;
-    if (scope) document.getElementById("cppos").value = scope;
-    document.getElementById("cpname").focus();
-  }
+  if (!f.hidden) document.getElementById("cpname").focus();
 });
 document.getElementById("cpadd").addEventListener("click", () => {
   const name = document.getElementById("cpname").value.trim();
@@ -1256,7 +1264,7 @@ function renderRankSelect() {
   sel.innerHTML = "";
   ranks.forEach((r, i) => {
     const o = document.createElement("option");
-    o.value = i; o.textContent = `${r.name}${r.pos ? " · " + r.pos + " only" : ""} (${r.ids.length})`;
+    o.value = i; o.textContent = `${r.name} (${r.ids.length})`;
     if (i === activeRank) o.selected = true;
     sel.appendChild(o);
   });
@@ -1268,13 +1276,11 @@ document.getElementById("rksel").addEventListener("change", e => {
   syncAll();
 });
 document.getElementById("rknew").addEventListener("click", () => {
-  const rpos = document.getElementById("rkpos").value;
-  const defName = rpos ? `${rpos} ranking` : `Ranking ${ranks.length + 1}`;
   let name = null;
-  try { name = prompt("Name for the new ranking:", defName); } catch { name = defName; }
+  try { name = prompt("Name for the new ranking:", `Ranking ${ranks.length + 1}`); } catch { name = `Ranking ${ranks.length + 1}`; }
   if (name === null) return;
-  name = name.trim() || defName;
-  ranks.push({ name, pos: rpos, ids: [] });
+  name = name.trim() || `Ranking ${ranks.length + 1}`;
+  ranks.push({ name, ids: [] });
   activeRank = ranks.length - 1; rank = ranks[activeRank].ids;
   saveRank(); syncAll();
 });

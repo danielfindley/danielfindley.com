@@ -446,7 +446,7 @@ textarea.notes {
   </header>
 
   <section id="v-board">
-    <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA · built 2026-07-24</p>
+    <p class="sub">Fantrax PL draft board · 2025/26 season · Fantrax totals joined with FotMob xG/xA · built 2026-07-27</p>
     <div class="controls">
       <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
@@ -467,8 +467,15 @@ textarea.notes {
       <button class="ghost" id="pprev" title="Previous page">‹</button>
       <span class="pinfo" id="pinfo"></span>
       <button class="ghost" id="pnext" title="Next page">›</button>
+      <button class="ghost" id="cpshow" title="Add a player who isn't in the data yet (e.g. incoming transfer)">＋ New player</button>
       <button class="ghost" id="reset">Clear drafted</button>
       <button class="ghost" id="resetrank" title="Empty the active ranking">Clear ranking</button>
+    </div>
+    <div class="panel addform" id="addform" hidden>
+      <input id="cpname" placeholder="Player name (e.g. incoming transfer)">
+      <input id="cpteam" placeholder="Team" style="width:80px" maxlength="12">
+      <select id="cppos"><option>F</option><option>M</option><option>D</option><option>G</option></select>
+      <button class="btn" id="cpadd">Add</button>
     </div>
     <div class="tablebox">
       <table id="tbl">
@@ -495,14 +502,7 @@ textarea.notes {
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
       </div>
       <span style="flex:1"></span>
-      <button class="ghost" id="cpshow">＋ New player</button>
       <button class="ghost" id="rankclear">Clear ranking</button>
-    </div>
-    <div class="panel addform" id="addform" hidden>
-      <input id="cpname" placeholder="Player name (e.g. incoming transfer)">
-      <input id="cpteam" placeholder="Team" style="width:80px" maxlength="12">
-      <select id="cppos"><option>F</option><option>M</option><option>D</option><option>G</option></select>
-      <button class="btn" id="cpadd">Add</button>
     </div>
     <div class="tablebox rankt">
       <table id="ranktbl">
@@ -513,9 +513,8 @@ textarea.notes {
     <p class="legend">Drag rows (or use ↑ ↓) to reorder — numbers are the spot in your full ranking even
       when filtered by position. Click a column header to view sorted by that stat (reordering pauses;
       click <b>#</b> to get back to your order). Tags (<span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
-      <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. <b>＋ New player</b>
-      adds someone who hasn't transferred in yet straight to your ranking. Crossed-out players show struck
-      through here. Saved in this browser.</p>
+      <span class="up">▲</span> <span class="down">▼</span></span>) are clickable here too. Crossed-out players
+      show struck through here. Saved in this browser.</p>
     </div><!-- /sub-rank -->
 
     <div id="sub-plan" hidden>
@@ -561,7 +560,9 @@ textarea.notes {
       <span class="k chip under">− cold</span> finished below it (buy-low candidate).
       <b>+</b> adds straight to your active ranking (the numbered badge shows their spot — click it to
       remove); <b>⋯</b> opens options: cross out as drafted, rank, pencil into a plan round (you pick the
-      round in the follow-up), or toggle any of your lists. Click a <b>player's name</b> for season-by-season
+      round in the follow-up), toggle any of your lists, or remove a player who has left the league.
+      <b>＋ New player</b> adds someone who isn't in the data yet (incoming transfer) — no ADP, but they
+      float to the top of the board. Click a <b>player's name</b> for season-by-season
       history back to 2019/20.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
@@ -617,6 +618,7 @@ const taken = new Set(store("dm_taken", []));
 let marks = store("dm_marks", {});   // id -> ["star","flag","up","down"]
 let lists = store("dm_lists", []);   // [{name, ids:[]}]
 let custom = store("dm_custom", []); // hand-added players (new signings, no PL data)
+let removed = new Set(store("dm_removed", [])); // hidden from the board (transferred out of league)
 
 // multiple named rankings; dm_rank is the pre-multi legacy key
 let ranks = store("dm_ranks", null);
@@ -842,6 +844,7 @@ function renderBoard() {
   roSel.value = rankOrder;
   const q = query.toLowerCase();
   let rows = DATA.concat(custom).filter(r =>
+    !removed.has(r.id) &&
     (!pos || r.pos === pos) &&
     (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) && (!hasAdp || r.adp != null))) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)));
@@ -849,7 +852,11 @@ function renderBoard() {
   if (rp) rows.sort(poolComparator(rankOrder));
   else rows.sort((a, b) => {
     const av = a[sortKey], bv = b[sortKey];
-    if (av == null) return 1; if (bv == null) return -1;
+    if (av == null || bv == null) { // custom players have no stats — float them up, other gaps sink
+      if (av == null && bv == null) return (b.custom ? 1 : 0) - (a.custom ? 1 : 0);
+      if (av == null) return a.custom ? -1 : 1;
+      return b.custom ? 1 : -1;
+    }
     return (av < bv ? -1 : av > bv ? 1 : 0) * sortDir;
   });
   const total = rows.length;
@@ -923,6 +930,21 @@ function buildMenuMain() {
     menuItem("Plan: candidate for round ▸", () => buildMenuRounds("cand"));
   }
   if (lists.length) menuItem("Lists ▸", () => buildMenuLists());
+  menuItem("Remove player (transferred out of league)", () => {
+    if (!confirm(`Remove ${r.player} from the board? They'll disappear from all tables and searches.`)) return;
+    if (r.custom) {
+      custom = custom.filter(c => c.id !== id);
+      save("dm_custom", custom); rebuildIndex();
+    } else {
+      removed.add(id); save("dm_removed", [...removed]);
+    }
+    ranks.forEach(rk => { const ix = rk.ids.indexOf(id); if (ix >= 0) rk.ids.splice(ix, 1); });
+    plans.forEach(p => p.rounds.forEach(a => { const ix = a.indexOf(id); if (ix >= 0) a.splice(ix, 1); }));
+    lists.forEach(L => { const ix = L.ids.indexOf(id); if (ix >= 0) L.ids.splice(ix, 1); });
+    taken.delete(id);
+    save("dm_ranks", ranks); save("dm_plans", plans); save("dm_lists", lists); save("dm_taken", [...taken]);
+    menuDone();
+  });
 }
 function buildMenuLists() { // toggle membership in any list; stays open
   const id = menuId, r = byId[id];
@@ -1017,7 +1039,7 @@ function searchAdd(root, excluded, onPick) {
     close();
     const q = input.value.trim().toLowerCase();
     if (q.length < 2) return;
-    const hits = DATA.concat(custom).filter(r => !excluded().has(r.id) &&
+    const hits = DATA.concat(custom).filter(r => !excluded().has(r.id) && !removed.has(r.id) &&
       (r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)))
       .sort((a, b) => (b.xfpts ?? -1) - (a.xfpts ?? -1)).slice(0, 8);
     if (!hits.length) return;
@@ -1074,8 +1096,9 @@ function poolComparator(key) {
     const ids = (ranks[+key.slice(5)] || { ids: [] }).ids;
     const pos = new Map(ids.map((id, i) => [id, i]));
     return (a, b) => {
-      const pa = pos.has(a.id) ? pos.get(a.id) : Infinity;
-      const pb = pos.has(b.id) ? pos.get(b.id) : Infinity;
+      // unranked custom players float above everything until you slot them in
+      const pa = pos.has(a.id) ? pos.get(a.id) : a.custom ? -1 : Infinity;
+      const pb = pos.has(b.id) ? pos.get(b.id) : b.custom ? -1 : Infinity;
       if (pa !== pb) return pa - pb;
       return (a.adprk ?? 1e9) - (b.adprk ?? 1e9);
     };
@@ -1174,10 +1197,10 @@ document.getElementById("cpadd").addEventListener("click", () => {
   custom.push({ id, player: name,
     team: (document.getElementById("cpteam").value.trim() || "?").toUpperCase(),
     pos: document.getElementById("cppos").value, custom: true, min: 0 });
-  rank.push(id); // straight into the ranking
-  save("dm_custom", custom); saveRank(); rebuildIndex();
+  save("dm_custom", custom); rebuildIndex();
   document.getElementById("cpname").value = ""; document.getElementById("cpteam").value = "";
-  renderRank();
+  page = 0; // new player floats to the top of the board — jump there
+  refreshAfterAct();
 });
 document.getElementById("cpname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("cpadd").click();
@@ -1450,7 +1473,7 @@ function renderTeam(code) {
     : "";
   document.getElementById("teamnotes").value = noteFor(code);
   document.getElementById("teamsaved").textContent = "";
-  const players = DATA.filter(r => curTeam(r) === code && r.min > 0)
+  const players = DATA.filter(r => curTeam(r) === code && r.min > 0 && !removed.has(r.id))
     .sort((a, b) => (b.xfpts ?? -1) - (a.xfpts ?? -1));
   document.getElementById("teamrows").innerHTML = players.map(r =>
     `<tr><td class="l player"><span class="pname" data-pp="${r.id}">${r.player}</span>${mkRo(r.id)}</td><td class="l"><span class="pill ${r.pos}">${r.pos}</span></td>

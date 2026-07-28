@@ -473,8 +473,9 @@ textarea.notes {
     </div>
     <div class="panel addform" id="addform" hidden>
       <input id="cpname" placeholder="Player name (e.g. incoming transfer)">
-      <input id="cpteam" placeholder="Team" style="width:80px" maxlength="12">
+      <select id="cpteam" title="Club"></select>
       <select id="cppos"><option>F</option><option>M</option><option>D</option><option>G</option></select>
+      <input id="cpadp" type="number" min="1" step="0.5" placeholder="ADP (estimated)" style="width:130px" title="Optional — where you guess they'd go in mocks">
       <button class="btn" id="cpadd">Add</button>
     </div>
     <div class="tablebox">
@@ -559,10 +560,12 @@ textarea.notes {
       <b>Luck</b> = FPts − xFP: <span class="k chip over">+ hot</span> finished above expected (regression risk),
       <span class="k chip under">− cold</span> finished below it (buy-low candidate).
       <b>+</b> adds straight to your active ranking (the numbered badge shows their spot — click it to
-      remove); <b>⋯</b> opens options: cross out as drafted, rank, pencil into a plan round (you pick the
-      round in the follow-up), toggle any of your lists, or remove a player who has left the league.
-      <b>＋ New player</b> adds someone who isn't in the data yet (incoming transfer) — no ADP, but they
-      float to the top of the board. Click a <b>player's name</b> for season-by-season
+      remove); <b>⋯</b> opens options: cross out as drafted, rank, jump to an exact ranking spot,
+      pencil into a plan round (you pick the round in the follow-up), toggle any of your lists, or
+      remove a player who has left the league.
+      <b>＋ New player</b> adds someone who isn't in the data yet (incoming transfer): pick their club
+      and optionally an estimated ADP — they slot into the ADP order by it (below your ranked players),
+      or sit at the top of the ADP section without one. Click a <b>player's name</b> for season-by-season
       history back to 2019/20.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
@@ -823,6 +826,7 @@ function fmt(k, v, r) {
   if (k === "luck90") return luckChip(v, 0.5, 2);
   if (k === "rk") return v;
   if (typeof v !== "number") return v;
+  if (k === "adp" && r.custom) return `${v.toFixed(1)} <span class="dim">est</span>`;
   if (ONE_DP.has(k)) return v.toFixed(1);
   return Number.isInteger(v) ? v : v.toFixed(2);
 }
@@ -919,6 +923,16 @@ function buildMenuMain() {
     ? `Remove from “${ranks[activeRank].name}” (#${ri + 1})`
     : `Add to ranking “${ranks[activeRank].name}”`, () => {
     ri >= 0 ? rank = rank.filter(x => x !== id) : rank.push(id);
+    saveRank(); menuDone();
+  });
+  menuItem(ri >= 0 ? `Move to ranking spot… (now #${ri + 1})` : "Add at ranking spot…", () => {
+    const max = rank.length + (ri >= 0 ? 0 : 1);
+    const v = prompt(`Put ${r.player} at which spot? (1–${max})`, ri >= 0 ? ri + 1 : max);
+    if (v == null) return;
+    const n = parseInt(v, 10);
+    if (!Number.isFinite(n) || n < 1) return;
+    if (ri >= 0) rank.splice(ri, 1);
+    rank.splice(Math.min(n - 1, rank.length), 0, id);
     saveRank(); menuDone();
   });
   const rd = plan.findIndex(a => a.includes(id));
@@ -1096,11 +1110,11 @@ function poolComparator(key) {
     const ids = (ranks[+key.slice(5)] || { ids: [] }).ids;
     const pos = new Map(ids.map((id, i) => [id, i]));
     return (a, b) => {
-      // unranked custom players float above everything until you slot them in
-      const pa = pos.has(a.id) ? pos.get(a.id) : a.custom ? -1 : Infinity;
-      const pb = pos.has(b.id) ? pos.get(b.id) : b.custom ? -1 : Infinity;
+      const pa = pos.has(a.id) ? pos.get(a.id) : Infinity;
+      const pb = pos.has(b.id) ? pos.get(b.id) : Infinity;
       if (pa !== pb) return pa - pb;
-      return (a.adprk ?? 1e9) - (b.adprk ?? 1e9);
+      // ADP fallback: customs slot in by their estimated ADP, or top of the section without one
+      return (a.adp ?? (a.custom ? -1 : 1e9)) - (b.adp ?? (b.custom ? -1 : 1e9));
     };
   }
   return nullLast(key, ASC_DEFAULT.has(key) ? 1 : -1);
@@ -1194,14 +1208,20 @@ document.getElementById("cpadd").addEventListener("click", () => {
   const name = document.getElementById("cpname").value.trim();
   if (!name) return;
   const id = "cu" + Date.now();
+  const adp = parseFloat(document.getElementById("cpadp").value);
   custom.push({ id, player: name,
-    team: (document.getElementById("cpteam").value.trim() || "?").toUpperCase(),
-    pos: document.getElementById("cppos").value, custom: true, min: 0 });
+    team: document.getElementById("cpteam").value,
+    pos: document.getElementById("cppos").value, custom: true, min: 0,
+    adp: Number.isFinite(adp) && adp > 0 ? adp : null });
   save("dm_custom", custom); rebuildIndex();
-  document.getElementById("cpname").value = ""; document.getElementById("cpteam").value = "";
-  page = 0; // new player floats to the top of the board — jump there
+  document.getElementById("cpname").value = ""; document.getElementById("cpadp").value = "";
+  document.getElementById("cpteam").value = "?";
+  page = 0; // new player sorts high on the board — jump there
   refreshAfterAct();
 });
+document.getElementById("cpteam").innerHTML = '<option value="?">— club —</option>' +
+  TEAMS.map(t => `<option value="${t.code}">${t.code} · ${t.name}</option>`).join("");
+document.getElementById("cpteam").value = "?";
 document.getElementById("cpname").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("cpadd").click();
 });

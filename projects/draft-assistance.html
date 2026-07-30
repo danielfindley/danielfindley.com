@@ -1723,7 +1723,9 @@ const POSFAM = {
   CB:["CB","C"], RCB:["CB","R"], LCB:["CB","L"],
   CDM:["DM","C"], CM:["CM","C"], RCM:["CM","R"], LCM:["CM","L"],
   RM:["WM","R"], LM:["WM","L"],
-  CAM:["AM","C"], RAM:["AM","R"], LAM:["AM","L"],
+  // only CAM is a central playmaker; the wide two of a 4-2-3-1 "3" are
+  // winger roles, so they belong to W and inherit the strict flank rule
+  CAM:["AM","C"], RAM:["W","R"], LAM:["W","L"],
   RW:["W","R"], LW:["W","L"],
   // strikers are not sided: the two of a front two are both centre-forwards,
   // so RS/LS are the same role and cover each other freely
@@ -1735,9 +1737,11 @@ const FAMNEAR = { // how well one family covers another
   CB:{CB:1, DM:.4},   // FB -> CB is conditional on a back three, see compat()
   DM:{DM:1, CM:.8, CB:.35},
   CM:{CM:1, DM:.8, AM:.7, WM:.5},
-  WM:{WM:1, W:.75, CM:.5, FB:.5, AM:.5},
-  AM:{AM:1, W:.8, CM:.7, ST:.5, WM:.55},   // the "3" in a 4-2-3-1 is winger territory
-  W:{W:1, AM:.8, WM:.75, ST:.45},
+  WM:{WM:1, W:.75, CM:.5, FB:.5, AM:.4},
+  AM:{AM:1, CM:.7, W:.55, ST:.5, WM:.5},
+  // a winger slot wants an actual wide player: a central 10 or a striker
+  // drifting out is a stretch, not cover
+  W:{W:1, WM:.75, ST:.35, AM:.3},
   ST:{ST:1, AM:.5, W:.45},
 };
 const BANDOF = { GK:"G", FB:"D", CB:"D", DM:"M", CM:"M", WM:"M", AM:"M", W:"F", ST:"F" };
@@ -1745,7 +1749,7 @@ const BANDOF = { GK:"G", FB:"D", CB:"D", DM:"M", CM:"M", WM:"M", AM:"M", W:"F", 
 // has actually started there, which shows up as its own term in the sum below.
 const WIDE_FAM = new Set(["FB", "W", "WM"]);
 // central roles do swap: RCB/LCB/CB are interchangeable, central mids nearly so
-const CROSS_FLANK = { CB: .9, DM: 1, CM: .8, ST: .8, AM: .5 };
+const CROSS_FLANK = { CB: .9, DM: 1, CM: .8, ST: .8 };
 function compat(slotPos, playerPos, back3) {
   const a = POSFAM[slotPos], b = POSFAM[playerPos];
   if (!a || !b) return 0;
@@ -1763,10 +1767,11 @@ function compat(slotPos, playerPos, back3) {
 // hand-set positions (sub-only players, new signings) override FotMob's;
 // ordered best first, weighted so the first choice dominates
 let posOver = store("dm_posover", {});
-const POSLIST = [
-  ["GK"], ["RB","RCB","CB","LCB","LB"], ["RWB","LWB"],
-  ["CDM","RCM","CM","LCM"], ["RM","LM"], ["RAM","CAM","LAM"],
-  ["RW","LW"], ["RS","ST","LS"],
+const POSLIST = [  // RS/LS and RAM/LAM are omitted: strikers aren't sided, and
+  ["GK"],          // the wide attacking-mid roles are the same as RW/LW
+  ["RB","RCB","CB","LCB","LB"], ["RWB","LWB"],
+  ["CDM","RCM","CM","LCM"], ["RM","LM"], ["CAM"],
+  ["RW","LW"], ["ST"],
 ];
 const overPb = list => list.map((p, i) => `${p} x${list.length - i}`).join(", ");
 

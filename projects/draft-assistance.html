@@ -12,6 +12,8 @@
   --pos-g: #4a3aa7; --pos-g-bg: #4a3aa71a;
   --pin-bg: #f1f5f1;
   --taken: #a8b0aa; --star: #b98200; --flag: #2a78d6; --up: #2e7d4f; --down: #e34948;
+  --t1: #1f7a4d; --t2: #2a6fd6; --t3: #a8730a; --t4: #b8541f; --t5: #6b7280;
+  --t1bg: #1f7a4d16; --t2bg: #2a6fd616; --t3bg: #a8730a16; --t4bg: #b8541f16; --t5bg: #6b728016;
 }
 @media (prefers-color-scheme: dark) { :root {
   --bg: #101613; --surface: #171f1a; --ink: #e8ece8; --ink2: #97a39b;
@@ -22,6 +24,8 @@
   --pos-g: #9085e9; --pos-g-bg: #9085e924;
   --pin-bg: #1b2620;
   --taken: #4d5a52; --star: #eda100; --flag: #3987e5; --up: #5cbb87; --down: #e66767;
+  --t1: #5cbb87; --t2: #5f9ff0; --t3: #e0a635; --t4: #e8834f; --t5: #97a39b;
+  --t1bg: #5cbb8722; --t2bg: #5f9ff022; --t3bg: #e0a63522; --t4bg: #e8834f22; --t5bg: #97a39b1e;
 } }
 :root[data-theme="light"] {
   --bg: #f7f8f6; --surface: #ffffff; --ink: #18211c; --ink2: #5a6660;
@@ -32,6 +36,8 @@
   --pos-g: #4a3aa7; --pos-g-bg: #4a3aa71a;
   --pin-bg: #f1f5f1;
   --taken: #a8b0aa; --star: #b98200; --flag: #2a78d6; --up: #2e7d4f; --down: #e34948;
+  --t1: #1f7a4d; --t2: #2a6fd6; --t3: #a8730a; --t4: #b8541f; --t5: #6b7280;
+  --t1bg: #1f7a4d16; --t2bg: #2a6fd616; --t3bg: #a8730a16; --t4bg: #b8541f16; --t5bg: #6b728016;
 }
 :root[data-theme="dark"] {
   --bg: #101613; --surface: #171f1a; --ink: #e8ece8; --ink2: #97a39b;
@@ -42,6 +48,8 @@
   --pos-g: #9085e9; --pos-g-bg: #9085e924;
   --pin-bg: #1b2620;
   --taken: #4d5a52; --star: #eda100; --flag: #3987e5; --up: #5cbb87; --down: #e66767;
+  --t1: #5cbb87; --t2: #5f9ff0; --t3: #e0a635; --t4: #e8834f; --t5: #97a39b;
+  --t1bg: #5cbb8722; --t2bg: #5f9ff022; --t3bg: #e0a63522; --t4bg: #e8834f22; --t5bg: #97a39b1e;
 }
 * { box-sizing: border-box; }
 body {
@@ -243,6 +251,40 @@ td.marks { min-width: 92px; }
   font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; font-weight: 700;
   color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px;
 }
+/* position tiers */
+.tbadge {
+  font-size: 9.5px; font-weight: 800; letter-spacing: .04em; border-radius: 4px;
+  padding: 0 4px; color: #fff; vertical-align: 1px;
+}
+.tbadge.t1 { background: var(--t1); } .tbadge.t2 { background: var(--t2); }
+.tbadge.t3 { background: var(--t3); } .tbadge.t4 { background: var(--t4); }
+.tbadge.t5 { background: var(--t5); }
+.tiercard + .tiercard { margin-top: 12px; }
+.tiertbl tr.tierhead td {
+  font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase;
+  padding: 5px 10px; white-space: nowrap;
+  text-align: left;   /* stat cells right-align by default; this one spans them all */
+}
+/* the label sits in a full-width colspan cell, so keep it readable while the
+   stat columns scroll horizontally underneath it */
+.tiertbl tr.tierhead td > span { position: sticky; left: 10px; }
+.tiertbl tr.tierhead.t1 td { background: var(--t1bg); color: var(--t1); border-left: 3px solid var(--t1); }
+.tiertbl tr.tierhead.t2 td { background: var(--t2bg); color: var(--t2); border-left: 3px solid var(--t2); }
+.tiertbl tr.tierhead.t3 td { background: var(--t3bg); color: var(--t3); border-left: 3px solid var(--t3); }
+.tiertbl tr.tierhead.t4 td { background: var(--t4bg); color: var(--t4); border-left: 3px solid var(--t4); }
+.tiertbl tr.tierhead.t5 td { background: var(--t5bg); color: var(--t5); border-left: 3px solid var(--t5); }
+/* the whole row carries its tier colour, pinned cells included */
+.tiertbl tr.t1 td, .tiertbl tr.t1 .pin { background: var(--t1bg); }
+.tiertbl tr.t2 td, .tiertbl tr.t2 .pin { background: var(--t2bg); }
+.tiertbl tr.t3 td, .tiertbl tr.t3 .pin { background: var(--t3bg); }
+.tiertbl tr.t4 td, .tiertbl tr.t4 .pin { background: var(--t4bg); }
+.tiertbl tr.t5 td, .tiertbl tr.t5 .pin { background: var(--t5bg); }
+.tiertbl tr.t1 td.player { border-left: 3px solid var(--t1); }
+.tiertbl tr.t2 td.player { border-left: 3px solid var(--t2); }
+.tiertbl tr.t3 td.player { border-left: 3px solid var(--t3); }
+.tiertbl tr.t4 td.player { border-left: 3px solid var(--t4); }
+.tiertbl tr.t5 td.player { border-left: 3px solid var(--t5); }
+#amenu .rgrid button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 .rankt { max-height: 65vh; margin-top: 12px; }
 #ranktbl th { cursor: default; }
 #ranktbl th[data-k], .listtbl th[data-k] { cursor: pointer; }
@@ -601,6 +643,7 @@ textarea.notes {
       <button data-sub="rank" class="on">My Ranking</button>
       <button data-sub="plan">Draft Plan</button>
       <button data-sub="lists">Lists</button>
+      <button data-sub="tiers">Position Tiers</button>
     </nav>
     <div id="sub-rank">
     <div class="panel rankhead" style="margin-top:14px">
@@ -659,6 +702,24 @@ textarea.notes {
     <p class="legend">Add players from the table's <b>⋯ options → Lists</b> menu; toggle them in or out
       of any list. Each list card is a full-stat sortable table with its own search-to-add.</p>
     </div><!-- /sub-lists -->
+
+    <div id="sub-tiers" hidden>
+    <div class="panel rankhead" style="margin-top:14px">
+      <span class="colhead">Position Tiers</span>
+      <div class="seg" id="tposseg" role="group" aria-label="Tier position filter">
+        <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
+      </div>
+      <span class="dim" id="tiercount"></span>
+      <span style="flex:1"></span>
+      <button class="ghost" id="tierclear">Clear all tiers</button>
+    </div>
+    <div id="tierwrap"></div>
+    <p class="legend">Tier players from the board's <b>⋯ options → Add to position tier</b>; the
+      position bucket comes from the player, so a midfielder put in tier 1 lands in <b>M1</b>. Each
+      row is coloured by its tier, and within a tier players are ordered by ADP. Use <b>▲ ▼</b> to
+      shuffle someone between tiers and <b>✕</b> to untier them. Tier badges also show next to the
+      player's name everywhere else in the app.</p>
+    </div><!-- /sub-tiers -->
 
     <p class="legend">
       <b>How to read it:</b> <b>ADP</b> (average draft pick, from mock drafts) is the default sort;
@@ -783,6 +844,7 @@ let marks = store("dm_marks", {});   // id -> ["star","flag","up","down"]
 let lists = store("dm_lists", []);   // [{name, ids:[]}]
 let custom = store("dm_custom", []); // hand-added players (new signings, no PL data)
 let removed = new Set(store("dm_removed", [])); // hidden from the board (transferred out of league)
+let tiers = store("dm_tiers", {});   // id -> 1..5; the position bucket comes from the player
 
 // multiple named rankings; dm_rank is the pre-multi legacy key
 let ranks = store("dm_ranks", null);
@@ -827,6 +889,10 @@ function toggleMark(id, m) {
   save("dm_marks", marks);
 }
 const curTeam = r => r.team.split("/").pop();
+const N_TIERS = 5;
+const POSNAME = { G: "Goalkeepers", D: "Defenders", M: "Midfielders", F: "Forwards" };
+const tierBadge = id => tiers[id]
+  ? ` <span class="tbadge t${tiers[id]}" title="Tier ${tiers[id]} ${byId[id] ? byId[id].pos : ""}">T${tiers[id]}</span>` : "";
 // left the league but Fantrax still lists them: warn, don't hide
 const goneBadge = id => GONE[id]
   ? ` <span class="badge gone" title="Left the league: ${GONE[id]}">left</span>` : "";
@@ -983,7 +1049,7 @@ function fmt(k, v, r) {
         `<button class="rowadd mv" data-mvdn="${r.id}" title="Move down in ranking"${ri === rank.length - 1 ? " disabled" : ""}>↓</button>`
       : "";
     return `${rankCtl}${opts}${mv}<span class="pname" data-pp="${r.id}">${v}</span>${mkRo(r.id)}` +
-      (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(r.id);
+      tierBadge(r.id) + (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(r.id);
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
   if (k === "pos") return `<span class="pill ${v}">${v}</span>`;
@@ -1062,7 +1128,7 @@ const amenu = document.getElementById("amenu");
 // so swallow clicks inside the menu before they bubble
 amenu.addEventListener("click", e => e.stopPropagation());
 const hideMenu = () => amenu.hidden = true;
-function refreshAfterAct() { renderBoard(); renderRank(); renderPlan(); renderLists(); }
+function refreshAfterAct() { renderBoard(); renderRank(); renderPlan(); renderLists(); renderTiers(); }
 let menuId = null;
 const menuDone = () => { hideMenu(); refreshAfterAct(); };
 function menuItem(label, fn) {
@@ -1108,6 +1174,8 @@ function buildMenuMain() {
     menuItem("Plan: pick for round ▸", () => buildMenuRounds("pick"));
     menuItem("Plan: candidate for round ▸", () => buildMenuRounds("cand"));
   }
+  menuItem(tiers[id] ? `Position tier: now ${r.pos}${tiers[id]} ▸` : "Add to position tier ▸",
+    () => buildMenuTiers());
   if (lists.length) menuItem("Lists ▸", () => buildMenuLists());
   menuItem("Remove player (transferred out of league)", () => {
     if (!confirm(`Remove ${r.player} from the board? They'll disappear from all tables and searches.`)) return;
@@ -1136,6 +1204,27 @@ function buildMenuLists() { // toggle membership in any list; stays open
       refreshAfterAct();
       buildMenuLists();
     });
+  });
+  menuItem("‹ Back", buildMenuMain);
+}
+function buildMenuTiers() { // follow-up: which tier (the position comes from the player)
+  const id = menuId, r = byId[id];
+  amenu.innerHTML = `<div class="mhead">${r.player} · ${POSNAME[r.pos] || r.pos} tier</div>`;
+  const grid = document.createElement("div");
+  grid.className = "rgrid";
+  for (let t = 1; t <= N_TIERS; t++) {
+    const b = document.createElement("button");
+    b.textContent = `${r.pos}${t}`;
+    b.title = `Tier ${t} ${POSNAME[r.pos] || r.pos}`;
+    if (tiers[id] === t) b.classList.add("on");
+    b.addEventListener("click", () => {
+      tiers[id] = t; save("dm_tiers", tiers); menuDone();
+    });
+    grid.appendChild(b);
+  }
+  amenu.appendChild(grid);
+  if (tiers[id]) menuItem(`Remove from tier ${r.pos}${tiers[id]}`, () => {
+    delete tiers[id]; save("dm_tiers", tiers); menuDone();
   });
   menuItem("‹ Back", buildMenuMain);
 }
@@ -1259,7 +1348,7 @@ rcolsEl.addEventListener("click", e => {
 function statCells(r, id) {
   return VCOLS().map(([k, , cls]) => {
     if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}` +
-      (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(id) + "</td>";
+      tierBadge(id) + (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(id) + "</td>";
     return `<td class="${cls}">${fmt(k, r[k], r)}</td>`;
   }).join("");
 }
@@ -1284,7 +1373,7 @@ function poolComparator(key) {
   }
   return nullLast(key, ASC_DEFAULT.has(key) ? 1 : -1);
 }
-function syncAll() { renderBoard(); renderRank(); }
+function syncAll() { renderBoard(); renderRank(); if (viewMode === "tiers") renderTiers(); }
 function renderRank() {
   rank = rank.filter(id => byId[id]);
   updateMyRk();
@@ -1633,6 +1722,74 @@ roundsEl.addEventListener("drop", e => {
   e.preventDefault();
   if (dragPid) addToPlan(dragPid, +rd.dataset.r);
   dragPid = null;
+});
+
+/* ---------- position tiers ---------- */
+const tierWrap = document.getElementById("tierwrap");
+let tierPos = "";
+function renderTiers() {
+  updateMyRk();
+  const entries = Object.keys(tiers)
+    .map(id => byId[id]).filter(r => r && !removed.has(r.id));
+  document.getElementById("tiercount").textContent =
+    entries.length ? `${entries.length} tiered` : "";
+  if (!entries.length) {
+    tierWrap.innerHTML = '<div class="empty" style="border:1px solid var(--line);border-radius:8px">' +
+      'No tiers yet. Use <b>⋯ options → Add to position tier</b> on any player in the board above.</div>';
+    return;
+  }
+  const positions = ["G", "D", "M", "F"].filter(p => (!tierPos || p === tierPos) &&
+    entries.some(r => r.pos === p));
+  if (!positions.length) {
+    tierWrap.innerHTML = `<div class="empty" style="border:1px solid var(--line);border-radius:8px">No tiered ${POSNAME[tierPos] || "players"} yet.</div>`;
+    return;
+  }
+  const head = VCOLS().map(([k, label, cls]) => `<th class="${cls}">${label}</th>`).join("") + "<th></th>";
+  tierWrap.innerHTML = positions.map(p => {
+    const mine = entries.filter(r => r.pos === p);
+    let body = "";
+    for (let t = 1; t <= N_TIERS; t++) {
+      const grp = mine.filter(r => tiers[r.id] === t)
+        .sort((a, b) => (a.adp ?? 1e9) - (b.adp ?? 1e9));
+      if (!grp.length) continue;
+      body += `<tr class="tierhead t${t}"><td colspan="${VCOLS().length + 1}"><span>` +
+        `<b>${p}${t}</b> · tier ${t} ${(POSNAME[p] || p).toLowerCase()} · ${grp.length}</span></td></tr>`;
+      body += grp.map(r =>
+        `<tr class="t${t} ${taken.has(r.id) ? "taken" : ""}" data-id="${r.id}">` + statCells(r, r.id) +
+        `<td class="rctl">
+           <button class="iconbtn" data-tup="${r.id}" title="Move up a tier"${t === 1 ? " disabled" : ""}>▲</button>
+           <button class="iconbtn" data-tdn="${r.id}" title="Move down a tier"${t === N_TIERS ? " disabled" : ""}>▼</button>
+           <button class="iconbtn" data-trm="${r.id}" title="Remove from tiers">✕</button>
+         </td></tr>`).join("");
+    }
+    return `<div class="listcard tiercard">
+      <div class="lhead"><h3>${POSNAME[p] || p}</h3><span class="dim">${mine.length}</span></div>
+      <div class="tablebox rankt">
+        <table class="listtbl tiertbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>
+      </div></div>`;
+  }).join("");
+}
+tierWrap.addEventListener("click", e => {
+  const mk = e.target.closest(".mk");
+  if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderTiers(); syncAll(); return; }
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  const id = d.tup || d.tdn || d.trm; if (!id) return;
+  if (d.trm) delete tiers[id];
+  else tiers[id] = Math.min(N_TIERS, Math.max(1, tiers[id] + (d.tup ? -1 : 1)));
+  save("dm_tiers", tiers);
+  renderTiers(); syncAll();
+});
+document.getElementById("tposseg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  tierPos = b.dataset.pos;
+  document.querySelectorAll("#tposseg button").forEach(x => x.classList.toggle("on", x === b));
+  renderTiers();
+});
+document.getElementById("tierclear").addEventListener("click", () => {
+  if (Object.keys(tiers).length && confirm("Clear every position tier?")) {
+    tiers = {}; save("dm_tiers", tiers); renderTiers(); syncAll();
+  }
 });
 
 /* ---------- teams ---------- */
@@ -2209,14 +2366,16 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") { hidePop();
 
 /* ---------- router + subtabs ---------- */
 const VIEWS = ["board", "teams", "team"];
-const SUBS = ["rank", "plan", "lists"];
+const SUBS = ["rank", "plan", "lists", "tiers"];
 function setSub(s) {
+  if (!SUBS.includes(s)) s = "rank";
   viewMode = s;
   SUBS.forEach(x => document.getElementById("sub-" + x).hidden = x !== s);
   document.querySelectorAll("#subtabs button").forEach(b =>
     b.classList.toggle("on", b.dataset.sub === s));
   if (s === "rank") renderRank();
   else if (s === "plan") renderPlan();
+  else if (s === "tiers") renderTiers();
   else renderLists();
 }
 document.getElementById("subtabs").addEventListener("click", e => {
@@ -2229,6 +2388,7 @@ function route() {
   if (v === "rank") { v = "board"; sub = "rank"; }        // legacy hashes
   else if (v === "plan") { v = "board"; sub = "plan"; }
   else if (v === "lists") { v = "board"; sub = "lists"; }
+  else if (v === "tiers") { v = "board"; sub = "tiers"; }
   if (!VIEWS.includes(v)) v = "board";
   if (v === "team" && !TEAMS.some(t => t.code === parts[1])) v = "teams";
   VIEWS.forEach(x => document.getElementById("v-" + x).hidden = x !== v);

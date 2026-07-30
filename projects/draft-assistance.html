@@ -1730,7 +1730,7 @@ const POSFAM = {
 const FAMNEAR = { // how well one family covers another
   GK:{GK:1},
   FB:{FB:1, CB:.55, WM:.5, W:.35},
-  CB:{CB:1, FB:.5, DM:.4},
+  CB:{CB:1, DM:.4},   // FB -> CB is conditional on a back three, see compat()
   DM:{DM:1, CM:.8, CB:.35},
   CM:{CM:1, DM:.8, AM:.7, WM:.5},
   WM:{WM:1, W:.75, CM:.5, FB:.5, AM:.5},
@@ -1744,9 +1744,14 @@ const BANDOF = { GK:"G", FB:"D", CB:"D", DM:"M", CM:"M", WM:"M", AM:"M", W:"F", 
 const WIDE_FAM = new Set(["FB", "W", "WM"]);
 // central roles do swap: RCB/LCB/CB are interchangeable, central mids nearly so
 const CROSS_FLANK = { CB: .9, DM: 1, CM: .8, ST: .8, AM: .5 };
-function compat(slotPos, playerPos) {
+function compat(slotPos, playerPos, back3) {
   const a = POSFAM[slotPos], b = POSFAM[playerPos];
   if (!a || !b) return 0;
+  // A full back covers centre-back only as the wide centre-back of a back
+  // three or five, and only on his own side. RCB in a back four is a proper
+  // centre-half, and the middle of a three never comes from a full back.
+  if (a[0] === "CB" && b[0] === "FB")
+    return (back3 && a[1] !== "C" && a[1] === b[1]) ? 0.6 : 0;
   const base = (FAMNEAR[a[0]] || {})[b[0]] || 0;
   if (!base) return 0;
   if (a[1] === "C" || b[1] === "C" || a[1] === b[1]) return base;   // same flank, or one is central
@@ -1781,13 +1786,13 @@ function playedPositions(r) { // [[pos, share]] from "LW x12, CAM x5"
   pbCache.set(r.id, out);
   return out;
 }
-function affinity(slotPos, r) {
+function affinity(slotPos, r, back3) {
   const pos = playedPositions(r);
   if (!pos.length) { // no FotMob starts (sub-only or new signing): coarse only
     const band = BANDOF[(POSFAM[slotPos] || [])[0]];
     return r.pos && band === r.pos ? 0.22 : 0;
   }
-  return pos.reduce((s, [p, share]) => s + share * compat(slotPos, p), 0);
+  return pos.reduce((s, [p, share]) => s + share * compat(slotPos, p, back3), 0);
 }
 // how likely they are to actually start: last season's minutes blended with
 // ADP, so new signings with no PL minutes still place on reputation
@@ -1810,13 +1815,16 @@ const dcSave = code => save(dcKey(code), dcState[code]);
 const dcSlots = f => FORMATIONS[f] || FORMATIONS["4-2-3-1"];
 function dcFlat(f) { // [{pos, x, y}] with the right side of the pitch on the right
   const rows = dcSlots(f), out = [];
+  // three central defenders means the wide ones are wing-back-ish roles a full
+  // back can fill; in a back four they are proper centre-halves
+  const back3 = (rows[1] || []).filter(p => (POSFAM[p] || [])[0] === "CB").length >= 3;
   rows.forEach((row, ri) => {
     const y = rows.length > 1 ? 91 - ri * (82 / (rows.length - 1)) : 50;
     // rows are listed right-to-left so the right back sits on the right;
     // span keeps the outermost slots inside the pitch at 20% slot width
     const span = row.length >= 5 ? 76 : row.length === 4 ? 72 : row.length === 3 ? 60 : 40;
     row.forEach((pos, i) => out.push({
-      pos, y,
+      pos, y, back3,
       x: row.length === 1 ? 50 : 50 + span / 2 - (i * span / (row.length - 1)),
     }));
   });
@@ -1832,7 +1840,7 @@ function dcAutoFill(code, f) {
   const slots = dcFlat(f), pool = dcPool(code), pairs = [];
   const fit = {};  // "si|id" -> score
   slots.forEach((s, si) => pool.forEach(r => {
-    const a = affinity(s.pos, r);
+    const a = affinity(s.pos, r, s.back3);
     if (a > 0.1) { fit[si + "|" + r.id] = a * dcWeight(r); pairs.push({ si, id: r.id }); }
   }));
   const sc = (si, id) => fit[si + "|" + id] || 0;
@@ -1918,8 +1926,8 @@ function renderDepth() {
   const pool = dcPool(code);
   document.getElementById("dcdepth").innerHTML = slots.map((s, si) => {
     const r = byId[asn[si]];
-    const backups = pool.filter(p => !starting.has(p.id) && affinity(s.pos, p) > 0.35)
-      .sort((a, b) => affinity(s.pos, b) * dcWeight(b) - affinity(s.pos, a) * dcWeight(a))
+    const backups = pool.filter(p => !starting.has(p.id) && affinity(s.pos, p, s.back3) > 0.35)
+      .sort((a, b) => affinity(s.pos, b, s.back3) * dcWeight(b) - affinity(s.pos, a, s.back3) * dcWeight(a))
       .slice(0, 3).map(p => p.player).join(", ");
     return `<div class="drow"><span class="dp">${s.pos}</span>
       <span class="ds">${r ? r.player : "<span class='dim'>empty</span>"}</span>
@@ -2051,7 +2059,7 @@ function dcSurface(id) {
     let best = -1, bestScore = 0;
     slots.forEach((s, si) => {
       if (asn[si]) return;
-      const a = affinity(s.pos, r);
+      const a = affinity(s.pos, r, s.back3);
       if (a > bestScore) { bestScore = a; best = si; }
     });
     if (best >= 0) { asn[best] = id; dcSave(curTeamCode); }

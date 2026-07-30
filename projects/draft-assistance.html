@@ -556,7 +556,7 @@ textarea.notes {
   </header>
 
   <section id="v-board">
-    <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-07-28</p>
+    <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-07-30</p>
     <div class="controls">
       <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
@@ -1739,13 +1739,19 @@ const FAMNEAR = { // how well one family covers another
   ST:{ST:1, AM:.5, W:.45},
 };
 const BANDOF = { GK:"G", FB:"D", CB:"D", DM:"M", CM:"M", WM:"M", AM:"M", W:"F", ST:"F" };
+// wide roles do not swap flanks: a right back is not left-back cover unless he
+// has actually started there, which shows up as its own term in the sum below.
+const WIDE_FAM = new Set(["FB", "W", "WM"]);
+// central roles do swap: RCB/LCB/CB are interchangeable, central mids nearly so
+const CROSS_FLANK = { CB: .9, DM: 1, CM: .8, ST: .8, AM: .5 };
 function compat(slotPos, playerPos) {
   const a = POSFAM[slotPos], b = POSFAM[playerPos];
   if (!a || !b) return 0;
   const base = (FAMNEAR[a[0]] || {})[b[0]] || 0;
   if (!base) return 0;
-  const sideOk = a[1] === "C" || b[1] === "C" || a[1] === b[1];
-  return base * (sideOk ? 1 : 0.72);
+  if (a[1] === "C" || b[1] === "C" || a[1] === b[1]) return base;   // same flank, or one is central
+  if (WIDE_FAM.has(a[0]) || WIDE_FAM.has(b[0])) return 0;
+  return base * Math.min(CROSS_FLANK[a[0]] ?? .8, CROSS_FLANK[b[0]] ?? .8);
 }
 // hand-set positions (sub-only players, new signings) override FotMob's;
 // ordered best first, weighted so the first choice dominates

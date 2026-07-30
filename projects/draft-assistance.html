@@ -1706,15 +1706,15 @@ document.getElementById("teamcols").addEventListener("click", e => {
    r.pb = "LW x12, CAM x5"). Assignment is greedy on affinity * playing
    weight, which approximates the best overall XI without a full solver. */
 const FORMATIONS = {
-  "4-4-2":   [["GK"], ["RB","RCB","LCB","LB"], ["RM","RCM","LCM","LM"], ["RS","LS"]],
+  "4-4-2":   [["GK"], ["RB","RCB","LCB","LB"], ["RM","RCM","LCM","LM"], ["ST","ST"]],
   "4-2-3-1": [["GK"], ["RB","RCB","LCB","LB"], ["RCM","LCM"], ["RAM","CAM","LAM"], ["ST"]],
   "4-3-3":   [["GK"], ["RB","RCB","LCB","LB"], ["RCM","CDM","LCM"], ["RW","ST","LW"]],
   "4-1-4-1": [["GK"], ["RB","RCB","LCB","LB"], ["CDM"], ["RM","RCM","LCM","LM"], ["ST"]],
   "4-4-1-1": [["GK"], ["RB","RCB","LCB","LB"], ["RM","RCM","LCM","LM"], ["CAM"], ["ST"]],
   "3-4-3":   [["GK"], ["RCB","CB","LCB"], ["RWB","RCM","LCM","LWB"], ["RW","ST","LW"]],
   "3-4-2-1": [["GK"], ["RCB","CB","LCB"], ["RWB","RCM","LCM","LWB"], ["RAM","LAM"], ["ST"]],
-  "3-5-2":   [["GK"], ["RCB","CB","LCB"], ["RWB","RCM","CDM","LCM","LWB"], ["RS","LS"]],
-  "5-3-2":   [["GK"], ["RWB","RCB","CB","LCB","LWB"], ["RCM","CDM","LCM"], ["RS","LS"]],
+  "3-5-2":   [["GK"], ["RCB","CB","LCB"], ["RWB","RCM","CDM","LCM","LWB"], ["ST","ST"]],
+  "5-3-2":   [["GK"], ["RWB","RCB","CB","LCB","LWB"], ["RCM","CDM","LCM"], ["ST","ST"]],
 };
 // position -> [family, side]; side R/L only matters within a family
 const POSFAM = {
@@ -1725,7 +1725,9 @@ const POSFAM = {
   RM:["WM","R"], LM:["WM","L"],
   CAM:["AM","C"], RAM:["AM","R"], LAM:["AM","L"],
   RW:["W","R"], LW:["W","L"],
-  ST:["ST","C"], RS:["ST","R"], LS:["ST","L"], RCF:["ST","R"], LCF:["ST","L"],
+  // strikers are not sided: the two of a front two are both centre-forwards,
+  // so RS/LS are the same role and cover each other freely
+  ST:["ST","C"], RS:["ST","C"], LS:["ST","C"], RCF:["ST","C"], LCF:["ST","C"],
 };
 const FAMNEAR = { // how well one family covers another
   GK:{GK:1},

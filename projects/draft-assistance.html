@@ -640,7 +640,7 @@ textarea.notes {
       <label class="minctl">min minutes <input type="number" id="minmin" value="0" step="90" min="0"></label>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl">order <select id="rankorder" title="Sort by one of your rankings: ranked first, rest by ADP"></select></label>
-      <label class="minctl" title="On: a column sort reorders everyone together. Off: your ranked players stay as a block at the top, with each half sorted by that column."><input type="checkbox" id="sortranked"> sort ranked</label>
+      <label class="minctl" title="On: a column sort reorders everyone together. Off: your ranked players stay on top in your ranking order, and only the pool below them sorts by the column."><input type="checkbox" id="sortranked"> sort ranked</label>
       <div class="statspick">
         <button class="ghost" id="statsbtn" title="Choose which stat columns to show">stats ▾</button>
         <div class="spanel" id="spanel" hidden></div>
@@ -795,8 +795,9 @@ textarea.notes {
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
       the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP).
       With a ranking active, <b>sort ranked</b> decides what a column sort does: leave it off and
-      your ranked players stay as a block at the top with each half sorted by that column; tick it
-      and the whole list sorts together. A third click on the header goes back to ranking order. The
+      your ranked players stay on top in your ranking order while only the pool below them sorts by
+      that column; tick it and the whole list sorts together. A third click on the header goes back
+      to ranking order throughout. The
       <b>stats</b> control picks which stat columns are shown (applies to every table).
       Everything saves in this browser.
     </p>
@@ -975,6 +976,7 @@ const COLS = [
   ["marks","Tags","l marks nosort"],
 ];
 const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp"]);
+const COL_LABEL = k => (COLS.find(c => c[0] === k) || [, k])[1];
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rdpk","rk","myrk","dsrk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
 let page = 0, pageSize = 25;
@@ -1174,12 +1176,14 @@ function renderBoard() {
   // three ways to order the board:
   //   no column sort            -> your ranking first, then the rest by ADP
   //   column sort, sort ranked  -> one flat sort over everyone
-  //   column sort, not ranked   -> ranked stay a block on top, each half sorted
+  //   column sort, not ranked   -> ranked keep your ranking order on top, and
+  //                               only the pool below them sorts by the column
   const split = rp && colSort && !sortRanked;
   if (rp && !colSort) rows.sort(poolComparator(rankOrder));
   else if (split) rows.sort((a, b) => {
     const ra = rp.has(a.id), rb = rp.has(b.id);
-    return ra === rb ? byCol(a, b) : (ra ? -1 : 1);
+    if (ra !== rb) return ra ? -1 : 1;
+    return ra ? rp.get(a.id) - rp.get(b.id) : byCol(a, b);
   });
   else rows.sort(byCol);
   const total = rows.length;
@@ -1195,8 +1199,8 @@ function renderBoard() {
   const VC = VCOLS();
   shown.forEach((r, i) => {
     if (rp && !sortRanked && !rp.has(r.id) && (i > 0 ? rp.has(shown[i - 1].id) : false))
-      html += `<tr class="divrow"><td colspan="${VC.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}”` +
-        (colSort ? "" : " · rest by ADP rank") + "</td></tr>";
+      html += `<tr class="divrow"><td colspan="${VC.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}” · rest by ` +
+        (colSort ? COL_LABEL(sortKey) : "ADP rank") + "</td></tr>";
     html += `<tr data-id="${r.id}"${taken.has(r.id) ? ' class="taken"' : ""}>` +
       VC.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>";
   });

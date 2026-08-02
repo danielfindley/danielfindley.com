@@ -640,6 +640,7 @@ textarea.notes {
       <label class="minctl">min minutes <input type="number" id="minmin" value="0" step="90" min="0"></label>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl">order <select id="rankorder" title="Sort by one of your rankings: ranked first, rest by ADP"></select></label>
+      <label class="minctl" title="On: a column sort reorders everyone together. Off: your ranked players stay as a block at the top, with each half sorted by that column."><input type="checkbox" id="sortranked"> sort ranked</label>
       <div class="statspick">
         <button class="ghost" id="statsbtn" title="Choose which stat columns to show">stats ▾</button>
         <div class="spanel" id="spanel" hidden></div>
@@ -792,7 +793,10 @@ textarea.notes {
       history back to 2019/20.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. Click any column to sort;
-      the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP); the
+      the <b>order</b> control sorts by one of your rankings (ranked first, rest by ADP).
+      With a ranking active, <b>sort ranked</b> decides what a column sort does: leave it off and
+      your ranked players stay as a block at the top with each half sorted by that column; tick it
+      and the whole list sorts together. A third click on the header goes back to ranking order. The
       <b>stats</b> control picks which stat columns are shown (applies to every table).
       Everything saves in this browser.
     </p>
@@ -975,6 +979,8 @@ const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rdpk","rk
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
 let page = 0, pageSize = 25;
 let viewMode = "rank", rankOrder = "rank:" + activeRank; // default: your ranking, ADP fallback
+let colSort = false;                          // has a column header taken over the order?
+let sortRanked = store("dm_sortranked", false); // sort ranked players in with everyone else?
 
 // stat column picker: hidden keys apply to board, ranking, and list tables;
 // every column except the player name is toggleable. Pinned columns keep
@@ -1042,10 +1048,12 @@ function buildBoardHead() {
     if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
     if (k !== "marks") th.addEventListener("click", () => {
       const base = ASC_DEFAULT.has(k) ? 1 : -1;
-      if (rankOrder) { rankOrder = ""; sortKey = k; sortDir = base; } // leave ranking-order mode
-      else if (sortKey !== k) { sortKey = k; sortDir = base; }
+      if (!colSort || sortKey !== k) { colSort = true; sortKey = k; sortDir = base; }
       else if (sortDir === base) sortDir = -base;
-      else { sortKey = "adp"; sortDir = 1; rankOrder = "rank:" + activeRank; } // back to default
+      else {                                   // third click: back to ranking order
+        colSort = false; sortKey = "adp"; sortDir = 1;
+        if (!rankOrder) rankOrder = "rank:" + activeRank;
+      }
       page = 0; renderBoard();
     });
     colsEl.appendChild(th);
@@ -1078,7 +1086,7 @@ function applyCols() {
 spanel.addEventListener("change", e => {
   const k = e.target.dataset.k; if (!k) return;
   e.target.checked ? hiddenCols.delete(k) : hiddenCols.add(k);
-  if (!rankOrder && hiddenCols.has(sortKey)) { sortKey = "adp"; sortDir = 1; rankOrder = "rank:" + activeRank; }
+  if (colSort && hiddenCols.has(sortKey)) { colSort = false; sortKey = "adp"; sortDir = 1; }
   save("dm_cols", [...hiddenCols]);
   applyCols();
 });
@@ -1154,8 +1162,7 @@ function renderBoard() {
     (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) && (!hasAdp || r.adp != null))) &&
     (!q || r.player.toLowerCase().includes(q) || r.team.toLowerCase().includes(q)));
   const rp = rankOrder ? rankPosMap(rankOrder) : null;
-  if (rp) rows.sort(poolComparator(rankOrder));
-  else rows.sort((a, b) => {
+  const byCol = (a, b) => {
     const av = a[sortKey], bv = b[sortKey];
     if (av == null || bv == null) { // custom players have no stats; float them up, other gaps sink
       if (av == null && bv == null) return (b.custom ? 1 : 0) - (a.custom ? 1 : 0);
@@ -1163,7 +1170,18 @@ function renderBoard() {
       return b.custom ? 1 : -1;
     }
     return (av < bv ? -1 : av > bv ? 1 : 0) * sortDir;
+  };
+  // three ways to order the board:
+  //   no column sort            -> your ranking first, then the rest by ADP
+  //   column sort, sort ranked  -> one flat sort over everyone
+  //   column sort, not ranked   -> ranked stay a block on top, each half sorted
+  const split = rp && colSort && !sortRanked;
+  if (rp && !colSort) rows.sort(poolComparator(rankOrder));
+  else if (split) rows.sort((a, b) => {
+    const ra = rp.has(a.id), rb = rp.has(b.id);
+    return ra === rb ? byCol(a, b) : (ra ? -1 : 1);
   });
+  else rows.sort(byCol);
   const total = rows.length;
   const pages = Math.max(1, Math.ceil(total / pageSize));
   page = Math.min(page, pages - 1);
@@ -1176,19 +1194,24 @@ function renderBoard() {
   let html = "";
   const VC = VCOLS();
   shown.forEach((r, i) => {
-    if (rp && !rp.has(r.id) && (i > 0 ? rp.has(shown[i - 1].id) : false))
-      html += `<tr class="divrow"><td colspan="${VC.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}” · rest by ADP rank</td></tr>`;
+    if (rp && !sortRanked && !rp.has(r.id) && (i > 0 ? rp.has(shown[i - 1].id) : false))
+      html += `<tr class="divrow"><td colspan="${VC.length}" class="pooldiv">end of “${ranks[+rankOrder.slice(5)].name}”` +
+        (colSort ? "" : " · rest by ADP rank") + "</td></tr>";
     html += `<tr data-id="${r.id}"${taken.has(r.id) ? ' class="taken"' : ""}>` +
       VC.map(([k, , cls]) => `<td class="${cls}">${fmt(k, r[k], r)}</td>`).join("") + "</tr>";
   });
   document.getElementById("rows").innerHTML = html;
   document.getElementById("count").textContent =
     `${rows.length} players · ${rows.filter(r => taken.has(r.id)).length} drafted`;
+  const colDrives = colSort || !rp;   // is a column header what's ordering the board?
   colsEl.querySelectorAll("th").forEach(th => {
-    th.classList.toggle("sort", !rp && th.dataset.k === sortKey);
+    th.classList.toggle("sort", colDrives && th.dataset.k === sortKey);
     th.innerHTML = th.textContent.replace(/ [▲▼]$/, "");
-    if (!rp && th.dataset.k === sortKey) th.innerHTML += ` <span class="arr">${sortDir < 0 ? "▼" : "▲"}</span>`;
+    if (colDrives && th.dataset.k === sortKey) th.innerHTML += ` <span class="arr">${sortDir < 0 ? "▼" : "▲"}</span>`;
   });
+  const srBox = document.getElementById("sortranked");
+  srBox.checked = sortRanked;
+  srBox.closest("label").hidden = !rp;   // only meaningful with a ranking active
 }
 
 /* per-row actions menu: rank / plan pick / plan candidate / list */
@@ -1344,7 +1367,14 @@ document.getElementById("rows").addEventListener("click", e => {
   // everything else lives in the + (rank) and ⋯ (options) buttons
 });
 document.getElementById("rankorder").addEventListener("change", e => {
-  rankOrder = e.target.value; page = 0; renderBoard();
+  rankOrder = e.target.value;
+  if (!rankOrder && !colSort) colSort = true;   // no ranking left to fall back on
+  page = 0; renderBoard();
+});
+document.getElementById("sortranked").addEventListener("change", e => {
+  sortRanked = e.target.checked;
+  save("dm_sortranked", sortRanked);
+  page = 0; renderBoard();
 });
 document.getElementById("q").addEventListener("input", e => { query = e.target.value; page = 0; renderBoard(); });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; page = 0; renderBoard(); });

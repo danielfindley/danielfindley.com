@@ -76,9 +76,12 @@ section[hidden] { display: none; }
   border-radius: 8px; margin-bottom: 14px;
 }
 .controls input[type="search"] {
-  flex: 1 1 180px; max-width: 260px; padding: 7px 10px; border: 1px solid var(--line);
+  width: 100%; padding: 7px 10px; border: 1px solid var(--line);
   border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit;
 }
+/* the search box, plus the club suggestions that drop under it (styled with
+   .drop, below, next to the search-to-add widget that shares it) */
+.qwrap { position: relative; flex: 1 1 180px; max-width: 260px; }
 input:focus, textarea:focus, button:focus-visible, a:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 1px;
 }
@@ -184,14 +187,19 @@ td.marks { min-width: 92px; }
   width: 100%; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px;
   background: var(--bg); color: var(--ink); font: inherit;
 }
-.sadd .drop {
+.sadd .drop, .qwrap .drop {
   position: absolute; top: calc(100% + 3px); left: 0; right: 0; z-index: 10;
   background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
   box-shadow: 0 6px 20px #0003; max-height: 280px; overflow: auto;
 }
-.sadd .drop div { padding: 7px 10px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
-.sadd .drop div:hover { background: var(--accent-soft); }
-.sadd .drop .t { color: var(--ink2); font-size: 12px; }
+.sadd .drop div, .qwrap .drop div { padding: 7px 10px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.sadd .drop div:hover, .qwrap .drop div:hover { background: var(--accent-soft); }
+.sadd .drop .t, .qwrap .drop .t { color: var(--ink2); font-size: 12px; }
+.qwrap .drop[hidden] { display: none; }
+.qwrap .drop { min-width: 262px; }          /* club name + count on one line, even on mobile */
+.qwrap .drop div { align-items: center; }   /* logo + club name, not a text baseline */
+.qwrap .drop b { font-weight: 600; }
+.qwrap .drop .t { margin-left: auto; white-space: nowrap; }   /* count sits on the right */
 .rankrow {
   display: flex; align-items: center; gap: 10px; padding: 7px 10px;
   border-bottom: 1px solid var(--line-soft); background: var(--surface);
@@ -612,7 +620,7 @@ textarea.notes {
   td.player, th.player { width: 196px; min-width: 196px; max-width: 196px; }
   .count { margin-left: 0; }
   .tablebox { max-height: none; }
-  .controls input[type="search"] { max-width: none; }
+  .qwrap { max-width: none; }
   .mk { font-size: 17px; padding: 3px 5px; }
   td.marks { min-width: 118px; }
   .iconbtn { font-size: 16px; padding: 5px 9px; }
@@ -636,7 +644,10 @@ textarea.notes {
   <section id="v-board">
     <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-08-04</p>
     <div class="controls">
-      <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
+      <div class="qwrap">
+        <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
+        <div class="drop" id="qdrop" hidden></div>
+      </div>
       <div class="seg" id="posseg" role="group" aria-label="Position filter">
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
       </div>
@@ -795,6 +806,8 @@ textarea.notes {
       and optionally an estimated ADP; they slot into the ADP order by it (below your ranked players),
       or sit at the top of the ADP section without one. Click a <b>player's name</b> for season-by-season
       history back to 2019/20.
+      <b>Search</b> matches players and clubs (code, full name, or "spurs" / "man utd"); when the text
+      names a club, pick it from the suggestions to filter the board to that squad.
       Use <span class="mkro"><span class="star">★</span> <span class="flag">⚑</span>
       <span class="up">▲</span> <span class="down">▼</span></span> for your own tags. The board leads with
       your active ranking, then the rest by ADP. Click any column to sort;
@@ -992,6 +1005,7 @@ const COL_LABEL = k => (COLS.find(c => c[0] === k) || [, k])[1];
 // adpd ascends first so the biggest risers (most negative) lead; click again for the fallers
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","adpd","rd","rdpk","rk","myrk","dsrk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
+let teamPick = "";  // club chosen from the search suggestions; overrides the text
 let page = 0, pageSize = 25;
 let viewMode = "rank";
 let colSort = false;                          // has a column header taken over the order?
@@ -1163,14 +1177,17 @@ function updateMyRk() { // materialize active-ranking spots so every table can s
   custom.forEach(r => r.myrk = null);
   rank.forEach((id, i) => { if (byId[id]) byId[id].myrk = i + 1; });
 }
+// every board filter except the search box; the club suggestions count against
+// the same pool, so their tallies match what clicking one actually shows
+const poolBase = () => DATA.concat(custom).filter(r =>
+  !removed.has(r.id) &&
+  (!pos || r.pos === pos) &&
+  (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) && (!hasAdp || r.adp != null))));
+
 function renderBoard() {
   updateMyRk();
-  const q = query.toLowerCase();
-  let rows = DATA.concat(custom).filter(r =>
-    !removed.has(r.id) &&
-    (!pos || r.pos === pos) &&
-    (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) && (!hasAdp || r.adp != null))) &&
-    matches(r, q));
+  let rows = poolBase().filter(r =>
+    teamPick ? curTeam(r) === teamPick : matches(r, query.toLowerCase()));
   const rp = rankSpots();
   const byCol = (a, b) => {
     const av = a[sortKey], bv = b[sortKey];
@@ -1383,7 +1400,38 @@ document.getElementById("sortranked").addEventListener("change", e => {
   save("dm_sortranked", sortRanked);
   page = 0; renderBoard();
 });
-document.getElementById("q").addEventListener("input", e => { query = e.target.value; page = 0; renderBoard(); });
+/* club suggestions under the board search: click one to filter the board to it */
+const qEl = document.getElementById("q"), qdrop = document.getElementById("qdrop");
+function renderTeamHints() {
+  qdrop.innerHTML = ""; qdrop.hidden = true;
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) return;
+  const counts = {};
+  poolBase().forEach(r => { const c = curTeam(r); counts[c] = (counts[c] || 0) + 1; });
+  // only clubs with players in the current pool, so a suggestion is never a dead end
+  const hits = Object.keys(TNAMES)
+    .filter(c => counts[c] && (c + " " + TNAMES[c] + " " + (TNICK[c] || "")).toLowerCase().includes(q))
+    .sort((a, b) => TNAMES[a].localeCompare(TNAMES[b])).slice(0, 8);
+  if (!hits.length) return;
+  hits.forEach(c => {
+    const d = document.createElement("div");
+    d.innerHTML = `${tLogo(c)}<b>${TNAMES[c]}</b>` +
+      `<span class="t">${counts[c]} player${counts[c] === 1 ? "" : "s"}</span>`;
+    d.addEventListener("mousedown", ev => {
+      ev.preventDefault();
+      teamPick = c; query = ""; qEl.value = TNAMES[c];   // show what's filtered
+      qdrop.hidden = true; page = 0; renderBoard();
+    });
+    qdrop.appendChild(d);
+  });
+  qdrop.hidden = false;
+}
+qEl.addEventListener("input", e => {
+  query = e.target.value; teamPick = "";   // typing again drops back to text search
+  page = 0; renderBoard(); renderTeamHints();
+});
+qEl.addEventListener("blur", () => setTimeout(() => { qdrop.hidden = true; }, 150));
+qEl.addEventListener("keydown", e => { if (e.key === "Escape") qdrop.hidden = true; });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; page = 0; renderBoard(); });
 document.getElementById("hasadp").addEventListener("change", e => { hasAdp = e.target.checked; page = 0; renderBoard(); });
 document.getElementById("posseg").addEventListener("click", e => {

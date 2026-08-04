@@ -1179,10 +1179,16 @@ function updateMyRk() { // materialize active-ranking spots so every table can s
 }
 // every board filter except the search box; the club suggestions count against
 // the same pool, so their tallies match what clicking one actually shows
-const poolBase = () => DATA.concat(custom).filter(r =>
-  !removed.has(r.id) &&
-  (!pos || r.pos === pos) &&
-  (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) && (!hasAdp || r.adp != null))));
+const poolBase = () => {
+  // ranking someone is a deliberate act: "drafted in mocks" must not then hide
+  // them for having no ADP
+  const inRank = new Set(rank);
+  return DATA.concat(custom).filter(r =>
+    !removed.has(r.id) &&
+    (!pos || r.pos === pos) &&
+    (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) &&
+                  (!hasAdp || r.adp != null || inRank.has(r.id)))));
+};
 
 function renderBoard() {
   updateMyRk();

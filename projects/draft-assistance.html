@@ -770,8 +770,10 @@ textarea.notes {
     <p class="legend">Tier players from the board's <b>⋯ options → Add to position tier</b>; the
       position bucket comes from the player, so a midfielder put in tier 1 lands in <b>M1</b>. Each
       row is coloured by its tier, and within a tier players are ordered by ADP. Use <b>▲ ▼</b> to
-      shuffle someone between tiers and <b>✕</b> to untier them. Tier badges also show next to the
-      player's name everywhere else in the app.</p>
+      shuffle someone between tiers and <b>✕</b> to untier them. Each row has the <b>⋯ options</b>
+      menu too, so you can cross a player out, pencil them into a plan round or move their tier
+      without going back up to the board. Tier badges also show next to the player's name
+      everywhere else in the app.</p>
     </div><!-- /sub-tiers -->
 
     <p class="legend">
@@ -965,7 +967,7 @@ const COLS = [
   ["adp","ADP","pin p-adp"],["fpts","FPts","pin p-fpts"],["fpg","FP/G","pin p-fpg"],
   ["xfp90","xFP/90","pin p-xfp90"],["npxga90","npxGI/90","pin p-npxga"],
   // scrolling columns
-  ["myrk","MyRk",""],["adprk","ADPRk",""],["rd","Rd",""],["rdpk","Rd.Pk",""],
+  ["myrk","MyRk",""],["adprk","ADPRk",""],["adpd","ADP±",""],["rd","Rd",""],["rdpk","Rd.Pk",""],
   ["rk","PtsRk",""],["dsrk","DSRk",""],
   ["gp","GP",""],["gs","GS",""],["min","Min",""],
   ["fp90","FP/90",""],
@@ -977,7 +979,8 @@ const COLS = [
 ];
 const ONE_DP = new Set(["fpts","xfpts","xg","xa","adp"]);
 const COL_LABEL = k => (COLS.find(c => c[0] === k) || [, k])[1];
-const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","rd","rdpk","rk","myrk","dsrk"]);
+// adpd ascends first so the biggest risers (most negative) lead; click again for the fallers
+const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","adpd","rd","rdpk","rk","myrk","dsrk"]);
 let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
 let page = 0, pageSize = 25;
 let viewMode = "rank", rankOrder = "rank:" + activeRank; // default: your ranking, ADP fallback
@@ -990,7 +993,7 @@ let sortRanked = store("dm_sortranked", false); // sort ranked players in with e
 const N_PIN = 8;
 const SGROUPS = [ // [picker label, group-header label, keys]
   ["Pinned", "", ["team","pos","adp","fpts","fpg","xfp90","npxga90"]],
-  ["Draft", "Draft", ["myrk","adprk","rd","rdpk","rk","dsrk"]],
+  ["Draft", "Draft", ["myrk","adprk","adpd","rd","rdpk","rk","dsrk"]],
   ["Playing time", "", ["gp","gs","min"]],
   ["Actual", "Actual", ["fp90"]],
   ["Expected", "Expected", ["xfpts","xfpg","luck","luck90"]],
@@ -1047,6 +1050,7 @@ function buildBoardHead() {
     if (k === "rdpk") th.title = "Round and pick within it, from ADP rank: 1.3 = round 1, third off the board; 2.1 = the first pick of round 2";
     if (k === "dsrk") th.title = "DS_Rank: top-150 community consensus ranking (aggregate of 9 rankers)";
     if (k === "gs") th.title = "Games started in 2025/26 (Fantrax). Compare with GP to spot rotation and substitute roles";
+    if (k === "adpd") th.title = `ADP movement since ${ADP_DATES.prev}: negative = being drafted earlier. Click for the biggest risers, again for the biggest fallers`;
     if (k === "npxga90") th.title = "Expected goal involvement: non-penalty xG + xA per 90 (FotMob)";
     if (k !== "marks") th.addEventListener("click", () => {
       const base = ASC_DEFAULT.has(k) ? 1 : -1;
@@ -1132,6 +1136,11 @@ function fmt(k, v, r) {
   if (k === "luck90") return luckChip(v, 0.5, 2);
   if (k === "rk") return v;
   if (typeof v !== "number") return v;
+  if (k === "adpd") {
+    if (r.adpn) return '<span class="adpd new">new</span>';
+    if (v === 0) return '<span class="dim">0</span>';
+    return `<span class="adpd ${v < 0 ? "up" : "dn"}">${v < 0 ? "" : "+"}${v.toFixed(1)}</span>`;
+  }
   // stored as round + pick/100 to keep it sortable; shown as round.pick
   if (k === "rdpk") { const rd = Math.floor(v); return `${rd}.${Math.round((v - rd) * 100)}`; }
   if (k === "adp") {
@@ -1449,9 +1458,11 @@ rcolsEl.addEventListener("click", e => {
   else rankSort = { k, dir: base };
   renderRank();
 });
-function statCells(r, id) {
+function statCells(r, id, withOpts) {
+  const opts = withOpts
+    ? `<button class="rowadd opts" data-menu="${id}" title="Options: draft, rank, plan, list…">⋯</button>` : "";
   return VCOLS().map(([k, , cls]) => {
-    if (k === "player") return `<td class="${cls}"><span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}` +
+    if (k === "player") return `<td class="${cls}">${opts}<span class="pname" data-pp="${id}">${r.player}</span>${mkRo(id)}` +
       tierBadge(id) + (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(id) + "</td>";
     return `<td class="${cls}">${fmt(k, r[k], r)}</td>`;
   }).join("");
@@ -1912,7 +1923,7 @@ function renderTiers() {
       body += `<tr class="tierhead t${t}"><td colspan="${VCOLS().length + 1}"><span>` +
         `<b>${p}${t}</b> · tier ${t} ${(POSNAME[p] || p).toLowerCase()} · ${grp.length}</span></td></tr>`;
       body += grp.map(r =>
-        `<tr class="t${t} ${taken.has(r.id) ? "taken" : ""}" data-id="${r.id}">` + statCells(r, r.id) +
+        `<tr class="t${t} ${taken.has(r.id) ? "taken" : ""}" data-id="${r.id}">` + statCells(r, r.id, true) +
         `<td class="rctl">
            <button class="iconbtn" data-tup="${r.id}" title="Move up a tier"${t === 1 ? " disabled" : ""}>▲</button>
            <button class="iconbtn" data-tdn="${r.id}" title="Move down a tier"${t === N_TIERS ? " disabled" : ""}>▼</button>
@@ -1927,6 +1938,8 @@ function renderTiers() {
   }).join("");
 }
 tierWrap.addEventListener("click", e => {
+  const m = e.target.closest("[data-menu]");   // before the generic button branch
+  if (m) { showMenu(m.dataset.menu, e); return; }
   const mk = e.target.closest(".mk");
   if (mk) { toggleMark(mk.dataset.id, mk.dataset.m); renderTiers(); syncAll(); return; }
   const b = e.target.closest("button"); if (!b) return;

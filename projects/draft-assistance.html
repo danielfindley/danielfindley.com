@@ -127,25 +127,28 @@ tbody td {
   text-align: right; white-space: nowrap;
 }
 #v-board tbody tr:hover td { background: var(--accent-soft); }
+/* the width is fixed because the sticky offsets are computed from it, so long
+   names wrap onto a second line rather than being clipped */
 td.player {
   font-weight: 600; width: 224px; min-width: 224px; max-width: 224px;
-  overflow: hidden; text-overflow: ellipsis;
+  white-space: normal; overflow-wrap: anywhere;
 }
 .pin { position: sticky; left: 0; z-index: 2; background: var(--pin-bg); }
 th.pin { z-index: 5 !important; background: var(--pin-bg); }
 .p-team  { left: 224px; width: 106px; min-width: 106px; }
 .p-pos   { left: 330px; width: 46px;  min-width: 46px; }
 .p-adp   { left: 376px; width: 62px;  min-width: 62px; }
-.p-fpts  { left: 438px; width: 68px;  min-width: 68px; }
-.p-fpg   { left: 506px; width: 62px;  min-width: 62px; }
-.p-xfp90 { left: 568px; width: 76px;  min-width: 76px; }
-.p-npxga { left: 644px; width: 84px;  min-width: 84px; border-right: 2px solid var(--line); }
+.p-rdpk  { left: 438px; width: 60px;  min-width: 60px; }
+.p-fpts  { left: 498px; width: 68px;  min-width: 68px; }
+.p-fpg   { left: 566px; width: 62px;  min-width: 62px; }
+.p-xfp90 { left: 628px; width: 76px;  min-width: 76px; }
+.p-npxga { left: 704px; width: 84px;  min-width: 84px; border-right: 2px solid var(--line); }
 #v-board tbody tr:hover .pin { background: var(--line-soft); }
 .grp-pin { position: sticky; left: 0; z-index: 6 !important; background: var(--pin-bg); }
 #ranktbl .p-team { left: 268px; } #ranktbl .p-pos  { left: 374px; }
-#ranktbl .p-adp  { left: 420px; } #ranktbl .p-fpts { left: 482px; }
-#ranktbl .p-fpg  { left: 550px; } #ranktbl .p-xfp90 { left: 612px; }
-#ranktbl .p-npxga { left: 688px; }
+#ranktbl .p-adp  { left: 420px; } #ranktbl .p-rdpk { left: 482px; }
+#ranktbl .p-fpts { left: 542px; } #ranktbl .p-fpg  { left: 610px; }
+#ranktbl .p-xfp90 { left: 672px; } #ranktbl .p-npxga { left: 748px; }
 .pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 #ranktbl tr.custom .pin, #ranktbl tr.custom .rnum { background: var(--line-soft); }
 td.dim, .dim { color: var(--ink2); }
@@ -606,7 +609,7 @@ textarea.notes {
   .wrap { padding: 14px 10px 44px; }
   .pin:not(.player), .grp-pin { position: static; width: auto; min-width: 0; }
   .p-xfp90 { border-right: none; }
-  td.player, th.player { width: 172px; min-width: 172px; max-width: 172px; }
+  td.player, th.player { width: 196px; min-width: 196px; max-width: 196px; }
   .count { margin-left: 0; }
   .tablebox { max-height: none; }
   .controls input[type="search"] { max-width: none; }
@@ -964,10 +967,11 @@ const noteFor = c => loadRaw("dm_note_" + c) ?? (SEED_NOTES[c] || "");
 const COLS = [
   // pinned pane (sticky left, order matters for the offsets in CSS)
   ["player","Player","l player pin"],["team","Team","l pin p-team"],["pos","Pos","l pin p-pos"],
-  ["adp","ADP","pin p-adp"],["fpts","FPts","pin p-fpts"],["fpg","FP/G","pin p-fpg"],
+  ["adp","ADP","pin p-adp"],["rdpk","Rd.Pk","pin p-rdpk"],
+  ["fpts","FPts","pin p-fpts"],["fpg","FP/G","pin p-fpg"],
   ["xfp90","xFP/90","pin p-xfp90"],["npxga90","npxGI/90","pin p-npxga"],
   // scrolling columns
-  ["myrk","MyRk",""],["adprk","ADPRk",""],["adpd","ADP±",""],["rd","Rd",""],["rdpk","Rd.Pk",""],
+  ["myrk","MyRk",""],["adprk","ADPRk",""],["adpd","ADP±",""],["rd","Rd",""],
   ["rk","PtsRk",""],["dsrk","DSRk",""],
   ["gp","GP",""],["gs","GS",""],["min","Min",""],
   ["fp90","FP/90",""],
@@ -990,10 +994,10 @@ let sortRanked = store("dm_sortranked", false); // sort ranked players in with e
 // stat column picker: hidden keys apply to board, ranking, and list tables;
 // every column except the player name is toggleable. Pinned columns keep
 // position:sticky, so their left offsets are recomputed from what's visible.
-const N_PIN = 8;
+const N_PIN = 9;
 const SGROUPS = [ // [picker label, group-header label, keys]
-  ["Pinned", "", ["team","pos","adp","fpts","fpg","xfp90","npxga90"]],
-  ["Draft", "Draft", ["myrk","adprk","adpd","rd","rdpk","rk","dsrk"]],
+  ["Pinned", "", ["team","pos","adp","rdpk","fpts","fpg","xfp90","npxga90"]],
+  ["Draft", "Draft", ["myrk","adprk","adpd","rd","rk","dsrk"]],
   ["Playing time", "", ["gp","gs","min"]],
   ["Actual", "Actual", ["fp90"]],
   ["Expected", "Expected", ["xfpts","xfpg","luck","luck90"]],
@@ -1007,8 +1011,8 @@ let hiddenCols = new Set(store("dm_cols", []));
 const VCOLS = () => COLS.filter(([k]) => !hiddenCols.has(k));
 
 // sticky offsets: cumulative widths of the visible pinned columns
-const PIN_W = { player: 224, team: 106, pos: 46, adp: 62, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
-const PIN_CLS = { team: "p-team", pos: "p-pos", adp: "p-adp", fpts: "p-fpts", fpg: "p-fpg", xfp90: "p-xfp90", npxga90: "p-npxga" };
+const PIN_W = { player: 224, team: 106, pos: 46, adp: 62, rdpk: 60, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
+const PIN_CLS = { team: "p-team", pos: "p-pos", adp: "p-adp", rdpk: "p-rdpk", fpts: "p-fpts", fpg: "p-fpg", xfp90: "p-xfp90", npxga90: "p-npxga" };
 const pinStyle = document.createElement("style");
 // must come after the template's own <style> (same specificity, last wins)
 document.body.appendChild(pinStyle);

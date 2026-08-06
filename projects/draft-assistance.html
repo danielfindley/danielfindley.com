@@ -265,6 +265,28 @@ td.marks { min-width: 92px; }
   font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; font-weight: 700;
   color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px;
 }
+/* set-piece takers */
+#sptbl td.player { width: 190px; min-width: 190px; max-width: 190px; font-weight: 600; }
+#sptbl th { cursor: default; }
+.spcell { white-space: normal; }
+.spk {
+  display: inline-flex; align-items: center; gap: 5px; margin: 2px 5px 2px 0;
+  border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px 3px 5px;
+  background: var(--surface); font-size: 12.5px; cursor: pointer; color: var(--ink2);
+}
+.spk:hover { border-color: var(--accent); color: var(--ink); }
+/* first choice reads solid; later names are visibly the fallback */
+.spk.first { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+.spk .spn {
+  font-size: 9px; font-weight: 700; border-radius: 50%; width: 14px; height: 14px;
+  line-height: 14px; text-align: center; background: var(--line); color: var(--ink2); flex: none;
+}
+.spk.first .spn { background: var(--accent); color: #fff; }
+@media (max-width: 700px) {
+  #sptbl td.player { width: 128px; min-width: 128px; max-width: 128px; }
+  .spk { font-size: 11.5px; padding: 2px 6px 2px 4px; margin: 2px 3px 2px 0; }
+}
+
 /* your XI, under the draft plan */
 .xiwrap { margin-top: 18px; }
 .xipitch { height: 420px; }
@@ -641,11 +663,12 @@ textarea.notes {
     <nav id="nav">
       <a href="#/board" data-v="board">Board</a>
       <a href="#/teams" data-v="teams">Teams</a>
+      <a href="#/setpieces" data-v="setpieces">Set pieces</a>
     </nav>
   </header>
 
   <section id="v-board">
-    <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-08-05</p>
+    <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-08-06</p>
     <div class="controls">
       <div class="qwrap">
         <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
@@ -829,6 +852,23 @@ textarea.notes {
     <div class="teamgrid" id="teamgrid"></div>
   </section>
 
+  <section id="v-setpieces" hidden>
+    <h2>Set-piece takers</h2>
+    <p class="sub">Projected 2026/27 duties from the Solio Analytics model (@robtfpl).
+      Names read left to right in priority order: <b>first is first choice</b>. Tap a name
+      to look them up on the board.</p>
+    <div class="tablebox" style="max-height:none">
+      <table id="sptbl">
+        <thead><tr class="cols" id="spcols"></tr></thead>
+        <tbody id="sprows"></tbody>
+      </table>
+    </div>
+    <p class="legend">Set-piece duty is one of the few genuinely predictable sources of
+      points: the corner taker collects key passes and assists every week, and the penalty
+      taker gets goals that have nothing to do with open play. A second name means a
+      shared or contested duty, so treat those as less certain than a lone name.</p>
+  </section>
+
   <section id="v-team" hidden>
     <a class="back" href="#/teams">← All teams</a>
     <h2 id="teamname"></h2>
@@ -911,6 +951,8 @@ const TRANSFERS = {"ARS":[["Christos Tzolis","Club Brugge \u00b7 \u00a334m"],["I
 const TROUT = {"ARS":[["Leandro Trossard","Besiktas \u00b7 \u00a317m"],["Jakub Kiwior","FC Porto"],["Karl Hein","Werder Bremen"]],"AVL":[["Morgan Rogers","Chelsea \u00b7 \u00a3117m"],["Youri Tielemans","Manchester United \u00b7 \u00a335m"],["Donyell Malen","Roma"],["Enzo Barrenechea","Benfica"],["Andres Garcia","Getafe \u00b7 loan"]],"BOU":[["Marcos Senesi","Tottenham \u00b7 free"],["Hamed Traore","Marseille"],["Luis Sinisterra","Cruzeiro"],["Alex Jimenez","Fiorentina \u00b7 loan"]],"BRF":[["Ryan Trevitt","released"],["Romelle Donovan","Sheffield United \u00b7 loan"]],"BHA":[["Danny Welbeck","Chelsea \u00b7 \u00a35m"],["Jan Paul van Hecke","Tottenham \u00b7 \u00a352m"],["Joel Veltman","released"],["Adam Webster","released"],["Solly March","released"],["James Milner","retired"],["Jeremy Sarmiento","Middlesbrough"],["Brajan Gruda","RB Leipzig \u00b7 loan"],["Diego Coppola","Paris FC"]],"CHE":[["Marc Cucurella","Real Madrid \u00b7 \u00a351.8m"],["Tyrique George","Everton"],["Andrey Santos","Manchester United \u00b7 \u00a348m"],["Jesse Derry","Sporting \u00b7 loan"]],"CRY":[["Maxence Lacroix","Chelsea \u00b7 \u00a352m"]],"EVE":[["Idrissa Gueye","released"],["Seamus Coleman","released"]],"FUL":[["Raul Jimenez","Wolves \u00b7 free"],["Harry Wilson","Leeds \u00b7 free"],["Issa Diop","Ipswich \u00b7 \u00a38.5m"]],"HUL":[["Ivor Pandur","Rangers"],["Kyle Joseph","Middlesbrough"],["Kasey Palmer","Luton"]],"IPS":[["Arijanet Muric","Sassuolo"],["Ashley Young","retired"],["Conor Chaplin","released"]],"LEE":[["Illan Meslier","Arsenal \u00b7 free"],["Pascal Struijk","Brighton \u00b7 \u00a320m"],["Karl Darlow","Manchester United \u00b7 free"],["Harry Gray","Sheffield Wednesday \u00b7 loan"],["Sam Byram","released"],["Isaac Schmidt","Young Boys"],["Jack Harrison","New England Revolution"]],"LIV":[["Mohamed Salah","released"],["Ibrahima Konate","Real Madrid \u00b7 free"],["Andy Robertson","Tottenham \u00b7 free"],["Rhys Williams","released"]],"MCI":[["Bernardo Silva","Real Madrid \u00b7 free"],["Manuel Akanji","Inter Milan"],["John Stones","released"],["Nathan Ake","Fenerbahce \u00b7 \u00a37m"]],"MUN":[["Rasmus Hojlund","Napoli \u00b7 \u00a343.2m"],["Casemiro","Inter Miami \u00b7 free"],["Jadon Sancho","released"],["Tyrell Malacia","released"],["Andre Onana","Trabzonspor \u00b7 loan"]],"NEW":[["Sandro Tonali","Tottenham \u00b7 \u00a3100m"],["Anthony Gordon","Barcelona \u00b7 \u00a360.5m"],["Kieran Trippier","Wolves \u00b7 free"],["Matt Targett","Hull \u00b7 free"],["Emil Krafth","released"],["John Ruddy","released"]],"NOT":[["Elliot Anderson","Manchester City \u00b7 \u00a3116m"],["Willy Boly","released"],["Stefan Ortega","released"],["Angus Gunn","released"]],"SUN":[["Dan Neil","released"],["Bertrand Traore","released"],["Dennis Cirkin","released"],["Niall Huggins","released"]],"TOT":[["Luka Vuskovic","Brighton \u00b7 \u00a350m"],["Yves Bissouma","released"],["Tynan Thompson","Manchester United"],["Will Lankshear","Middlesbrough \u00b7 \u00a320m"],["Radu Dragusin","Fiorentina \u00b7 loan"],["Alejo Veliz","Bahia"]],"COV":[["Jamie Allen","released"]]};
 const GONE = {"*03rxa*":"released","*03ysd*":"released"};   // id -> destination, for players who left the league
 const FORMDEF = {"ARS":"4-3-3","AVL":"4-2-3-1","BOU":"4-2-3-1","BRF":"4-2-3-1","BHA":"4-2-3-1","CHE":"4-2-3-1","CRY":"4-3-3","EVE":"4-2-3-1","FUL":"4-2-3-1","LEE":"4-3-3","LIV":"4-2-3-1","MCI":"4-2-3-1","MUN":"4-2-3-1","NEW":"4-2-3-1","NOT":"4-3-3","SUN":"4-2-3-1","TOT":"4-2-3-1","COV":"4-2-3-1","HUL":"4-2-3-1","IPS":"4-2-3-1"};
+const SET_PIECES = {"ARS":[["Rice"],["Saka"],["Rice"],["Gyokeres","Saka"]],"AVL":[["Cash"],["McGinn"],["McGinn","Cash"],["Buendia","Watkins"]],"BOU":[["Scott","Kluivert"],["Tavernier","Brooks"],["Scott","Tavernier"],["Kluivert","Tavernier"]],"BRF":[["Jensen","Damsgaard"],["Janelt","Dango"],["Jensen","Damsgaard"],["Thiago"]],"BHA":[["Gross","F.Kadioglu"],["De Cuyper","Minteh"],["Gross","De Cuyper"],["Gross"]],"CHE":[["James","Enzo"],["Neto","Estevao"],["Neto","James"],["Palmer"]],"COV":[["Grimes","Torp"],["Grimes","Rudoni"],["Grimes","Torp"],["Wright"]],"CRY":[["Yeremy","Johnson"],["Wharton","Hughes"],["Wharton","Kamada"],["Mateta","Sarr"]],"EVE":[["Garner"],["Dewsbury-Hall"],["Garner","Dewsbury-Hall"],["Ndiaye"]],"FUL":[["Lukic","Iwobi"],["Lukic","Bobb"],["Lukic","Iwobi"],["Garcia","Robinson"]],"HUL":[["Slater","Giles"],["Belloumi","Giles"],["Slater","Giles"],["McBurnie"]],"IPS":[["Nunez","Clarke"],["Davis","Nunez"],["Davis","Nunez"],["Clarke","Philogene"]],"LEE":[["Stach"],["Wilson","Stach"],["Wilson","Stach"],["Calvert-Lewin"]],"LIV":[["Szoboszlai","Gakpo"],["Szoboszlai","Wirtz"],["Szoboszlai"],["Isak","Szoboszlai"]],"MCI":[["Cherki","Anderson"],["Foden","Cherki"],["Foden","Anderson"],["Haaland"]],"MUN":[["B.Fernandes"],["Mbeumo","Shaw"],["B.Fernandes","Mbeumo"],["B.Fernandes"]],"NEW":[["Bruno G.","J.Murphy"],["Hall"],["Hall","Bruno G."],["Bruno G.","Woltemade"]],"NOT":[["N.Williams","Ndoye"],["Hutchinson","Hudson-Odoi"],["Gibbs-White","Hutchinson"],["Wood","Igor Jesus","Gibbs-White"]],"SUN":[["E.Le Fee","Hume"],["Xhaka"],["Xhaka","Hume"],["Diarra","E.Le Fee"]],"TOT":[["Pedro Porro","Tel"],["Kudus","Pedro Porro"],["Pedro Porro","Fernandes"],["Solanke"]]};
+const SP_COLS = ["Corners \u00b7 Left","Corners \u00b7 Right","Free kicks \u00b7 crossed","Penalties"];
 const ADP_DATES = {"curr":"2026-08-05","prev":"2026-08-04"};
 // storage access can throw (e.g. sandboxed iframe); state must still work in-memory
 const store = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
@@ -2018,6 +2060,36 @@ document.getElementById("tierclear").addEventListener("click", () => {
   }
 });
 
+/* ---------- set-piece takers ---------- */
+function renderSetPieces() {
+  document.getElementById("spcols").innerHTML =
+    '<th class="l player">Club</th>' + SP_COLS.map(c => `<th class="l">${c}</th>`).join("");
+  const ORD = ["First", "Second", "Third"];
+  const chip = (name, i, club) => {
+    const cls = i === 0 ? "spk first" : "spk";
+    const tip = (ORD[i] || "Backup") + " choice · " + club;
+    return '<span class="' + cls + '" data-sp="' + name + '" title="' + tip + '">' +
+           '<span class="spn">' + (i + 1) + "</span>" + name + "</span>";
+  };
+  const clubs = TEAMS.filter(t => SET_PIECES[t.code]);
+  document.getElementById("sprows").innerHTML = clubs.map(t => {
+    const cells = SET_PIECES[t.code]
+      .map(names => '<td class="l spcell">' +
+                    names.map((n, i) => chip(n, i, t.name)).join("") + "</td>")
+      .join("");
+    return '<tr><td class="l player">' + tLogo(t.code) + t.name + "</td>" + cells + "</tr>";
+  }).join("");
+}
+document.getElementById("sprows").addEventListener("click", e => {
+  const s = e.target.closest("[data-sp]"); if (!s) return;
+  // no reliable id for these short names, so just search the board for them
+  query = s.dataset.sp.replace(/^[A-Z]\./, "").trim();
+  teamPick = ""; colSort = false; page = 0;
+  document.getElementById("q").value = query;
+  location.hash = "#/board";
+  route();   // don't wait on the hashchange event
+});
+
 /* ---------- teams ---------- */
 function renderTeams() {
   document.getElementById("teamgrid").innerHTML = TEAMS.map(t => {
@@ -2591,7 +2663,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape") { hidePop(); hideMenu(); } });
 
 /* ---------- router + subtabs ---------- */
-const VIEWS = ["board", "teams", "team"];
+const VIEWS = ["board", "teams", "team", "setpieces"];
 const SUBS = ["rank", "plan", "lists", "tiers"];
 function setSub(s) {
   if (!SUBS.includes(s)) s = "rank";
@@ -2622,6 +2694,7 @@ function route() {
     a.classList.toggle("on", a.dataset.v === (v === "team" ? "teams" : v)));
   if (v === "board") { renderBoard(); setSub(sub || viewMode); }
   else if (v === "teams") renderTeams();
+  else if (v === "setpieces") renderSetPieces();
   else renderTeam(parts[1]);
 }
 window.addEventListener("hashchange", route);

@@ -423,6 +423,8 @@ td.empty.l { text-align: left; }
 }
 .chip2.cand { border-style: dashed; opacity: .8; cursor: pointer; }
 .chip2.cand:hover { opacity: 1; border-color: var(--ink2); }
+/* the chip you are about to displace by dropping onto it */
+.chip2.dropinto { outline: 2px solid var(--accent); outline-offset: 1px; opacity: 1; }
 .cdiv {
   align-self: center; font-size: 10px; font-weight: 700; letter-spacing: .07em;
   text-transform: uppercase; color: var(--ink2); border-left: 2px solid var(--line);
@@ -749,6 +751,7 @@ textarea.notes {
       <span class="colhead">Rounds</span>
       <label class="minctl"><select id="plsel" aria-label="Choose plan"></select></label>
       <button class="ghost" id="plnew">＋ New plan</button>
+      <button class="ghost" id="plcopy" title="Duplicate this plan, so you can try a variation without losing it">Copy</button>
       <button class="ghost" id="pldel">Delete</button>
       <span class="dim" id="plancount"></span>
       <label class="minctl">my slot <input type="number" id="slot" min="1" max="12" step="1"
@@ -777,9 +780,12 @@ textarea.notes {
     </div>
 
     <p class="legend">Use the <b>⋯ options</b> in the table above to pencil a player in; you pick the
-      round (and pick vs candidate) in the follow-up menu; drag chips between rounds to move them. A player lives in one round
+      round (and pick vs candidate) in the follow-up menu. Drag a chip onto empty space in another round to
+      move it there, or drop it <b>onto another chip</b> to take that slot: drop a candidate on the
+      <b>pick</b> and it becomes the pick, with the old one demoted to candidate. A player lives in one round
       at a time. The highlighted <b>pick</b> chip is what the squad-shape pills count; everything after the
-      divider is a backup <b>candidate</b>; click a candidate to make it the pick.
+      divider is a backup <b>candidate</b>; clicking a candidate also promotes it.
+      <b>Copy</b> duplicates the current plan so you can try a variation without losing the original.
       Set <b>my slot</b> and each round shows your overall pick number (12-team snake); a chip's
       <b>#ADP-rank</b> turns amber when it's earlier than that pick; they may not make it back to you.
       Crossed-out players show struck here. Saved in this browser.</p>
@@ -1955,6 +1961,17 @@ document.getElementById("plnew").addEventListener("click", () => {
   activePlan = plans.length - 1; plan = plans[activePlan].rounds;
   savePlan(); renderPlan();
 });
+document.getElementById("plcopy").addEventListener("click", () => {
+  const src = plans[activePlan], fallback = `${src.name} copy`;
+  let name = null;
+  try { name = prompt("Name for the copy:", fallback); } catch { name = fallback; }
+  if (name === null) return;
+  // copy each round's array, or the two plans would share them and edits to
+  // one would silently show up in the other
+  plans.push({ name: name.trim() || fallback, rounds: src.rounds.map(a => a.slice()) });
+  activePlan = plans.length - 1; plan = plans[activePlan].rounds;
+  savePlan(); renderPlan();
+});
 document.getElementById("pldel").addEventListener("click", () => {
   if (plans.length === 1) { if (confirm("This is your only plan. Clear it?")) { plan = emptyRounds(); savePlan(); renderPlan(); } return; }
   if (!confirm(`Delete plan "${plans[activePlan].name}"?`)) return;
@@ -1972,21 +1989,37 @@ roundsEl.addEventListener("dragstart", e => {
 roundsEl.addEventListener("dragend", e => {
   e.target.closest("[data-id]")?.classList.remove("dragging");
   roundsEl.querySelectorAll(".round.over").forEach(x => x.classList.remove("over"));
+  roundsEl.querySelectorAll(".chip2.dropinto").forEach(x => x.classList.remove("dropinto"));
 });
 roundsEl.addEventListener("dragover", e => {
   const rd = e.target.closest(".round"); if (!rd) return;
   e.preventDefault();
   roundsEl.querySelectorAll(".round.over").forEach(x => { if (x !== rd) x.classList.remove("over"); });
   rd.classList.add("over");
+  // show which chip you would displace
+  const onto = e.target.closest(".chip2[data-id]");
+  roundsEl.querySelectorAll(".chip2.dropinto").forEach(x => { if (x !== onto) x.classList.remove("dropinto"); });
+  if (onto && onto.dataset.id !== dragPid) onto.classList.add("dropinto");
 });
 roundsEl.addEventListener("dragleave", e => {
   const rd = e.target.closest(".round");
   if (rd && !rd.contains(e.relatedTarget)) rd.classList.remove("over");
 });
 roundsEl.addEventListener("drop", e => {
-  const rd = e.target.closest(".round"); if (!rd) return;
+  const rd = e.target.closest(".round"); if (!rd || !dragPid) return;
   e.preventDefault();
-  if (dragPid) addToPlan(dragPid, +rd.dataset.r);
+  const onto = e.target.closest(".chip2[data-id]");
+  const r = +rd.dataset.r;
+  if (onto && onto.dataset.id !== dragPid) {
+    // dropped on a chip: take that chip's place and push it down, so dragging
+    // a candidate onto the pick promotes it and demotes the old pick
+    plan.forEach(a => { const ix = a.indexOf(dragPid); if (ix >= 0) a.splice(ix, 1); });
+    const at = plan[r].indexOf(onto.dataset.id);
+    plan[r].splice(at < 0 ? plan[r].length : at, 0, dragPid);
+    savePlan(); renderPlan(); renderBoard();
+  } else {
+    addToPlan(dragPid, r);          // dropped on empty space: join as a candidate
+  }
   dragPid = null;
 });
 

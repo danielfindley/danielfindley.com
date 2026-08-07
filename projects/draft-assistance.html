@@ -141,20 +141,24 @@ td.player {
 }
 .pin { position: sticky; left: 0; z-index: 2; background: var(--pin-bg); }
 th.pin { z-index: 5 !important; background: var(--pin-bg); }
-.p-team  { left: 224px; width: 106px; min-width: 106px; }
-.p-pos   { left: 330px; width: 46px;  min-width: 46px; }
-.p-adp   { left: 376px; width: 62px;  min-width: 62px; }
-.p-rdpk  { left: 438px; width: 60px;  min-width: 60px; }
-.p-fpts  { left: 498px; width: 68px;  min-width: 68px; }
-.p-fpg   { left: 566px; width: 62px;  min-width: 62px; }
-.p-xfp90 { left: 628px; width: 76px;  min-width: 76px; }
-.p-npxga { left: 704px; width: 84px;  min-width: 84px; border-right: 2px solid var(--line); }
+.p-team   { left: 224px; width: 106px; min-width: 106px; }
+.p-pos    { left: 330px; width: 46px; min-width: 46px; }
+.p-adp    { left: 376px; width: 92px; min-width: 92px; }
+.p-rdpk   { left: 468px; width: 60px; min-width: 60px; }
+.p-fpts   { left: 528px; width: 68px; min-width: 68px; }
+.p-fpg    { left: 596px; width: 62px; min-width: 62px; }
+.p-xfp90  { left: 658px; width: 76px; min-width: 76px; }
+.p-npxga  { left: 734px; width: 84px; min-width: 84px; border-right: 2px solid var(--line); }
 #v-board tbody tr:hover .pin { background: var(--line-soft); }
 .grp-pin { position: sticky; left: 0; z-index: 6 !important; background: var(--pin-bg); }
-#ranktbl .p-team { left: 268px; } #ranktbl .p-pos  { left: 374px; }
-#ranktbl .p-adp  { left: 420px; } #ranktbl .p-rdpk { left: 482px; }
-#ranktbl .p-fpts { left: 542px; } #ranktbl .p-fpg  { left: 610px; }
-#ranktbl .p-xfp90 { left: 672px; } #ranktbl .p-npxga { left: 748px; }
+#ranktbl .p-team { left: 268px; }
+#ranktbl .p-pos { left: 374px; }
+#ranktbl .p-adp { left: 420px; }
+#ranktbl .p-rdpk { left: 512px; }
+#ranktbl .p-fpts { left: 572px; }
+#ranktbl .p-fpg { left: 640px; }
+#ranktbl .p-xfp90 { left: 702px; }
+#ranktbl .p-npxga { left: 778px; }
 .pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 #ranktbl tr.custom .pin, #ranktbl tr.custom .rnum { background: var(--line-soft); }
 td.dim, .dim { color: var(--ink2); }
@@ -233,15 +237,16 @@ td.marks { min-width: 92px; }
 .rowadd {
   border: 1px solid var(--line); background: var(--accent-soft); color: var(--accent);
   font: inherit; font-weight: 700; cursor: pointer; border-radius: 4px;
-  width: 21px; height: 21px; line-height: 1; padding: 0; margin-right: 4px; font-size: 14px;
+  width: 24px; height: 24px; line-height: 1; padding: 0; margin-right: 4px; font-size: 15px;
 }
 .rowadd:hover { background: var(--accent); color: #fff; }
-.rowadd.opts { background: none; color: var(--ink2); letter-spacing: 1px; margin-right: 2px; margin-left: -4px; }
-.rowadd.mv { background: none; border: none; color: var(--ink2); width: 14px; font-size: 11px; margin-right: 1px; }
+.rowadd.opts { background: none; color: var(--ink2); letter-spacing: 1px; margin-right: 2px; margin-left: -4px; font-size: 16px; }
+.rowadd.mv { background: none; border: none; color: var(--ink2); width: 16px; font-size: 12px; margin-right: 1px; }
 .rowadd.mv:hover { background: var(--line-soft); color: var(--accent); }
 .rowadd.mv:disabled { opacity: .25; cursor: default; background: none; }
 .rowadd.mv:last-of-type { margin-right: 6px; }
 .rowadd.opts:hover { background: var(--line-soft); color: var(--ink); }
+#ranktbl tr.dragging { opacity: .45; }
 #amenu .rgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 2px; }
 #amenu .rgrid button { text-align: center; padding: 6px 4px; font-variant-numeric: tabular-nums; }
 .rankedno {
@@ -650,7 +655,10 @@ textarea.notes {
   .qwrap { max-width: none; }
   .mk { font-size: 17px; padding: 3px 5px; }
   td.marks { min-width: 118px; }
-  .iconbtn { font-size: 16px; padding: 5px 9px; }
+  .iconbtn { font-size: 17px; padding: 6px 10px; }
+  .rowadd { width: 27px; height: 27px; font-size: 16px; }
+  .rowadd.opts { font-size: 18px; }
+  .rowadd.mv { width: 19px; font-size: 14px; }
   .rankrow { flex-wrap: wrap; row-gap: 3px; }
   .rankrow .grip { display: none; }
   .rankrow .nm { flex: 1 1 45%; }
@@ -1086,7 +1094,7 @@ let hiddenCols = new Set(store("dm_cols", []));
 const VCOLS = () => COLS.filter(([k]) => !hiddenCols.has(k));
 
 // sticky offsets: cumulative widths of the visible pinned columns
-const PIN_W = { player: 224, team: 106, pos: 46, adp: 62, rdpk: 60, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
+const PIN_W = { player: 224, team: 106, pos: 46, adp: 92, rdpk: 60, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
 const PIN_CLS = { team: "p-team", pos: "p-pos", adp: "p-adp", rdpk: "p-rdpk", fpts: "p-fpts", fpg: "p-fpg", xfp90: "p-xfp90", npxga90: "p-npxga" };
 const pinStyle = document.createElement("style");
 // must come after the template's own <style> (same specificity, last wins)

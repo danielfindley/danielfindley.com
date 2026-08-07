@@ -1258,7 +1258,7 @@ function fmt(k, v, r) {
     // long name wraps under itself instead of restarting at the cell edge.
     // The crest leads that line: on mobile the Team column unpins and scrolls
     // away, so it is all a clipped name has to identify it by.
-    const badges = crest(r) + mkRo(r.id) + tierBadge(r.id) +
+    const badges = crest(r) + tierBadge(r.id) + mkRo(r.id) +
       (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(r.id);
     return `<span class="pcell"><span class="pctl"><span class="pctlrow">${rankCtl}${opts}${mv}</span>` +
       `<span class="pbadges">${badges}</span>` +
@@ -1626,7 +1626,7 @@ function statCells(r, id, withOpts) {
     ? `<button class="rowadd opts" data-menu="${id}" title="Options: draft, rank, plan, list…">⋯</button>` : "";
   return VCOLS().map(([k, , cls]) => {
     if (k === "player") {
-      const badges = crest(r) + mkRo(id) + tierBadge(id) +
+      const badges = crest(r) + tierBadge(id) + mkRo(id) +
         (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(id);
       const ctl = `<span class="pctl">${opts ? `<span class="pctlrow">${opts}</span>` : ""}` +
         `<span class="pbadges">${badges}</span></span>`;

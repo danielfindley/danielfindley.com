@@ -143,10 +143,14 @@ td.player {
    stacked beneath them, so the name gets a block of its own and a second
    line starts under the first rather than back at the cell edge */
 .pcell { display: flex; align-items: flex-start; gap: 5px; }
-.pctl { flex: none; display: flex; flex-direction: column; gap: 2px; }
+.pctl { flex: none; display: flex; flex-direction: column; gap: 1px; }
 .pctlrow { display: flex; align-items: center; }
-.pbadges { display: flex; align-items: center; gap: 3px; margin-left: 1px; }
+/* the badge line renders on every row (the crest is always there), so keep it
+   tight: it sets the row height whenever the name is a single line */
+.pbadges { display: flex; align-items: center; gap: 3px; margin-left: 1px; line-height: 1; height: 15px; }
 .pbadges .mkro { margin: 0; }
+.pbadges .mkro span { font-size: 11px; }
+.tlogo.mini { width: 13px; height: 13px; margin: 0; vertical-align: 0; flex: none; }
 td.player .pname {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   overflow: hidden;                 /* a third line is cut rather than shown */
@@ -1040,6 +1044,11 @@ function toggleMark(id, m) {
   save("dm_marks", marks);
 }
 const curTeam = r => r.team.split("/").pop();
+// small crest for the badge line under a player's name
+const crest = r => {
+  const c = curTeam(r);
+  return LOGOS[c] ? `<img class="tlogo mini" src="${LOGOS[c]}" alt="" title="${teamName(c)}">` : "";
+};
 // the data only carries 3-letter codes, so search has to see the club name too.
 // TNICK adds the short forms that aren't substrings of the full name.
 const TNICK = { MCI: "man city", MUN: "man utd man united", TOT: "spurs", WOL: "wolves" };
@@ -1106,7 +1115,14 @@ const SGROUPS = [ // [picker label, group-header label, keys]
 ];
 const GRPOF = {};
 SGROUPS.forEach(([, h, ks]) => ks.forEach(k => GRPOF[k] = h));
-let hiddenCols = new Set(store("dm_cols", []));
+let hiddenCols = new Set(store("dm_cols", ["team"]));
+// the club crest now leads every player's badge line, so the Team column was
+// costing 106px of frozen width to say the same thing. Hidden once, for people
+// who already have a saved column set; the stats picker brings it back.
+if (!store("dm_cols_team", false)) {
+  hiddenCols.add("team");
+  save("dm_cols", [...hiddenCols]); save("dm_cols_team", true);
+}
 const VCOLS = () => COLS.filter(([k]) => !hiddenCols.has(k));
 
 // sticky offsets: cumulative widths of the visible pinned columns
@@ -1239,11 +1255,13 @@ function fmt(k, v, r) {
         `<button class="rowadd mv" data-mvdn="${r.id}" title="Move down in ranking"${ri === rank.length - 1 ? " disabled" : ""}>↓</button>`
       : "";
     // controls in their own column with the badges stacked under them, so a
-    // long name wraps under itself instead of restarting at the cell edge
-    const badges = mkRo(r.id) + tierBadge(r.id) +
+    // long name wraps under itself instead of restarting at the cell edge.
+    // The crest leads that line: on mobile the Team column unpins and scrolls
+    // away, so it is all a clipped name has to identify it by.
+    const badges = crest(r) + mkRo(r.id) + tierBadge(r.id) +
       (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(r.id);
     return `<span class="pcell"><span class="pctl"><span class="pctlrow">${rankCtl}${opts}${mv}</span>` +
-      (badges.trim() ? `<span class="pbadges">${badges}</span>` : "") +
+      `<span class="pbadges">${badges}</span>` +
       `</span><span class="pname" data-pp="${r.id}" title="${v}">${v}</span></span>`;
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
@@ -1608,12 +1626,10 @@ function statCells(r, id, withOpts) {
     ? `<button class="rowadd opts" data-menu="${id}" title="Options: draft, rank, plan, list…">⋯</button>` : "";
   return VCOLS().map(([k, , cls]) => {
     if (k === "player") {
-      const badges = mkRo(id) + tierBadge(id) +
+      const badges = crest(r) + mkRo(id) + tierBadge(id) +
         (r.custom ? ' <span class="badge">new</span>' : "") + goneBadge(id);
-      const ctl = opts || badges.trim()
-        ? `<span class="pctl">${opts ? `<span class="pctlrow">${opts}</span>` : ""}` +
-          (badges.trim() ? `<span class="pbadges">${badges}</span>` : "") + "</span>"
-        : "";
+      const ctl = `<span class="pctl">${opts ? `<span class="pctlrow">${opts}</span>` : ""}` +
+        `<span class="pbadges">${badges}</span></span>`;
       return `<td class="${cls}"><span class="pcell">${ctl}` +
         `<span class="pname" data-pp="${id}" title="${r.player}">${r.player}</span></span></td>`;
     }

@@ -2287,7 +2287,9 @@ const POSFAM = {
 };
 const FAMNEAR = { // how well one family covers another
   GK:{GK:1},
-  FB:{FB:1, CB:.55, WM:.5, W:.35},
+  // no CB entry: a centre-back does not cover full back unless he has actually
+  // started there, which shows up as its own term
+  FB:{FB:1, WM:.5, W:.35},
   CB:{CB:1, DM:.4},   // FB -> CB is conditional on a back three, see compat()
   DM:{DM:1, CM:.8, CB:.35},
   CM:{CM:1, DM:.8, AM:.7, WM:.5},
@@ -2353,7 +2355,14 @@ function affinity(slotPos, r, back3) {
     const band = BANDOF[(POSFAM[slotPos] || [])[0]];
     return r.pos && band === r.pos ? 0.22 : 0;
   }
-  return pos.reduce((s, [p, share]) => s + share * compat(slotPos, p, back3), 0);
+  // Take their best qualification for this slot, discounted if they rarely
+  // play it. Averaging over every position instead would dilute a genuine
+  // one: Gvardiol's 2 starts at left back are 1/8th of his season, but they
+  // are what makes him left-back cover, and an average buried them.
+  return pos.reduce((best, [p, share]) => {
+    const c = compat(slotPos, p, back3);
+    return c ? Math.max(best, c * (0.55 + 0.45 * share)) : best;
+  }, 0);
 }
 // how likely they are to actually start: last season's minutes blended with
 // ADP, so new signings with no PL minutes still place on reputation

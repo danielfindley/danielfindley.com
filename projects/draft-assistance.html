@@ -2301,6 +2301,8 @@ const FAMNEAR = { // how well one family covers another
   ST:{ST:1, AM:.5, W:.45},
 };
 const BANDOF = { GK:"G", FB:"D", CB:"D", DM:"M", CM:"M", WM:"M", AM:"M", W:"F", ST:"F" };
+// how well you must fit a slot to be listed as cover for it
+const COVER_MIN = 0.4;
 // wide roles do not swap flanks: a right back is not left-back cover unless he
 // has actually started there, which shows up as its own term in the sum below.
 // Sided families: a left one never fills a right slot and vice versa. The
@@ -2362,17 +2364,21 @@ function affinity(slotPos, r, back3) {
   // play it. Averaging over every position instead would dilute a genuine
   // one: Gvardiol's 2 starts at left back are 1/8th of his season, but they
   // are what makes him left-back cover, and an average buried them.
+  // The discount saturates at half a season, so splitting time between two
+  // positions does not make you a part-timer at both: Semenyo's 18 starts on
+  // the right wing are as much his position as Doku's 19 on the left.
   return pos.reduce((best, [p, share]) => {
     const c = compat(slotPos, p, back3);
-    return c ? Math.max(best, c * (0.55 + 0.45 * share)) : best;
+    return c ? Math.max(best, c * Math.min(1, 0.55 + 0.9 * share)) : best;
   }, 0);
 }
-// how likely they are to actually start: last season's minutes blended with
-// ADP, so new signings with no PL minutes still place on reputation
+// Draft priority. ADP leads because it already prices in next season: a
+// transfer, a new role, an injury return. Last season's minutes only break
+// ties among players the mocks have not ranked at all, and never outrank a
+// drafted player.
 function dcWeight(r) {
-  const mins = Math.min((r.min || 0) / 2600, 1);            // 2600 ≈ ever-present
-  const adp = r.adp != null ? Math.max(0, 1 - r.adp / 220) : 0.15;
-  return 0.1 + 0.55 * mins + 0.45 * adp;
+  if (r.adp != null) return 1 + Math.max(0, 1 - r.adp / 300);   // 1.0 - 2.0
+  return 0.15 + 0.8 * Math.min((r.min || 0) / 2600, 1);         // 0.15 - 0.95
 }
 
 let dcState = {};  // code -> {f, byF: {formation: {slotIdx: id}}}
@@ -2499,8 +2505,10 @@ function renderDepth() {
   const pool = dcPool(code);
   document.getElementById("dcdepth").innerHTML = slots.map((s, si) => {
     const r = byId[asn[si]];
-    const backups = pool.filter(p => !starting.has(p.id) && affinity(s.pos, p, s.back3) > 0.35)
-      .sort((a, b) => affinity(s.pos, b, s.back3) * dcWeight(b) - affinity(s.pos, a, s.back3) * dcWeight(a))
+    // qualification is the filter; among those who can play there, list them
+    // in draft order so the first name is the one worth taking
+    const backups = pool.filter(p => !starting.has(p.id) && affinity(s.pos, p, s.back3) >= COVER_MIN)
+      .sort((a, b) => dcWeight(b) - dcWeight(a))
       .slice(0, 3).map(p => p.player).join(", ");
     return `<div class="drow"><span class="dp">${s.pos}</span>
       <span class="ds">${r ? r.player : "<span class='dim'>empty</span>"}</span>

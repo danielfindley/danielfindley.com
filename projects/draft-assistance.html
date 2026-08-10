@@ -2303,9 +2303,12 @@ const FAMNEAR = { // how well one family covers another
 const BANDOF = { GK:"G", FB:"D", CB:"D", DM:"M", CM:"M", WM:"M", AM:"M", W:"F", ST:"F" };
 // wide roles do not swap flanks: a right back is not left-back cover unless he
 // has actually started there, which shows up as its own term in the sum below.
-const WIDE_FAM = new Set(["FB", "W", "WM"]);
-// central roles do swap: RCB/LCB/CB are interchangeable, central mids nearly so
-const CROSS_FLANK = { CB: .9, DM: 1, CM: .8, ST: .8 };
+// Sided families: a left one never fills a right slot and vice versa. The
+// centre of a back three (CB) carries no side, so it plays either way and
+// either side can play it - a left centre-back covers LCB and CB but not RCB.
+const WIDE_FAM = new Set(["FB", "W", "WM", "CB"]);
+// central roles still swap sides
+const CROSS_FLANK = { DM: 1, CM: .8, ST: .8 };
 function compat(slotPos, playerPos, back3) {
   const a = POSFAM[slotPos], b = POSFAM[playerPos];
   if (!a || !b) return 0;

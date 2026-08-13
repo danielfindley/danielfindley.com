@@ -74,6 +74,7 @@ section[hidden] { display: none; }
   display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
   padding: 12px 14px; background: var(--surface); border: 1px solid var(--line);
   border-radius: 8px; margin-bottom: 14px;
+  position: relative;   /* the stats panel hangs off this bar; see .spanel */
 }
 .controls input[type="search"] {
   width: 100%; padding: 7px 10px; border: 1px solid var(--line);
@@ -479,14 +480,19 @@ td.empty.l { text-align: left; }
   border-radius: 5px; cursor: pointer;
 }
 #amenu button:hover { background: var(--accent-soft); color: var(--accent); }
-.statspick { position: relative; }
+/* Deliberately not a positioning context: the panel is far wider than the
+   button, and anchoring it to the button put its left edge off screen wherever
+   the button wrapped to (356px off at 1024px wide). It hangs off .controls
+   instead, whose right edge is always on screen. */
+.statspick { position: static; }
 .spanel[hidden] { display: none; }
 .spanel {
-  position: absolute; top: calc(100% + 5px); right: 0; z-index: 55;
+  position: absolute; top: calc(100% + 5px); right: 14px; z-index: 55;
   background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
   box-shadow: 0 12px 36px #0006; padding: 10px 14px 12px;
   display: flex; gap: 16px; flex-wrap: wrap; width: max-content;
   max-width: min(92vw, 620px);
+  max-height: 70vh; overflow-y: auto;   /* never taller than the screen */
 }
 .spanel .sgrp { min-width: 84px; }
 .spanel .sglab {
@@ -498,6 +504,17 @@ td.empty.l { text-align: left; }
   padding: 1px 0; cursor: pointer; white-space: nowrap;
 }
 .spanel .sall { flex-basis: 100%; }
+/* On a phone the controls bar is several rows tall, so a panel hanging under
+   it starts halfway down the screen and there is no room left. Below this
+   width it becomes a bottom sheet instead: pinned to the viewport, gutter to
+   gutter, and scrolling internally when the groups do not fit. */
+@media (max-width: 820px) {
+  .spanel {
+    position: fixed; inset: auto 8px 8px 8px;
+    width: auto; max-width: none;
+    gap: 12px 18px; padding-bottom: 14px;
+  }
+}
 @media (max-width: 900px) { .plancols { grid-template-columns: 1fr; } .planbox { max-height: 44vh; } }
 .tlogo { width: 18px; height: 18px; vertical-align: -4px; margin-right: 6px; }
 .teamcard .tlogo { width: 22px; height: 22px; vertical-align: -5px; margin-right: 8px; }
@@ -708,6 +725,7 @@ textarea.notes {
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
       </div>
       <label class="minctl">min minutes <input type="number" id="minmin" value="0" step="90" min="0"></label>
+      <label class="minctl" title="Hide everyone taken before this round, so you can see who should still be on the board when your pick comes round. 8 leaves you 8.1, 9.5, 12.8 and later. Blank shows every round."><input type="number" id="minrd" step="1" min="1" placeholder="all"> from round</label>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl" title="On: a column sort reorders everyone together. Off: your ranked players stay on top in your ranking order, and only the pool below them sorts by the column."><input type="checkbox" id="sortranked"> sort ranked</label>
       <div class="statspick">
@@ -1091,7 +1109,7 @@ const BUST_AT = 4.0;   // a start at or below this counts as a bust
 // adpd ascends first so the biggest risers (most negative) lead; click again for the fallers
 // bust% ascends first so a click surfaces the safest starters, not the worst
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","adpd","rd","rdpk","rk","myrk","dsrk","dsd","bust"]);
-let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
+let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true, minRd = 0;
 let teamPick = "";  // club chosen from the search suggestions; overrides the text
 let page = 0, pageSize = 25;
 let viewMode = "rank";
@@ -1301,6 +1319,9 @@ const poolBase = () => {
   return DATA.concat(custom).filter(r =>
     !removed.has(r.id) &&
     (!pos || r.pos === pos) &&
+    // no round at all means the mocks never took him, so he is still there
+    // whatever round you are pricing
+    (minRd === 0 || r.rd == null || r.rd >= minRd) &&
     (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) &&
                   (!hasAdp || r.adp != null || inRank.has(r.id)))));
 };
@@ -1559,6 +1580,7 @@ qEl.addEventListener("input", e => {
 qEl.addEventListener("blur", () => setTimeout(() => { qdrop.hidden = true; }, 150));
 qEl.addEventListener("keydown", e => { if (e.key === "Escape") qdrop.hidden = true; });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; page = 0; renderBoard(); });
+document.getElementById("minrd").addEventListener("input", e => { minRd = +e.target.value || 0; page = 0; renderBoard(); });
 document.getElementById("hasadp").addEventListener("change", e => { hasAdp = e.target.checked; page = 0; renderBoard(); });
 document.getElementById("posseg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;

@@ -160,23 +160,27 @@ td.player .pname {
 .pin { position: sticky; left: 0; z-index: 2; background: var(--pin-bg); }
 th.pin { z-index: 5 !important; background: var(--pin-bg); }
 .p-team   { left: 224px; width: 106px; min-width: 106px; }
-.p-pos    { left: 330px; width: 46px; min-width: 46px; }
-.p-adp    { left: 376px; width: 92px; min-width: 92px; }
-.p-rdpk   { left: 468px; width: 60px; min-width: 60px; }
-.p-fpts   { left: 528px; width: 68px; min-width: 68px; }
-.p-fpg    { left: 596px; width: 62px; min-width: 62px; }
-.p-xfp90  { left: 658px; width: 76px; min-width: 76px; }
-.p-npxga  { left: 734px; width: 84px; min-width: 84px; border-right: 2px solid var(--line); }
+/* 70 not 46: wide enough for the pill plus the position-rank badge. The
+   min-width matters as much as the width, so an empty ranking (no badges at
+   all) holds the same column width as a full one and the sticky offsets to
+   its right stay put either way. */
+.p-pos    { left: 330px; width: 70px; min-width: 70px; }
+.p-adp    { left: 400px; width: 92px; min-width: 92px; }
+.p-rdpk   { left: 492px; width: 60px; min-width: 60px; }
+.p-fpts   { left: 552px; width: 68px; min-width: 68px; }
+.p-fpg    { left: 620px; width: 62px; min-width: 62px; }
+.p-xfp90  { left: 682px; width: 76px; min-width: 76px; }
+.p-npxga  { left: 758px; width: 84px; min-width: 84px; border-right: 2px solid var(--line); }
 #v-board tbody tr:hover .pin { background: var(--line-soft); }
 .grp-pin { position: sticky; left: 0; z-index: 6 !important; background: var(--pin-bg); }
 #ranktbl .p-team { left: 268px; }
 #ranktbl .p-pos { left: 374px; }
-#ranktbl .p-adp { left: 420px; }
-#ranktbl .p-rdpk { left: 512px; }
-#ranktbl .p-fpts { left: 572px; }
-#ranktbl .p-fpg { left: 640px; }
-#ranktbl .p-xfp90 { left: 702px; }
-#ranktbl .p-npxga { left: 778px; }
+#ranktbl .p-adp { left: 444px; }
+#ranktbl .p-rdpk { left: 536px; }
+#ranktbl .p-fpts { left: 596px; }
+#ranktbl .p-fpg { left: 664px; }
+#ranktbl .p-xfp90 { left: 726px; }
+#ranktbl .p-npxga { left: 802px; }
 .pinfo { color: var(--ink2); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 #ranktbl tr.custom .pin, #ranktbl tr.custom .rnum { background: var(--line-soft); }
 td.dim, .dim { color: var(--ink2); }
@@ -190,6 +194,20 @@ tr.taken td.player { text-decoration: line-through; font-weight: 400; }
 .pill.M { color: var(--pos-m); background: var(--pos-m-bg); }
 .pill.F { color: var(--pos-f); background: var(--pos-f-bg); }
 .pill.G { color: var(--pos-g); background: var(--pos-g-bg); }
+/* how deep this player is at his position in your ranking: outlined rather
+   than filled, so it reads as a note on the pill and not a second pill */
+.posrk {
+  display: inline-block; box-sizing: border-box; width: 24px; text-align: center;
+  border: 1px solid currentColor; border-radius: 4px;
+  font-size: 10px; font-weight: 700; line-height: 15px; vertical-align: 1px;
+  /* fixed width, not natural: Pos is a pinned column, so a badge that grew a
+     digit would widen it and throw every sticky offset to its right */
+  overflow: hidden;
+}
+.posrk.D { color: var(--pos-d); }
+.posrk.M { color: var(--pos-m); }
+.posrk.F { color: var(--pos-f); }
+.posrk.G { color: var(--pos-g); }
 .chip { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 12px; font-weight: 600; }
 .chip.over { color: var(--over); background: var(--over-bg); }
 .chip.under { color: var(--under); background: var(--under-bg); }
@@ -740,7 +758,7 @@ textarea.notes {
   </header>
 
   <section id="v-board">
-    <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-08-12</p>
+    <p class="sub">Fantrax PL draft board · 2025/26 season re-scored to 2026/27 league rules · Fantrax totals joined with FotMob xG/xA · built 2026-08-13</p>
     <div class="controls">
       <div class="qwrap">
         <input type="search" id="q" placeholder="Search player or team…" aria-label="Search player or team">
@@ -1178,7 +1196,7 @@ if (!store("dm_cols_team", false)) {
 const VCOLS = () => COLS.filter(([k]) => !hiddenCols.has(k));
 
 // sticky offsets: cumulative widths of the visible pinned columns
-const PIN_W = { player: 224, team: 106, pos: 46, adp: 92, rdpk: 60, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
+const PIN_W = { player: 224, team: 106, pos: 70, adp: 92, rdpk: 60, fpts: 68, fpg: 62, xfp90: 76, npxga90: 84 };
 const PIN_CLS = { team: "p-team", pos: "p-pos", adp: "p-adp", rdpk: "p-rdpk", fpts: "p-fpts", fpg: "p-fpg", xfp90: "p-xfp90", npxga90: "p-npxga" };
 const pinStyle = document.createElement("style");
 // must come after the template's own <style> (same specificity, last wins)
@@ -1293,6 +1311,7 @@ function luckChip(v, t = 10, dp = 0) {
   const cls = v > t ? "over" : v < -t ? "under" : "flat";
   return `<span class="chip ${cls}">${v > 0 ? "+" : ""}${v.toFixed(dp)}</span>`;
 }
+const ord = n => n + (["th","st","nd","rd"][(n % 100 - 20) % 10] || ["th","st","nd","rd"][n % 100] || "th");
 function fmt(k, v, r) {
   if (k === "marks") return mkHtml(r.id);
   if (v == null) return '<span class="dim">–</span>';
@@ -1317,7 +1336,14 @@ function fmt(k, v, r) {
       `</span><span class="pname" data-pp="${r.id}" title="${v}">${v}</span></span>`;
   }
   if (k === "team") return `${tLogo(v.split("/").pop())}${v}`;
-  if (k === "pos") return `<span class="pill ${v}">${v}</span>`;
+  if (k === "pos") {
+    // your own depth at the position, so you can see you are taking a third
+    // forward before a second defender. Only ranked players have one.
+    const pr = r.myposrk
+      ? ` <span class="posrk ${v}" title="your ${ord(r.myposrk)} ${v} in “${ranks[activeRank].name}”">${r.myposrk}</span>`
+      : "";
+    return `<span class="pill ${v}">${v}</span>${pr}`;
+  }
   if (k === "luck") return luckChip(v);
   if (k === "luck90") return luckChip(v, 0.5, 2);
   if (k === "rk") return v;
@@ -1340,9 +1366,18 @@ function fmt(k, v, r) {
 }
 
 function updateMyRk() { // materialize active-ranking spots so every table can sort on it
-  DATA.forEach(r => r.myrk = null);
-  custom.forEach(r => r.myrk = null);
-  rank.forEach((id, i) => { if (byId[id]) byId[id].myrk = i + 1; });
+  DATA.forEach(r => { r.myrk = null; r.myposrk = null; });
+  custom.forEach(r => { r.myrk = null; r.myposrk = null; });
+  // walking the ranking in order, the nth player of a position is your nth at
+  // it, so the position rank is counted here rather than stored: reorder the
+  // ranking, or re-classify a player, and it follows on the next render
+  const seen = {};
+  rank.forEach((id, i) => {
+    const r = byId[id];
+    if (!r) return;
+    r.myrk = i + 1;
+    if (r.pos) r.myposrk = seen[r.pos] = (seen[r.pos] || 0) + 1;
+  });
 }
 // every board filter except the search box; the club suggestions count against
 // the same pool, so their tallies match what clicking one actually shows

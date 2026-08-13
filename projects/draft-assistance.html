@@ -279,6 +279,31 @@ td.marks { min-width: 92px; }
   padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
   background: var(--bg); color: var(--ink); font: inherit;
 }
+/* Round range: two sliders stacked on one track. The inputs span the full
+   width so their thumbs can reach both ends, so the track itself is inert and
+   only the thumbs take input, which is what lets them be dragged separately. */
+.rdctl { display: flex; align-items: center; gap: 8px; color: var(--ink2); font-size: 13px; }
+.rdslider { position: relative; width: 138px; height: 24px; flex: none; }
+.rdtrack, .rdfill { position: absolute; top: 10px; height: 4px; border-radius: 2px; }
+.rdtrack { left: 0; right: 0; background: var(--line); }
+.rdfill { background: var(--accent); }
+.rdslider input {
+  position: absolute; left: 0; top: 0; width: 100%; height: 24px; margin: 0; z-index: 3;
+  appearance: none; -webkit-appearance: none; background: none; pointer-events: none;
+}
+#maxrd { z-index: 4; }
+/* 18px so the thumbs stay draggable with a thumb, on a phone */
+.rdslider input::-webkit-slider-thumb {
+  -webkit-appearance: none; pointer-events: auto; cursor: pointer; touch-action: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 1px 3px #0004;
+}
+.rdslider input::-moz-range-thumb {
+  pointer-events: auto; cursor: pointer;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 1px 3px #0004;
+}
+.rdval { font-variant-numeric: tabular-nums; white-space: nowrap; min-width: 58px; }
 .addform { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .addform[hidden] { display: none; }
 .addform input, .addform select {
@@ -725,7 +750,15 @@ textarea.notes {
         <button data-pos="" class="on">All</button><button data-pos="G">G</button><button data-pos="D">D</button><button data-pos="M">M</button><button data-pos="F">F</button>
       </div>
       <label class="minctl">min minutes <input type="number" id="minmin" value="0" step="90" min="0"></label>
-      <label class="minctl" title="Hide everyone taken before this round, so you can see who should still be on the board when your pick comes round. 8 leaves you 8.1, 9.5, 12.8 and later. Blank shows every round."><input type="number" id="minrd" step="1" min="1" placeholder="all"> from round</label>
+      <div class="rdctl" title="Narrow the board to a stretch of the draft, so you can see who should still be there when your pick comes round. Drag the left thumb for the earliest round and the right one for the latest. Past round 16 is All, meaning no upper limit.">
+        <span>rounds</span>
+        <div class="rdslider">
+          <div class="rdtrack"></div><div class="rdfill" id="rdfill"></div>
+          <input type="range" id="minrd" min="1" max="17" step="1" value="1" aria-label="Earliest ADP round">
+          <input type="range" id="maxrd" min="1" max="17" step="1" value="17" aria-label="Latest ADP round">
+        </div>
+        <span class="rdval" id="rdval"></span>
+      </div>
       <label class="minctl"><input type="checkbox" id="hasadp" checked> drafted in mocks</label>
       <label class="minctl" title="On: a column sort reorders everyone together. Off: your ranked players stay on top in your ranking order, and only the pool below them sorts by the column."><input type="checkbox" id="sortranked"> sort ranked</label>
       <div class="statspick">
@@ -1109,7 +1142,8 @@ const BUST_AT = 4.0;   // a start at or below this counts as a bust
 // adpd ascends first so the biggest risers (most negative) lead; click again for the fallers
 // bust% ascends first so a click surfaces the safest starters, not the worst
 const ASC_DEFAULT = new Set(["player","team","pos","adp","adprk","adpd","rd","rdpk","rk","myrk","dsrk","dsd","bust"]);
-let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true, minRd = 0;
+let sortKey = "adp", sortDir = 1, pos = "", query = "", minMin = 0, hasAdp = true;
+let minRd = 0, maxRd = 0;   // 0 at either end means no bound there
 let teamPick = "";  // club chosen from the search suggestions; overrides the text
 let page = 0, pageSize = 25;
 let viewMode = "rank";
@@ -1319,9 +1353,11 @@ const poolBase = () => {
   return DATA.concat(custom).filter(r =>
     !removed.has(r.id) &&
     (!pos || r.pos === pos) &&
-    // no round at all means the mocks never took him, so he is still there
-    // whatever round you are pricing
+    // no round at all means the mocks never took him. That leaves him on the
+    // board however late you pick, so no floor can exclude him, but it also
+    // prices him after every round, so any ceiling does
     (minRd === 0 || r.rd == null || r.rd >= minRd) &&
+    (maxRd === 0 || (r.rd != null && r.rd <= maxRd)) &&
     (r.custom || ((minMin === 0 || (r.min != null && r.min >= minMin)) &&
                   (!hasAdp || r.adp != null || inRank.has(r.id)))));
 };
@@ -1580,7 +1616,26 @@ qEl.addEventListener("input", e => {
 qEl.addEventListener("blur", () => setTimeout(() => { qdrop.hidden = true; }, 150));
 qEl.addEventListener("keydown", e => { if (e.key === "Escape") qdrop.hidden = true; });
 document.getElementById("minmin").addEventListener("input", e => { minMin = +e.target.value || 0; page = 0; renderBoard(); });
-document.getElementById("minrd").addEventListener("input", e => { minRd = +e.target.value || 0; page = 0; renderBoard(); });
+const RD_ALL = 17;   // the stop past round 16, where the ceiling comes off
+const rdLo = document.getElementById("minrd"), rdHi = document.getElementById("maxrd");
+const rdFill = document.getElementById("rdfill"), rdVal = document.getElementById("rdval");
+function rdSync(moved) {
+  let lo = +rdLo.value, hi = +rdHi.value;
+  if (lo > hi) { if (moved === "lo") hi = lo; else lo = hi; }   // thumbs cannot cross
+  rdLo.value = lo; rdHi.value = hi;
+  minRd = lo <= 1 ? 0 : lo;          // round 1 is the same as no floor
+  maxRd = hi >= RD_ALL ? 0 : hi;
+  const pc = v => (v - 1) / (RD_ALL - 1) * 100;
+  rdFill.style.left = pc(lo) + "%";
+  rdFill.style.right = (100 - pc(hi)) + "%";
+  rdVal.textContent = lo + " to " + (hi >= RD_ALL ? "All" : hi);
+  // parked together on the right, the lower thumb is the only one with
+  // anywhere to go, so it has to be the one on top
+  rdLo.style.zIndex = (lo === hi && hi === RD_ALL) ? 5 : 3;
+}
+rdLo.addEventListener("input", () => { rdSync("lo"); page = 0; renderBoard(); });
+rdHi.addEventListener("input", () => { rdSync("hi"); page = 0; renderBoard(); });
+rdSync();
 document.getElementById("hasadp").addEventListener("change", e => { hasAdp = e.target.checked; page = 0; renderBoard(); });
 document.getElementById("posseg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;

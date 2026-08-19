@@ -8,39 +8,6 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
-
-.sq-wrap{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 12px 12px}
-.sq-title{color:#e6edf3;font-size:14px;font-weight:600;text-align:center;margin-bottom:2px}
-.sq-meta{color:#8b949e;font-size:12px;text-align:center;margin-bottom:10px}
-.sq-dim{color:#6e7681}
-.sq-pitch{
-  background:linear-gradient(#122b1a,#0f2417);border:1px solid #1c3b26;border-radius:8px;
-  padding:14px 6px;display:flex;flex-direction:column;gap:12px;
-}
-.sq-line{display:flex;justify-content:center;gap:4px;flex-wrap:wrap}
-.sq-plr{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  width:62px;cursor:default;
-}
-.sq-dot{
-  width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.22);
-  display:flex;align-items:center;justify-content:center;position:relative;
-}
-.sq-cap{
-  position:absolute;top:-5px;right:-6px;background:#f0883e;color:#0d1117;
-  font-size:8px;font-weight:700;width:12px;height:12px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-}
-.sq-nm{
-  font-size:10px;color:#e6edf3;font-weight:600;line-height:1.15;text-align:center;
-  max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.sq-sub{font-size:9px;color:#8b949e;font-variant-numeric:tabular-nums}
-.sq-bench{margin-top:10px;background:#0d1117;border:1px dashed #21262d;border-radius:8px;padding:8px 4px}
-.sq-bench-hd{
-  font-size:10px;color:#8b949e;text-align:center;margin-bottom:7px;
-  text-transform:uppercase;letter-spacing:.06em;
-}
 </style>
 </head>
 <body>
@@ -177,17 +144,7 @@ h1{font-size:22px;font-weight:700;color:#e6edf3;margin-bottom:4px}
 <div class="tooltip" id="tooltip"></div>
 
 <div class="side-col">
-  <div class="side-squad">
-<div class="sq-wrap">
-  <h3 class="sq-title">Optimal Squad</h3>
-  <div class="sq-meta">GW1 &middot; 3-5-2 &middot; &pound;100.0m
-    <span class="sq-dim">(&pound;0.0m free)</span></div>
-  <div class="sq-pitch"><div class="sq-line"><div class="sq-plr" title="David Raya — Arsenal — £6.0m — 4.65 xPts — 96% to play"><span class="sq-dot" style="background:#a371f7"></span><span class="sq-nm">Raya</span><span class="sq-sub">£6.0 &middot; 4.6</span></div></div><div class="sq-line"><div class="sq-plr" title="Nico O'Reilly — Manchester City — £6.5m — 5.24 xPts — 95% to play"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">O'Reilly</span><span class="sq-sub">£6.5 &middot; 5.2</span></div><div class="sq-plr" title="Virgil van Dijk — Liverpool — £6.5m — 4.57 xPts — 94% to play"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">Virgil</span><span class="sq-sub">£6.5 &middot; 4.6</span></div><div class="sq-plr" title="Neco Williams — Nottingham Forest — £5.0m — 4.46 xPts — 95% to play"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">N.Williams</span><span class="sq-sub">£5.0 &middot; 4.5</span></div></div><div class="sq-line"><div class="sq-plr" title="Bruno Fernandes — Manchester United — £12.0m — 5.95 xPts — 96% to play"><span class="sq-dot" style="background:#58a6ff"><span class="sq-cap">C</span></span><span class="sq-nm">B.Fernandes</span><span class="sq-sub">£12.0 &middot; 5.9</span></div><div class="sq-plr" title="Matheus Cunha — Manchester United — £8.0m — 5.64 xPts — 95% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">Cunha</span><span class="sq-sub">£8.0 &middot; 5.6</span></div><div class="sq-plr" title="Cole Palmer — Chelsea — £9.5m — 5.50 xPts — 94% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">Palmer</span><span class="sq-sub">£9.5 &middot; 5.5</span></div><div class="sq-plr" title="Bryan Mbeumo — Manchester United — £8.0m — 5.39 xPts — 94% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">Mbeumo</span><span class="sq-sub">£8.0 &middot; 5.4</span></div><div class="sq-plr" title="Enzo Le Fée — Sunderland — £6.0m — 4.96 xPts — 96% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">E.Le Fée</span><span class="sq-sub">£6.0 &middot; 5.0</span></div></div><div class="sq-line"><div class="sq-plr" title="Richarlison — Tottenham Hotspur — £6.0m — 4.78 xPts — 94% to play"><span class="sq-dot" style="background:#d29922"></span><span class="sq-nm">Richarlison</span><span class="sq-sub">£6.0 &middot; 4.8</span></div><div class="sq-plr" title="João Pedro — Chelsea — £7.5m — 4.59 xPts — 94% to play"><span class="sq-dot" style="background:#d29922"></span><span class="sq-nm">João Pedro</span><span class="sq-sub">£7.5 &middot; 4.6</span></div></div></div>
-  <div class="sq-bench">
-    <div class="sq-bench-hd">Bench &middot; &pound;19.0m</div>
-    <div class="sq-line"><div class="sq-plr" title="Bernd Leno — Fulham — £4.5m — 4.30 xPts — 96% to play — slot used 4% of the time"><span class="sq-dot" style="background:#a371f7"></span><span class="sq-nm">Leno</span><span class="sq-sub">£4.5 &middot; 4.3</span></div><div class="sq-plr" title="Brian Brobbey — Sunderland — £6.0m — 4.53 xPts — 94% to play — slot used 41% of the time"><span class="sq-dot" style="background:#d29922"></span><span class="sq-nm">Brobbey</span><span class="sq-sub">£6.0 &middot; 4.5</span></div><div class="sq-plr" title="Antonee Robinson — Fulham — £4.5m — 4.16 xPts — 94% to play — slot used 9% of the time"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">Robinson</span><span class="sq-sub">£4.5 &middot; 4.2</span></div><div class="sq-plr" title="Semi Ajayi — Hull City — £4.0m — 3.32 xPts — 94% to play — slot used 1% of the time"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">Ajayi</span><span class="sq-sub">£4.0 &middot; 3.3</span></div></div>
-  </div>
-</div></div>
+  <div class="side-squad"></div>
   <div style="max-width:620px;margin:32px auto 16px;padding:0 16px">
 
 <div style="margin:18px 0 0">
@@ -561,17 +518,7 @@ body{
   <h1 id="title">FPL Points Distribution</h1>
   <p>Monte Carlo Simulation &middot; Tap card for details</p>
 </div>
-<div class="mob-squad">
-<div class="sq-wrap">
-  <h3 class="sq-title">Optimal Squad</h3>
-  <div class="sq-meta">GW1 &middot; 3-5-2 &middot; &pound;100.0m
-    <span class="sq-dim">(&pound;0.0m free)</span></div>
-  <div class="sq-pitch"><div class="sq-line"><div class="sq-plr" title="David Raya — Arsenal — £6.0m — 4.65 xPts — 96% to play"><span class="sq-dot" style="background:#a371f7"></span><span class="sq-nm">Raya</span><span class="sq-sub">£6.0 &middot; 4.6</span></div></div><div class="sq-line"><div class="sq-plr" title="Nico O'Reilly — Manchester City — £6.5m — 5.24 xPts — 95% to play"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">O'Reilly</span><span class="sq-sub">£6.5 &middot; 5.2</span></div><div class="sq-plr" title="Virgil van Dijk — Liverpool — £6.5m — 4.57 xPts — 94% to play"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">Virgil</span><span class="sq-sub">£6.5 &middot; 4.6</span></div><div class="sq-plr" title="Neco Williams — Nottingham Forest — £5.0m — 4.46 xPts — 95% to play"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">N.Williams</span><span class="sq-sub">£5.0 &middot; 4.5</span></div></div><div class="sq-line"><div class="sq-plr" title="Bruno Fernandes — Manchester United — £12.0m — 5.95 xPts — 96% to play"><span class="sq-dot" style="background:#58a6ff"><span class="sq-cap">C</span></span><span class="sq-nm">B.Fernandes</span><span class="sq-sub">£12.0 &middot; 5.9</span></div><div class="sq-plr" title="Matheus Cunha — Manchester United — £8.0m — 5.64 xPts — 95% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">Cunha</span><span class="sq-sub">£8.0 &middot; 5.6</span></div><div class="sq-plr" title="Cole Palmer — Chelsea — £9.5m — 5.50 xPts — 94% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">Palmer</span><span class="sq-sub">£9.5 &middot; 5.5</span></div><div class="sq-plr" title="Bryan Mbeumo — Manchester United — £8.0m — 5.39 xPts — 94% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">Mbeumo</span><span class="sq-sub">£8.0 &middot; 5.4</span></div><div class="sq-plr" title="Enzo Le Fée — Sunderland — £6.0m — 4.96 xPts — 96% to play"><span class="sq-dot" style="background:#58a6ff"></span><span class="sq-nm">E.Le Fée</span><span class="sq-sub">£6.0 &middot; 5.0</span></div></div><div class="sq-line"><div class="sq-plr" title="Richarlison — Tottenham Hotspur — £6.0m — 4.78 xPts — 94% to play"><span class="sq-dot" style="background:#d29922"></span><span class="sq-nm">Richarlison</span><span class="sq-sub">£6.0 &middot; 4.8</span></div><div class="sq-plr" title="João Pedro — Chelsea — £7.5m — 4.59 xPts — 94% to play"><span class="sq-dot" style="background:#d29922"></span><span class="sq-nm">João Pedro</span><span class="sq-sub">£7.5 &middot; 4.6</span></div></div></div>
-  <div class="sq-bench">
-    <div class="sq-bench-hd">Bench &middot; &pound;19.0m</div>
-    <div class="sq-line"><div class="sq-plr" title="Bernd Leno — Fulham — £4.5m — 4.30 xPts — 96% to play — slot used 4% of the time"><span class="sq-dot" style="background:#a371f7"></span><span class="sq-nm">Leno</span><span class="sq-sub">£4.5 &middot; 4.3</span></div><div class="sq-plr" title="Brian Brobbey — Sunderland — £6.0m — 4.53 xPts — 94% to play — slot used 41% of the time"><span class="sq-dot" style="background:#d29922"></span><span class="sq-nm">Brobbey</span><span class="sq-sub">£6.0 &middot; 4.5</span></div><div class="sq-plr" title="Antonee Robinson — Fulham — £4.5m — 4.16 xPts — 94% to play — slot used 9% of the time"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">Robinson</span><span class="sq-sub">£4.5 &middot; 4.2</span></div><div class="sq-plr" title="Semi Ajayi — Hull City — £4.0m — 3.32 xPts — 94% to play — slot used 1% of the time"><span class="sq-dot" style="background:#3fb950"></span><span class="sq-nm">Ajayi</span><span class="sq-sub">£4.0 &middot; 3.3</span></div></div>
-  </div>
-</div></div>
+<div class="mob-squad"></div>
 <div style="max-width:620px;margin:32px auto 16px;padding:0 16px">
 
 <div style="margin:18px 0 0">

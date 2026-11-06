@@ -1,671 +1,671 @@
 gameweek,fpl_id,player_name,web_name,team,position,opponent,expected_points,expected_minutes,appear_prob
-10,426,Bruno Borges Fernandes,B.Fernandes,Man Utd,MID,Aston Villa,5.449,81.865,0.99
-10,154,Cole Palmer,Palmer,Chelsea,MID,Sunderland,5.448,80.987,0.99
-10,427,Bryan Mbeumo,Mbeumo,Man Utd,MID,Aston Villa,5.243,83.665,1.0
-10,4,Gabriel dos Santos Magalhães,Gabriel,Arsenal,DEF,Hull City,5.229,84.043,0.99
-10,68,Marcus Tavernier,Tavernier,Bournemouth,MID,Ipswich Town,5.113,78.466,1.0
-10,31,Ezri Konsa Ngoyo,Konsa,Arsenal,DEF,Hull City,5.034,83.438,0.99
-10,8,Riccardo Calafiori,Calafiori,Arsenal,DEF,Hull City,4.995,79.663,0.99
-10,411,Erling Haaland,Haaland,Man City,FWD,Nottingham Forest,4.89,83.623,1.0
-10,40,Morgan Rogers,Rogers,Chelsea,MID,Sunderland,4.842,82.211,1.0
-10,1,David Raya Martín,Raya,Arsenal,GKP,Hull City,4.789,85.273,0.99
-10,233,Vitalii Mykolenko,Mykolenko,Everton,DEF,Coventry City,4.655,82.311,0.99
-10,229,James Tarkowski,Tarkowski,Everton,DEF,Coventry City,4.614,84.044,0.99
-10,67,Rayan Vitor Simplício Rocha,Rayan,Bournemouth,MID,Ipswich Town,4.543,79.701,0.99
-10,566,António João Pereira de Albuquerque Tavares da Silva,Silva,Bournemouth,DEF,Ipswich Town,4.505,83.968,0.99
-10,236,Kiernan Dewsbury-Hall,Dewsbury-Hall,Everton,MID,Coventry City,4.496,82.83,1.0
-10,379,Alexander Isak,Isak,Liverpool,FWD,Crystal Palace,4.457,78.053,1.0
-10,79,Francisco Evanilson de Lima Barbosa,Evanilson,Bournemouth,FWD,Ipswich Town,4.418,77.213,0.99
-10,504,Luka Vušković,Vuskovic,Brighton,DEF,Brentford,4.39,83.671,0.99
-10,366,Florian Wirtz,Wirtz,Liverpool,MID,Crystal Palace,4.382,75.524,0.99
-10,13,Declan Rice,Rice,Arsenal,MID,Hull City,4.349,80.487,0.99
-10,230,Jarrad Branthwaite,Branthwaite,Everton,DEF,Coventry City,4.348,77.989,0.99
-10,15,Martin Ødegaard,Ødegaard,Arsenal,MID,Hull City,4.332,78.662,0.99
-10,226,Jordan Pickford,Pickford,Everton,GKP,Coventry City,4.305,85.068,0.99
-10,60,James Hill,Hill,Bournemouth,DEF,Ipswich Town,4.278,83.777,0.99
-10,5,Jurriën Timber,J.Timber,Arsenal,DEF,Hull City,4.239,74.746,0.99
-10,367,Cody Gakpo,Gakpo,Liverpool,MID,Crystal Palace,4.188,72.979,0.99
-10,16,Noni Madueke,Madueke,Arsenal,MID,Hull City,4.154,76.267,0.99
-10,138,Charalampos Kostoulas,Kostoulas,Brighton,FWD,Brentford,4.134,74.38,0.99
-10,453,Harvey Barnes,Barnes,Newcastle,MID,Fulham,4.091,81.564,0.99
-10,26,Kai Havertz,Havertz,Arsenal,FWD,Hull City,4.083,75.092,0.99
-10,124,Pascal Groß,Groß,Brighton,MID,Brentford,4.038,82.696,0.99
-10,57,Đorđe Petrović,Petrović,Bournemouth,GKP,Ipswich Town,4.036,84.853,0.99
-10,356,Virgil van Dijk,Virgil,Liverpool,DEF,Crystal Palace,4.026,84.165,0.99
-10,486,James McAtee,McAtee,Nott'm Forest,MID,Manchester City,4.003,80.299,0.99
-10,480,Morgan Gibbs-White,Gibbs-White,Nott'm Forest,MID,Manchester City,3.985,82.656,0.99
-10,400,Jérémy Doku,Doku,Man City,MID,Nottingham Forest,3.981,76.162,0.99
-10,61,Adrien Truffert,Truffert,Bournemouth,DEF,Ipswich Town,3.977,83.8,0.99
-10,452,Bruno Guimarães Rodriguez Moura,Bruno G.,Arsenal,MID,Hull City,3.949,67.277,0.99
-10,127,Diego Gómez Amarilla,Gomez,Brighton,MID,Brentford,3.945,77.505,0.99
-10,334,Tarik Muharemović,Muharemović,Leeds,DEF,Tottenham Hotspur,3.925,84.171,0.99
-10,183,Jack Rudoni,Rudoni,Coventry City,MID,Everton,3.897,80.178,1.0
-10,75,Ryan Christie,Christie,Bournemouth,MID,Ipswich Town,3.872,65.271,0.99
-10,268,Josh King,King,Fulham,MID,Newcastle United,3.85,74.818,0.99
-10,106,Igor Thiago Nascimento Rodrigues,Thiago,Brentford,FWD,Brighton and Hove Albion,3.846,83.876,1.0
-10,446,Fabian Schär,Schär,Newcastle,DEF,Fulham,3.846,78.565,0.99
-10,115,Maxim De Cuyper,De Cuyper,Brighton,DEF,Brentford,3.844,77.725,0.99
-10,346,Dominic Calvert-Lewin,Calvert-Lewin,Leeds,FWD,Tottenham Hotspur,3.843,80.849,1.0
-10,591,Julio Enciso,Enciso,Ipswich Town,MID,Bournemouth,3.839,79.515,1.0
-10,362,Jeremy Jacquet,Jacquet,Liverpool,DEF,Crystal Palace,3.838,82.893,0.99
-10,156,Pedro Lomba Neto,Neto,Chelsea,MID,Sunderland,3.827,73.968,1.0
-10,239,James Garner,Garner,Everton,MID,Coventry City,3.825,82.221,1.0
-10,332,James Justin,Justin,Leeds,DEF,Tottenham Hotspur,3.824,80.826,0.99
-10,53,Johan Manzambi,Manzambi,Aston Villa,MID,Manchester United,3.811,69.022,0.99
-10,261,Alex Iwobi,Iwobi,Fulham,MID,Newcastle United,3.796,76.598,0.99
-10,431,Amad Diallo,Amad,Man Utd,MID,Aston Villa,3.788,71.874,0.99
-10,350,Alisson Becker,A.Becker,Liverpool,GKP,Crystal Palace,3.777,84.965,0.99
-10,512,Mohammed Kudus,Kudus,Spurs,MID,Leeds United,3.759,76.241,0.99
-10,249,Thierno Barry,Barry,Everton,FWD,Coventry City,3.758,79.422,0.99
-10,372,Alexis Mac Allister,Mac Allister,Liverpool,MID,Crystal Palace,3.752,81.235,1.0
-10,449,Lewis Hall,Hall,Newcastle,DEF,Fulham,3.75,83.879,0.99
-10,129,Yasin Ayari,Ayari,Brighton,MID,Brentford,3.749,78.775,0.99
-10,412,Senne Lammens,Lammens,Man Utd,GKP,Aston Villa,3.732,85.076,0.99
-10,567,Lukás Hornícek,Horníček,Newcastle,GKP,Fulham,3.719,85.13,0.99
-10,151,Josh Acheampong,Acheampong,Chelsea,DEF,Sunderland,3.69,80.243,0.99
-10,94,Kevin Schade,Schade,Brentford,MID,Brighton and Hove Albion,3.681,76.148,0.99
-10,385,James Trafford,Trafford,Leeds,GKP,Tottenham Hotspur,3.667,85.144,0.99
-10,149,Levi Samuels Colwill,Colwill,Chelsea,DEF,Sunderland,3.662,83.005,0.99
-10,112,Jan Paul van Hecke,Van Hecke,Spurs,DEF,Leeds United,3.657,84.182,0.99
-10,560,Mike Penders,Penders,Chelsea,GKP,Sunderland,3.653,81.143,0.99
-10,109,Bart Verbruggen,Verbruggen,Brighton,GKP,Brentford,3.634,85.225,0.99
-10,145,Wesley Fofana,Fofana,Chelsea,DEF,Sunderland,3.628,77.794,0.99
-10,481,Elliot Anderson,Anderson,Man City,MID,Nottingham Forest,3.626,80.279,0.99
-10,650,David Affengruber,Affengruber,Fulham,DEF,Newcastle United,3.617,84.033,0.99
-10,384,Gianluigi Donnarumma,Donnarumma,Man City,GKP,Nottingham Forest,3.603,85.16,0.99
-10,237,Iliman Ndiaye,Ndiaye,Man City,MID,Nottingham Forest,3.594,74.591,0.99
-10,155,Enzo Fernández,Enzo,Man City,MID,Nottingham Forest,3.587,74.237,0.99
-10,70,Justin Kluivert,Kluivert,Bournemouth,MID,Ipswich Town,3.576,66.889,0.99
-10,157,Estêvão Almeida de Oliveira Gonçalves,Estêvão,Chelsea,MID,Sunderland,3.572,62.76,0.99
-10,254,Antonee Robinson,Robinson,Fulham,DEF,Newcastle United,3.564,82.249,0.99
-10,110,Carl Rushworth,Rushworth,Coventry City,GKP,Everton,3.556,85.13,0.99
-10,166,Nicolas Jackson,N.Jackson,Aston Villa,FWD,Manchester United,3.553,79.192,1.0
-10,391,Joško Gvardiol,Gvardiol,Man City,DEF,Nottingham Forest,3.544,78.642,0.99
-10,569,Gonzalo García,Gonzalo,Fulham,FWD,Newcastle United,3.536,74.492,0.99
-10,250,Bernd Leno,Leno,Fulham,GKP,Newcastle United,3.531,85.083,0.99
-10,417,Diogo Dalot Teixeira,Dalot,Man Utd,DEF,Aston Villa,3.522,81.355,0.99
-10,542,Enzo Le Fée,E.Le Fée,Sunderland,MID,Chelsea,3.506,80.918,0.99
-10,496,Antonín Kinský,Kinsky,Spurs,GKP,Leeds United,3.493,85.245,0.99
-10,580,Shea Charles,Charles,Fulham,MID,Newcastle United,3.489,79.966,0.99
-10,455,Sandro Tonali,Tonali,Spurs,MID,Leeds United,3.489,82.785,1.0
-10,95,Dango Ouattara,O.Dango,Brentford,MID,Brighton and Hove Albion,3.476,68.057,0.99
-10,91,Ethan Pinnock,Pinnock,Coventry City,DEF,Everton,3.472,83.064,0.99
-10,469,Neco Williams,N.Williams,Nott'm Forest,DEF,Manchester City,3.467,83.486,0.99
-10,330,Jayden Bogle,Bogle,Leeds,DEF,Tottenham Hotspur,3.46,80.875,1.0
-10,420,Leny Yoro,Yoro,Man Utd,DEF,Aston Villa,3.441,79.574,0.99
-10,627,Bradley Barcola,Barcola,Liverpool,MID,Crystal Palace,3.427,77.233,1.0
-10,338,Ethan Ampadu,Ampadu,Leeds,MID,Tottenham Hotspur,3.425,83.336,0.99
-10,579,Ronald Araujo,Araujo,Liverpool,DEF,Crystal Palace,3.419,76.98,0.99
-10,472,Murillo Costa dos Santos,Murillo,Nott'm Forest,DEF,Manchester City,3.407,84.02,0.99
-10,544,Granit Xhaka,Xhaka,Sunderland,MID,Chelsea,3.377,82.975,0.99
-10,286,Mohamed Belloumi,Belloumi,Hull City,MID,Arsenal,3.377,79.424,1.0
-10,175,Milan van Ewijk,van Ewijk,Coventry City,DEF,Everton,3.358,83.65,0.99
-10,244,Harrison Armstrong,Armstrong,Everton,MID,Coventry City,3.354,80.15,0.99
-10,588,Anan Khalaili,Khalaili,Crystal Palace,DEF,Liverpool,3.348,74.662,0.99
-10,552,Brian Brobbey,Brobbey,Sunderland,FWD,Chelsea,3.336,76.531,0.99
-10,264,Oscar Bobb,Bobb,Fulham,MID,Newcastle United,3.324,69.91,0.99
-10,656,Stephen Mfuni,Mfuni,Coventry City,DEF,Everton,3.32,76.604,0.99
-10,358,Milos Kerkez,Kerkez,Liverpool,DEF,Crystal Palace,3.313,78.633,0.99
-10,242,Tyrique George,George,Everton,MID,Coventry City,3.312,75.813,0.99
-10,86,Keane Lewis-Potter,Lewis-Potter,Brentford,MID,Brighton and Hove Albion,3.295,80.936,1.0
-10,598,Nico Elvedi,Elvedi,Leeds,DEF,Tottenham Hotspur,3.293,81.04,0.99
-10,597,Zion Suzuki,Suzuki,Aston Villa,GKP,Manchester United,3.282,84.863,0.99
-10,119,João Pedro Loureiro da Costa,Costinha,Brighton,DEF,Brentford,3.275,75.598,0.99
-10,460,Joe Willock,Willock,Newcastle,MID,Fulham,3.263,68.299,0.99
-10,260,Harry Wilson,Wilson,Leeds,MID,Tottenham Hotspur,3.259,66.524,0.99
-10,514,Mathys Tel,Tel,Spurs,MID,Leeds United,3.24,75.531,0.99
-10,619,Exequiel Palacios,Palacios,Ipswich Town,MID,Bournemouth,3.234,80.002,0.99
-10,418,Harry Maguire,Maguire,Man Utd,DEF,Aston Villa,3.224,83.724,0.99
-10,202,Chris Richards,Richards,Crystal Palace,DEF,Liverpool,3.222,83.741,0.99
-10,258,Timothy Castagne,Castagne,Fulham,DEF,Newcastle United,3.214,79.556,0.99
-10,465,William Osula,Osula,Newcastle,FWD,Fulham,3.214,73.675,0.99
-10,558,Xaver Schlager,Schlager,Nott'm Forest,MID,Manchester City,3.209,74.694,0.99
-10,210,Adam Wharton,Wharton,Crystal Palace,MID,Liverpool,3.2,80.517,0.99
-10,401,Omar Marmoush,Marmoush,Spurs,FWD,Leeds United,3.188,72.753,0.99
-10,345,Tanaka Ao,Tanaka,Leeds,MID,Tottenham Hotspur,3.177,72.714,0.99
-10,525,Mateus Fernandes,Fernandes,Spurs,MID,Leeds United,3.173,78.014,0.99
-10,203,Jaydee Canvot,Canvot,Crystal Palace,DEF,Liverpool,3.158,82.976,0.99
-10,214,Daichi Kamada,Kamada,Crystal Palace,MID,Liverpool,3.145,79.866,0.99
-10,529,Robin Roefs,Roefs,Sunderland,GKP,Chelsea,3.133,85.061,0.99
-10,503,Micky van de Ven,Van de Ven,Spurs,DEF,Leeds United,3.132,82.789,0.99
-10,116,Lewis Dunk,Dunk,Brighton,DEF,Brentford,3.128,82.524,0.99
-10,167,Liam Delap,Delap,Nott'm Forest,FWD,Manchester City,3.126,75.356,0.99
-10,393,Abdukodir Khusanov,Khusanov,Man City,DEF,Nottingham Forest,3.123,80.119,0.99
-10,316,Emersonn Correia da Silva,Emersonn,Ipswich Town,FWD,Bournemouth,3.102,68.753,0.99
-10,211,Yéremy Pino Santos,Yeremy,Crystal Palace,MID,Liverpool,3.101,72.034,0.99
-10,45,John McGinn,McGinn,Aston Villa,MID,Manchester United,3.093,76.296,0.99
-10,73,Tyler Adams,Adams,Bournemouth,MID,Ipswich Town,3.091,79.981,0.99
-10,82,Caoimhín Kelleher,Kelleher,Brentford,GKP,Brighton and Hove Albion,3.09,84.967,0.99
-10,257,Calvin Bassey,Bassey,Fulham,DEF,Newcastle United,3.088,83.954,0.99
-10,502,Andrew Robertson,Robertson,Spurs,DEF,Leeds United,3.074,76.04,0.99
-10,557,Christos Tzolis,Tzolis,Arsenal,MID,Hull City,3.061,69.561,0.99
-10,526,Dominic Solanke-Mitchell,Solanke,Spurs,FWD,Leeds United,3.058,68.837,0.99
-10,64,Adam Smith,Smith,Bournemouth,DEF,Ipswich Town,3.045,79.815,0.99
-10,448,Dan Burn,Burn,Newcastle,DEF,Fulham,3.043,78.798,0.99
-10,389,Matheus Nunes,Matheus N.,Man City,DEF,Nottingham Forest,3.035,77.681,0.99
-10,98,Vitaly Janelt,Janelt,Brentford,MID,Brighton and Hove Albion,3.033,81.587,0.99
-10,43,Youri Tielemans,Tielemans,Man Utd,MID,Aston Villa,3.024,64.23,0.99
-10,36,Ian Maatsen,Maatsen,Aston Villa,DEF,Manchester United,3.023,81.081,0.99
-10,246,Merlin Röhl,Röhl,Everton,MID,Coventry City,3.0,81.55,0.99
-10,87,Kristoffer Ajer,Ajer,Brentford,DEF,Brighton and Hove Albion,2.98,83.718,0.99
-10,467,Matz Sels,Sels,Nott'm Forest,GKP,Manchester City,2.956,85.235,0.99
-10,572,Konstantinos Tzolakis,Tzolakis,Hull City,GKP,Arsenal,2.943,85.321,0.99
-10,201,Daniel Muñoz Mejía,Muñoz,Nott'm Forest,DEF,Manchester City,2.942,75.612,0.99
-10,534,Trai Hume,Hume,Sunderland,DEF,Chelsea,2.935,78.128,0.99
-10,471,Nikola Milenković,Milenković,Nott'm Forest,DEF,Manchester City,2.926,81.153,0.99
-10,499,Pedro Porro Sauceda,Pedro Porro,Spurs,DEF,Leeds United,2.924,69.613,0.99
-10,375,Trey Nyoni,Nyoni,Liverpool,MID,Crystal Palace,2.918,63.278,0.99
-10,593,Amar Dedic,Dedić,Newcastle,DEF,Fulham,2.915,78.835,0.99
-10,390,Rúben dos Santos Gato Alves Dias,Rúben,Man City,DEF,Nottingham Forest,2.912,84.038,0.99
-10,176,Jay Dasilva,Dasilva,Coventry City,DEF,Everton,2.907,83.764,0.99
-10,618,Leon Goretzka,Goretzka,Aston Villa,MID,Manchester United,2.896,63.256,0.99
-10,198,Dean Henderson,Henderson,Crystal Palace,GKP,Liverpool,2.894,82.588,0.99
-10,114,Olivier Boscagli,Boscagli,Brighton,DEF,Brentford,2.883,73.543,0.99
-10,85,Sepp van den Berg,Van den Berg,Brentford,DEF,Brighton and Hove Albion,2.879,81.279,0.99
-10,331,Gabriel Gudmundsson,Gudmundsson,Leeds,DEF,Tottenham Hotspur,2.864,77.194,0.99
-10,454,Anthony Elanga,Elanga,Newcastle,MID,Fulham,2.848,68.312,0.99
-10,209,Brennan Johnson,Johnson,Everton,MID,Coventry City,2.834,60.223,0.99
-10,639,José María Andrés Baixauli,Andrés,Brighton,MID,Brentford,2.831,71.602,0.99
-10,47,Boubacar Kamara,Kamara,Aston Villa,MID,Manchester United,2.826,79.997,0.99
-10,432,Kobbie Mainoo,Mainoo,Man Utd,MID,Aston Villa,2.819,70.066,0.99
-10,159,Moisés Caicedo Corozo,Caicedo,Chelsea,MID,Sunderland,2.799,77.456,0.99
-10,97,Mathias Jensen,Jensen,Brentford,MID,Brighton and Hove Albion,2.799,70.66,0.99
-10,483,Dan Ndoye,Ndoye,Nott'm Forest,MID,Manchester City,2.799,66.87,0.99
-10,204,Tyrick Mitchell,Mitchell,Crystal Palace,DEF,Liverpool,2.797,82.368,1.0
-10,295,Oli McBurnie,McBurnie,Hull City,FWD,Arsenal,2.797,81.428,1.0
-10,586,Nobel Mendy,Mendy,Hull City,DEF,Arsenal,2.791,78.21,0.99
-10,492,Taiwo Awoniyi,Awoniyi,Coventry City,FWD,Everton,2.786,68.282,0.99
-10,265,Sander Berge,Berge,Fulham,MID,Newcastle United,2.766,78.827,0.99
-10,405,Nico González Iglesias,N.Gonzalez,Newcastle,MID,Fulham,2.766,74.198,0.99
-10,421,Ayden Heaven,Heaven,Man Utd,DEF,Aston Villa,2.762,69.874,0.99
-10,474,Jair Paula da Cunha Filho,Jair Cunha,Nott'm Forest,DEF,Manchester City,2.737,81.803,0.99
+10,426,Bruno Borges Fernandes,B.Fernandes,Man Utd,MID,Aston Villa,5.16,81.865,0.99
+10,154,Cole Palmer,Palmer,Chelsea,MID,Sunderland,5.139,80.987,0.99
+10,427,Bryan Mbeumo,Mbeumo,Man Utd,MID,Aston Villa,5.128,83.665,1.0
+10,68,Marcus Tavernier,Tavernier,Bournemouth,MID,Ipswich Town,5.103,78.466,1.0
+10,4,Gabriel dos Santos Magalhães,Gabriel,Arsenal,DEF,Hull City,4.986,84.043,0.99
+10,31,Ezri Konsa Ngoyo,Konsa,Arsenal,DEF,Hull City,4.945,83.438,0.99
+10,411,Erling Haaland,Haaland,Man City,FWD,Nottingham Forest,4.934,83.623,1.0
+10,67,Rayan Vitor Simplício Rocha,Rayan,Bournemouth,MID,Ipswich Town,4.859,79.701,0.99
+10,8,Riccardo Calafiori,Calafiori,Arsenal,DEF,Hull City,4.765,79.663,0.99
+10,233,Vitalii Mykolenko,Mykolenko,Everton,DEF,Coventry City,4.7,82.311,0.99
+10,79,Francisco Evanilson de Lima Barbosa,Evanilson,Bournemouth,FWD,Ipswich Town,4.691,77.213,0.99
+10,229,James Tarkowski,Tarkowski,Everton,DEF,Coventry City,4.64,84.044,0.99
+10,40,Morgan Rogers,Rogers,Chelsea,MID,Sunderland,4.583,82.211,1.0
+10,1,David Raya Martín,Raya,Arsenal,GKP,Hull City,4.576,85.273,0.99
+10,16,Noni Madueke,Madueke,Arsenal,MID,Hull City,4.47,76.267,0.99
+10,366,Florian Wirtz,Wirtz,Liverpool,MID,Crystal Palace,4.451,75.524,0.99
+10,236,Kiernan Dewsbury-Hall,Dewsbury-Hall,Everton,MID,Coventry City,4.424,82.83,1.0
+10,138,Charalampos Kostoulas,Kostoulas,Brighton,FWD,Brentford,4.397,74.38,0.99
+10,566,António João Pereira de Albuquerque Tavares da Silva,Silva,Bournemouth,DEF,Ipswich Town,4.312,83.968,0.99
+10,60,James Hill,Hill,Bournemouth,DEF,Ipswich Town,4.307,83.777,0.99
+10,379,Alexander Isak,Isak,Liverpool,FWD,Crystal Palace,4.294,78.053,1.0
+10,13,Declan Rice,Rice,Arsenal,MID,Hull City,4.291,80.487,0.99
+10,627,Bradley Barcola,Barcola,Liverpool,MID,Crystal Palace,4.244,77.233,1.0
+10,15,Martin Ødegaard,Ødegaard,Arsenal,MID,Hull City,4.236,78.662,0.99
+10,367,Cody Gakpo,Gakpo,Liverpool,MID,Crystal Palace,4.213,72.979,0.99
+10,400,Jérémy Doku,Doku,Man City,MID,Nottingham Forest,4.208,76.162,0.99
+10,127,Diego Gómez Amarilla,Gomez,Brighton,MID,Brentford,4.194,77.505,0.99
+10,226,Jordan Pickford,Pickford,Everton,GKP,Coventry City,4.192,85.068,0.99
+10,249,Thierno Barry,Barry,Everton,FWD,Coventry City,4.171,79.422,0.99
+10,5,Jurriën Timber,J.Timber,Arsenal,DEF,Hull City,4.164,74.746,0.99
+10,453,Harvey Barnes,Barnes,Newcastle,MID,Fulham,4.118,81.564,0.99
+10,504,Luka Vušković,Vuskovic,Brighton,DEF,Brentford,4.099,83.671,0.99
+10,26,Kai Havertz,Havertz,Arsenal,FWD,Hull City,4.076,75.092,0.99
+10,156,Pedro Lomba Neto,Neto,Chelsea,MID,Sunderland,4.058,73.968,1.0
+10,124,Pascal Groß,Groß,Brighton,MID,Brentford,4.025,82.696,0.99
+10,106,Igor Thiago Nascimento Rodrigues,Thiago,Brentford,FWD,Brighton and Hove Albion,4.022,83.876,1.0
+10,431,Amad Diallo,Amad,Man Utd,MID,Aston Villa,3.989,71.874,0.99
+10,334,Tarik Muharemović,Muharemović,Leeds,DEF,Tottenham Hotspur,3.97,84.171,0.99
+10,61,Adrien Truffert,Truffert,Bournemouth,DEF,Ipswich Town,3.946,83.8,0.99
+10,356,Virgil van Dijk,Virgil,Liverpool,DEF,Crystal Palace,3.922,84.165,0.99
+10,480,Morgan Gibbs-White,Gibbs-White,Nott'm Forest,MID,Manchester City,3.899,82.656,0.99
+10,261,Alex Iwobi,Iwobi,Fulham,MID,Newcastle United,3.87,76.598,0.99
+10,183,Jack Rudoni,Rudoni,Coventry City,MID,Everton,3.841,80.178,1.0
+10,486,James McAtee,McAtee,Nott'm Forest,MID,Manchester City,3.835,80.299,0.99
+10,57,Đorđe Petrović,Petrović,Bournemouth,GKP,Ipswich Town,3.831,84.853,0.99
+10,372,Alexis Mac Allister,Mac Allister,Liverpool,MID,Crystal Palace,3.783,81.235,1.0
+10,237,Iliman Ndiaye,Ndiaye,Man City,MID,Nottingham Forest,3.775,74.591,0.99
+10,452,Bruno Guimarães Rodriguez Moura,Bruno G.,Arsenal,MID,Hull City,3.762,67.277,0.99
+10,115,Maxim De Cuyper,De Cuyper,Brighton,DEF,Brentford,3.761,77.725,0.99
+10,94,Kevin Schade,Schade,Brentford,MID,Brighton and Hove Albion,3.761,76.148,0.99
+10,362,Jeremy Jacquet,Jacquet,Liverpool,DEF,Crystal Palace,3.738,82.893,0.99
+10,512,Mohammed Kudus,Kudus,Spurs,MID,Leeds United,3.738,76.241,0.99
+10,332,James Justin,Justin,Leeds,DEF,Tottenham Hotspur,3.736,80.826,0.99
+10,591,Julio Enciso,Enciso,Ipswich Town,MID,Bournemouth,3.728,79.515,1.0
+10,268,Josh King,King,Fulham,MID,Newcastle United,3.706,74.818,0.99
+10,157,Estêvão Almeida de Oliveira Gonçalves,Estêvão,Chelsea,MID,Sunderland,3.703,62.76,0.99
+10,112,Jan Paul van Hecke,Van Hecke,Spurs,DEF,Leeds United,3.684,84.182,0.99
+10,53,Johan Manzambi,Manzambi,Aston Villa,MID,Manchester United,3.684,69.022,0.99
+10,239,James Garner,Garner,Everton,MID,Coventry City,3.679,82.221,1.0
+10,350,Alisson Becker,A.Becker,Liverpool,GKP,Crystal Palace,3.662,84.965,0.99
+10,650,David Affengruber,Affengruber,Fulham,DEF,Newcastle United,3.652,84.033,0.99
+10,166,Nicolas Jackson,N.Jackson,Aston Villa,FWD,Manchester United,3.645,79.192,1.0
+10,330,Jayden Bogle,Bogle,Leeds,DEF,Tottenham Hotspur,3.642,80.875,1.0
+10,569,Gonzalo García,Gonzalo,Fulham,FWD,Newcastle United,3.641,74.492,0.99
+10,264,Oscar Bobb,Bobb,Fulham,MID,Newcastle United,3.632,69.91,0.99
+10,151,Josh Acheampong,Acheampong,Chelsea,DEF,Sunderland,3.63,80.243,0.99
+10,446,Fabian Schär,Schär,Newcastle,DEF,Fulham,3.62,78.565,0.99
+10,70,Justin Kluivert,Kluivert,Bournemouth,MID,Ipswich Town,3.616,66.889,0.99
+10,95,Dango Ouattara,O.Dango,Brentford,MID,Brighton and Hove Albion,3.614,68.057,0.99
+10,242,Tyrique George,George,Everton,MID,Coventry City,3.609,75.813,0.99
+10,481,Elliot Anderson,Anderson,Man City,MID,Nottingham Forest,3.605,80.279,0.99
+10,145,Wesley Fofana,Fofana,Chelsea,DEF,Sunderland,3.596,77.794,0.99
+10,155,Enzo Fernández,Enzo,Man City,MID,Nottingham Forest,3.583,74.237,0.99
+10,149,Levi Samuels Colwill,Colwill,Chelsea,DEF,Sunderland,3.582,83.005,0.99
+10,129,Yasin Ayari,Ayari,Brighton,MID,Brentford,3.57,78.775,0.99
+10,580,Shea Charles,Charles,Fulham,MID,Newcastle United,3.566,79.966,0.99
+10,449,Lewis Hall,Hall,Newcastle,DEF,Fulham,3.559,83.879,0.99
+10,412,Senne Lammens,Lammens,Man Utd,GKP,Aston Villa,3.557,85.076,0.99
+10,455,Sandro Tonali,Tonali,Spurs,MID,Leeds United,3.556,82.785,1.0
+10,567,Lukás Hornícek,Horníček,Newcastle,GKP,Fulham,3.541,85.13,0.99
+10,385,James Trafford,Trafford,Leeds,GKP,Tottenham Hotspur,3.535,85.144,0.99
+10,542,Enzo Le Fée,E.Le Fée,Sunderland,MID,Chelsea,3.532,80.918,0.99
+10,91,Ethan Pinnock,Pinnock,Coventry City,DEF,Everton,3.513,83.064,0.99
+10,254,Antonee Robinson,Robinson,Fulham,DEF,Newcastle United,3.508,82.249,0.99
+10,420,Leny Yoro,Yoro,Man Utd,DEF,Aston Villa,3.506,79.574,0.99
+10,338,Ethan Ampadu,Ampadu,Leeds,MID,Tottenham Hotspur,3.503,83.336,0.99
+10,384,Gianluigi Donnarumma,Donnarumma,Man City,GKP,Nottingham Forest,3.465,85.16,0.99
+10,109,Bart Verbruggen,Verbruggen,Brighton,GKP,Brentford,3.457,85.225,0.99
+10,417,Diogo Dalot Teixeira,Dalot,Man Utd,DEF,Aston Villa,3.457,81.355,0.99
+10,175,Milan van Ewijk,van Ewijk,Coventry City,DEF,Everton,3.439,83.65,0.99
+10,514,Mathys Tel,Tel,Spurs,MID,Leeds United,3.431,75.531,0.99
+10,544,Granit Xhaka,Xhaka,Sunderland,MID,Chelsea,3.427,82.975,0.99
+10,244,Harrison Armstrong,Armstrong,Everton,MID,Coventry City,3.404,80.15,0.99
+10,552,Brian Brobbey,Brobbey,Sunderland,FWD,Chelsea,3.397,76.531,0.99
+10,557,Christos Tzolis,Tzolis,Arsenal,MID,Hull City,3.383,69.561,0.99
+10,472,Murillo Costa dos Santos,Murillo,Nott'm Forest,DEF,Manchester City,3.379,84.02,0.99
+10,110,Carl Rushworth,Rushworth,Coventry City,GKP,Everton,3.371,85.13,0.99
+10,258,Timothy Castagne,Castagne,Fulham,DEF,Newcastle United,3.369,79.556,0.99
+10,210,Adam Wharton,Wharton,Crystal Palace,MID,Liverpool,3.368,80.517,0.99
+10,598,Nico Elvedi,Elvedi,Leeds,DEF,Tottenham Hotspur,3.362,81.04,0.99
+10,391,Joško Gvardiol,Gvardiol,Man City,DEF,Nottingham Forest,3.361,78.642,0.99
+10,418,Harry Maguire,Maguire,Man Utd,DEF,Aston Villa,3.348,83.724,0.99
+10,588,Anan Khalaili,Khalaili,Crystal Palace,DEF,Liverpool,3.344,74.662,0.99
+10,250,Bernd Leno,Leno,Fulham,GKP,Newcastle United,3.337,85.083,0.99
+10,619,Exequiel Palacios,Palacios,Ipswich Town,MID,Bournemouth,3.336,80.002,0.99
+10,469,Neco Williams,N.Williams,Nott'm Forest,DEF,Manchester City,3.326,83.486,0.99
+10,496,Antonín Kinský,Kinsky,Spurs,GKP,Leeds United,3.323,85.245,0.99
+10,230,Jarrad Branthwaite,Branthwaite,Everton,DEF,Coventry City,3.313,58.492,0.742
+10,579,Ronald Araujo,Araujo,Liverpool,DEF,Crystal Palace,3.305,76.98,0.99
+10,286,Mohamed Belloumi,Belloumi,Hull City,MID,Arsenal,3.301,79.424,1.0
+10,465,William Osula,Osula,Newcastle,FWD,Fulham,3.291,73.675,0.99
+10,202,Chris Richards,Richards,Crystal Palace,DEF,Liverpool,3.287,83.741,0.99
+10,656,Stephen Mfuni,Mfuni,Coventry City,DEF,Everton,3.286,76.604,0.99
+10,45,John McGinn,McGinn,Aston Villa,MID,Manchester United,3.251,76.296,0.99
+10,167,Liam Delap,Delap,Nott'm Forest,FWD,Manchester City,3.244,75.356,0.99
+10,203,Jaydee Canvot,Canvot,Crystal Palace,DEF,Liverpool,3.236,82.976,0.99
+10,119,João Pedro Loureiro da Costa,Costinha,Brighton,DEF,Brentford,3.209,75.598,0.99
+10,358,Milos Kerkez,Kerkez,Liverpool,DEF,Crystal Palace,3.205,78.633,0.99
+10,525,Mateus Fernandes,Fernandes,Spurs,MID,Leeds United,3.189,78.014,0.99
+10,345,Tanaka Ao,Tanaka,Leeds,MID,Tottenham Hotspur,3.185,72.714,0.99
+10,214,Daichi Kamada,Kamada,Crystal Palace,MID,Liverpool,3.177,79.866,0.99
+10,73,Tyler Adams,Adams,Bournemouth,MID,Ipswich Town,3.17,79.981,0.99
+10,116,Lewis Dunk,Dunk,Brighton,DEF,Brentford,3.158,82.524,0.99
+10,401,Omar Marmoush,Marmoush,Spurs,FWD,Leeds United,3.154,72.753,0.99
+10,503,Micky van de Ven,Van de Ven,Spurs,DEF,Leeds United,3.152,82.789,0.99
+10,211,Yéremy Pino Santos,Yeremy,Crystal Palace,MID,Liverpool,3.145,72.034,0.99
+10,98,Vitaly Janelt,Janelt,Brentford,MID,Brighton and Hove Albion,3.145,81.587,0.99
+10,597,Zion Suzuki,Suzuki,Aston Villa,GKP,Manchester United,3.143,84.863,0.99
+10,316,Emersonn Correia da Silva,Emersonn,Ipswich Town,FWD,Bournemouth,3.139,68.753,0.99
+10,257,Calvin Bassey,Bassey,Fulham,DEF,Newcastle United,3.134,83.954,0.99
+10,64,Adam Smith,Smith,Bournemouth,DEF,Ipswich Town,3.104,79.815,0.99
+10,460,Joe Willock,Willock,Newcastle,MID,Fulham,3.09,68.299,0.99
+10,558,Xaver Schlager,Schlager,Nott'm Forest,MID,Manchester City,3.085,74.694,0.99
+10,43,Youri Tielemans,Tielemans,Man Utd,MID,Aston Villa,3.077,64.23,0.99
+10,28,Emiliano Martínez Romero,Martinez,Chelsea,GKP,Sunderland,3.068,71.442,0.99
+10,583,Pep Chavarría,Chavarria,Chelsea,DEF,Sunderland,3.064,67.766,0.99
+10,502,Andrew Robertson,Robertson,Spurs,DEF,Leeds United,3.042,76.04,0.99
+10,260,Harry Wilson,Wilson,Leeds,MID,Tottenham Hotspur,3.04,66.524,0.99
+10,389,Matheus Nunes,Matheus N.,Man City,DEF,Nottingham Forest,3.039,77.681,0.99
+10,201,Daniel Muñoz Mejía,Muñoz,Nott'm Forest,DEF,Manchester City,3.038,75.612,0.99
+10,393,Abdukodir Khusanov,Khusanov,Man City,DEF,Nottingham Forest,3.005,80.119,0.99
+10,86,Keane Lewis-Potter,Lewis-Potter,Brentford,MID,Brighton and Hove Albion,3.003,80.936,1.0
+10,483,Dan Ndoye,Ndoye,Nott'm Forest,MID,Manchester City,3.0,66.87,0.99
+10,529,Robin Roefs,Roefs,Sunderland,GKP,Chelsea,2.999,85.061,0.99
+10,82,Caoimhín Kelleher,Kelleher,Brentford,GKP,Brighton and Hove Albion,2.974,84.967,0.99
+10,572,Konstantinos Tzolakis,Tzolakis,Hull City,GKP,Arsenal,2.953,85.321,0.99
+10,114,Olivier Boscagli,Boscagli,Brighton,DEF,Brentford,2.953,73.543,0.99
+10,87,Kristoffer Ajer,Ajer,Brentford,DEF,Brighton and Hove Albion,2.948,83.718,0.99
+10,390,Rúben dos Santos Gato Alves Dias,Rúben,Man City,DEF,Nottingham Forest,2.946,84.038,0.99
+10,331,Gabriel Gudmundsson,Gudmundsson,Leeds,DEF,Tottenham Hotspur,2.945,77.194,0.99
+10,448,Dan Burn,Burn,Newcastle,DEF,Fulham,2.945,78.798,0.99
+10,471,Nikola Milenković,Milenković,Nott'm Forest,DEF,Manchester City,2.929,81.153,0.99
+10,454,Anthony Elanga,Elanga,Newcastle,MID,Fulham,2.919,68.312,0.99
+10,176,Jay Dasilva,Dasilva,Coventry City,DEF,Everton,2.918,83.764,0.99
+10,432,Kobbie Mainoo,Mainoo,Man Utd,MID,Aston Villa,2.915,70.066,0.99
+10,346,Dominic Calvert-Lewin,Calvert-Lewin,Leeds,FWD,Tottenham Hotspur,2.909,60.637,0.75
+10,375,Trey Nyoni,Nyoni,Liverpool,MID,Crystal Palace,2.903,63.278,0.99
+10,467,Matz Sels,Sels,Nott'm Forest,GKP,Manchester City,2.889,85.235,0.99
+10,161,Roméo Lavia,Lavia,Chelsea,MID,Sunderland,2.881,70.964,0.99
+10,405,Nico González Iglesias,N.Gonzalez,Newcastle,MID,Fulham,2.874,74.198,0.99
+10,204,Tyrick Mitchell,Mitchell,Crystal Palace,DEF,Liverpool,2.872,82.368,1.0
+10,246,Merlin Röhl,Röhl,Everton,MID,Coventry City,2.865,81.55,0.99
+10,499,Pedro Porro Sauceda,Pedro Porro,Spurs,DEF,Leeds United,2.854,69.613,0.99
+10,515,James Maddison,Maddison,Spurs,MID,Leeds United,2.843,58.738,0.99
+10,47,Boubacar Kamara,Kamara,Aston Villa,MID,Manchester United,2.819,79.997,0.99
+10,265,Sander Berge,Berge,Fulham,MID,Newcastle United,2.813,78.827,0.99
+10,639,José María Andrés Baixauli,Andrés,Brighton,MID,Brentford,2.805,71.602,0.99
+10,245,Tyler Dibling,Dibling,Everton,MID,Coventry City,2.795,54.779,0.99
+10,593,Amar Dedic,Dedić,Newcastle,DEF,Fulham,2.794,78.835,0.99
+10,618,Leon Goretzka,Goretzka,Aston Villa,MID,Manchester United,2.793,63.256,0.99
+10,85,Sepp van den Berg,Van den Berg,Brentford,DEF,Brighton and Hove Albion,2.779,81.279,0.99
+10,295,Oli McBurnie,McBurnie,Hull City,FWD,Arsenal,2.77,81.428,1.0
+10,97,Mathias Jensen,Jensen,Brentford,MID,Brighton and Hove Albion,2.766,70.66,0.99
+10,421,Ayden Heaven,Heaven,Man Utd,DEF,Aston Villa,2.755,69.874,0.99
+10,492,Taiwo Awoniyi,Awoniyi,Coventry City,FWD,Everton,2.746,68.282,0.99
+10,474,Jair Paula da Cunha Filho,Jair Cunha,Nott'm Forest,DEF,Manchester City,2.738,81.803,0.99
+10,534,Trai Hume,Hume,Sunderland,DEF,Chelsea,2.733,78.128,0.99
+10,571,Florentino Ibrain Morris Luís,Florentino,Ipswich Town,MID,Bournemouth,2.732,70.982,0.99
+10,315,Abdul Fatawu,Fatawu,Ipswich Town,MID,Bournemouth,2.722,65.952,0.99
 10,304,Dara O'Shea,O'Shea,Ipswich Town,DEF,Bournemouth,2.714,83.898,0.99
-10,571,Florentino Ibrain Morris Luís,Florentino,Ipswich Town,MID,Bournemouth,2.698,70.982,0.99
-10,152,Marco Palestra,Palestra,Chelsea,DEF,Sunderland,2.689,65.794,0.99
-10,37,Victor Lindelöf,Lindelöf,Aston Villa,DEF,Manchester United,2.667,83.788,0.99
-10,315,Abdul Fatawu,Fatawu,Ipswich Town,MID,Bournemouth,2.664,65.952,0.99
-10,300,Christian Walton,Walton,Ipswich Town,GKP,Bournemouth,2.639,84.43,0.99
-10,536,Reinildo Mandava,Reinildo,Sunderland,DEF,Chelsea,2.635,82.603,0.99
-10,88,Michael Kayode,Kayode,Brentford,DEF,Brighton and Hove Albion,2.628,81.445,0.99
-10,279,Semi Ajayi,Ajayi,Hull City,DEF,Arsenal,2.617,84.12,0.99
-10,185,Tatsuhiro Sakamoto,Sakamoto,Coventry City,MID,Everton,2.605,75.063,0.99
-10,541,Thomas Meunier,Meunier,Sunderland,DEF,Chelsea,2.595,68.964,0.99
-10,277,John Egan,Egan,Hull City,DEF,Arsenal,2.583,77.174,0.99
-10,153,Axel Disasi,Disasi,Crystal Palace,DEF,Liverpool,2.58,79.538,0.99
-10,592,Abdoul Ouattara,Ouattara,Ipswich Town,DEF,Bournemouth,2.513,80.725,0.99
-10,337,Brenden Aaronson,Aaronson,Leeds,MID,Tottenham Hotspur,2.499,62.459,0.99
-10,240,Tim Iroegbunam,Iroegbunam,Hull City,MID,Arsenal,2.491,70.402,0.99
-10,545,Noah Sadiki,Sadiki,Sunderland,MID,Chelsea,2.46,78.974,0.99
-10,551,Nilson Angulo,N.Angulo,Sunderland,MID,Chelsea,2.438,65.098,0.99
-10,655,Yann Gboho,Gboho,Coventry City,MID,Everton,2.429,69.454,0.99
-10,259,Issa Diop,Diop,Ipswich Town,DEF,Bournemouth,2.425,83.687,0.99
-10,318,Jaden Philogene,Philogene,Ipswich Town,MID,Bournemouth,2.409,63.249,0.99
-10,52,Alysson Edward Franco da Rocha dos Santos,Alysson,Aston Villa,MID,Manchester United,2.408,63.547,0.99
-10,575,Caleb Yirenkyi,Yirenkyi,Coventry City,MID,Everton,2.401,76.221,0.99
-10,34,Pau Torres,Pau,Aston Villa,DEF,Manchester United,2.386,80.01,0.99
-10,290,Regan Slater,Slater,Hull City,MID,Arsenal,2.343,80.232,0.99
-10,501,Kevin Danso,Danso,Sunderland,DEF,Chelsea,2.332,66.483,0.99
-10,616,Ayyoub Bouaddi,Bouaddi,Man City,MID,Nottingham Forest,2.293,66.896,0.99
-10,188,Victor Torp,Torp,Coventry City,MID,Everton,2.276,65.513,0.99
-10,305,Leif Davis,Davis,Ipswich Town,DEF,Bournemouth,2.257,83.846,0.99
-10,462,Sean Steur,Steur,Newcastle,MID,Fulham,2.225,62.962,0.99
-10,533,Nordi Mukiele,Mukiele,Sunderland,DEF,Chelsea,2.207,51.366,0.742
-10,102,Yehor Yarmoliuk,Yarmoliuk,Brentford,MID,Brighton and Hove Albion,2.181,58.982,0.99
-10,325,Karl Darlow,Darlow,Man Utd,GKP,Aston Villa,2.155,47.395,1.0
-10,576,Elliot Stroud,Stroud,Hull City,MID,Arsenal,2.141,69.605,0.99
-10,101,Jordan Henderson,Henderson,Chelsea,MID,Sunderland,2.089,52.552,0.742
-10,222,Jørgen Strand Larsen,Strand Larsen,Crystal Palace,FWD,Liverpool,2.047,43.492,0.742
-10,282,Ryan Giles,Giles,Hull City,DEF,Arsenal,2.034,79.82,0.99
-10,644,Quinten Timber,Timber,Crystal Palace,MID,Liverpool,2.023,48.387,0.742
-10,335,Anton Stach,Stach,Leeds,MID,Tottenham Hotspur,1.855,37.202,0.826
-10,398,Phil Foden,Foden,Man City,MID,Nottingham Forest,1.85,29.884,0.826
-10,41,Emiliano Buendía Stati,Buendía,Aston Villa,MID,Manchester United,1.844,34.424,0.927
-10,280,Lewie Coyle,Coyle,Hull City,DEF,Arsenal,1.813,78.324,0.99
-10,368,Dominik Szoboszlai,Szoboszlai,Liverpool,MID,Crystal Palace,1.8,33.937,0.833
-10,399,Rayan Cherki,Cherki,Man City,MID,Nottingham Forest,1.793,33.573,0.826
-10,241,Dwight McNeil,McNeil,Crystal Palace,MID,Liverpool,1.741,37.872,0.927
-10,35,Lamare Bogarde,Bogarde,Aston Villa,MID,Manchester United,1.74,55.495,0.99
-10,232,Jake O'Brien,O'Brien,Everton,DEF,Coventry City,1.701,38.296,0.833
-10,464,Yoane Wissa,Wissa,Newcastle,FWD,Fulham,1.636,32.92,0.833
-10,377,Victor Munoz,Munoz,Liverpool,MID,Crystal Palace,1.607,28.028,0.826
-10,539,Luke O'Nien,O'Nien,Sunderland,DEF,Chelsea,1.592,42.152,0.858
-10,565,Mamadou Sangaré,M.Sangaré,Brentford,MID,Brighton and Hove Albion,1.559,36.111,0.833
-10,96,Mikkel Damsgaard,Damsgaard,Brentford,MID,Brighton and Hove Albion,1.52,29.775,0.826
-10,25,Viktor Gyökeres,Gyökeres,Arsenal,FWD,Hull City,1.499,21.684,0.716
-10,369,Rio Ngumoha,Ngumoha,Liverpool,MID,Crystal Palace,1.498,25.227,0.826
-10,605,Malick Yalcouyé,Yalcouyé,Brighton,MID,Brentford,1.482,24.216,0.75
-10,123,Jack Hinshelwood,Hinshelwood,Brighton,MID,Brentford,1.467,23.332,0.716
-10,224,Eddie Nketiah,Nketiah,Crystal Palace,FWD,Liverpool,1.459,27.918,0.826
-10,457,Jacob Murphy,J.Murphy,Newcastle,MID,Fulham,1.449,29.359,0.826
-10,162,Andrey Nascimento dos Santos,Andrey Santos,Man Utd,MID,Aston Villa,1.441,34.951,0.846
-10,570,César Palacios,Palacios,Fulham,MID,Newcastle United,1.427,22.485,0.826
-10,430,Mason Mount,Mount,Man Utd,MID,Aston Villa,1.42,26.686,0.733
-10,553,Wilson Isidor,Isidor,Sunderland,FWD,Chelsea,1.419,27.208,0.833
-10,347,Lukas Nmecha,Nmecha,Leeds,FWD,Tottenham Hotspur,1.416,25.379,0.826
-10,105,Jaidon Anthony,Anthony,Brentford,MID,Brighton and Hove Albion,1.374,28.888,0.826
-10,78,Junior Kroupi,Kroupi.Jr,Bournemouth,MID,Ipswich Town,1.372,18.442,0.716
-10,631,Ibrahim Mbaye,Mbaye,Aston Villa,MID,Manchester United,1.367,24.624,0.826
-10,490,Chris Wood,Wood,Nott'm Forest,FWD,Manchester City,1.363,26.134,0.826
-10,161,Roméo Lavia,Lavia,Chelsea,MID,Sunderland,1.358,33.28,0.826
-10,387,Nico O'Reilly,O'Reilly,Man City,DEF,Nottingham Forest,1.343,28.545,0.716
-10,640,Zian Flemming,Flemming,Ipswich Town,FWD,Bournemouth,1.34,22.19,0.833
-10,617,Mohamed-Ali Cho,Cho,Hull City,MID,Arsenal,1.319,27.988,0.826
-10,130,Mats Wieffer,Wieffer,Brighton,DEF,Brentford,1.318,27.85,0.733
-10,46,Ross Barkley,Barkley,Aston Villa,MID,Manchester United,1.313,25.143,0.826
-10,301,Alex Palmer,Palmer,Ipswich Town,GKP,Bournemouth,1.295,34.276,0.716
-10,549,Chemsdine Talbi,Talbi,Sunderland,MID,Chelsea,1.292,26.548,0.826
-10,519,Conor Gallagher,Gallagher,Spurs,MID,Leeds United,1.28,28.2,0.826
-10,522,Archie Gray,Gray,Spurs,MID,Leeds United,1.272,36.567,0.778
-10,493,Arnaud Kalimuendo,Kalimuendo,Nott'm Forest,FWD,Manchester City,1.265,25.37,0.826
-10,343,Daniel James,James,Leeds,MID,Tottenham Hotspur,1.26,26.16,0.733
-10,10,Benjamin White,White,Arsenal,DEF,Hull City,1.257,23.118,0.498
-10,599,Sidiki Cherif,Cherif,Coventry City,FWD,Everton,1.251,28.117,0.826
-10,136,Danny Welbeck,Welbeck,Chelsea,FWD,Sunderland,1.249,16.76,0.733
-10,647,Darío Osorio,Osorio,Crystal Palace,MID,Liverpool,1.249,19.669,0.716
-10,614,Jaouen Hadjam,Hadjam,Brighton,DEF,Brentford,1.235,22.988,0.716
-10,54,Joao Gomes,Gomes,Aston Villa,MID,Manchester United,1.222,32.523,0.833
-10,7,Myles Lewis-Skelly,Lewis-Skelly,Arsenal,MID,Hull City,1.221,33.419,0.826
-10,194,Brandon Thomas-Asante,Thomas-Asante,Coventry City,FWD,Everton,1.212,30.206,0.826
-10,71,Lewis Cook,Cook,Bournemouth,MID,Ipswich Town,1.21,27.008,0.826
-10,562,Daizen Maeda,Maeda,Ipswich Town,MID,Bournemouth,1.193,26.355,0.826
-10,313,Jack Clarke,Clarke,Ipswich Town,MID,Bournemouth,1.191,23.385,0.826
-10,548,Chris Rigg,Rigg,Sunderland,MID,Chelsea,1.188,27.998,0.716
-10,440,Joshua Zirkzee,Zirkzee,Man Utd,FWD,Aston Villa,1.172,17.675,0.716
-10,288,Kieran Dowell,Dowell,Hull City,MID,Arsenal,1.168,30.161,0.858
-10,125,Georginio Rutter,Georginio,Brighton,FWD,Brentford,1.165,19.215,0.716
-10,339,Sean Longstaff,Longstaff,Leeds,MID,Tottenham Hotspur,1.162,22.289,0.733
-10,266,Tom Cairney,Cairney,Fulham,MID,Newcastle United,1.14,18.36,0.716
-10,14,Eberechi Eze,Eze,Arsenal,MID,Hull City,1.132,18.216,0.563
-10,184,Matt Grimes,Grimes,Coventry City,MID,Everton,1.124,32.743,0.733
-10,381,Lewis Koumas,Koumas,Liverpool,MID,Crystal Palace,1.121,18.72,0.716
-10,271,Rodrigo Muniz Carvalho,Muniz,Fulham,FWD,Newcastle United,1.116,16.36,0.716
-10,17,Mikel Merino Zazón,Merino,Arsenal,MID,Hull City,1.109,17.073,0.563
-10,583,Pep Chavarría,Chavarria,Chelsea,DEF,Sunderland,1.098,21.167,0.593
-10,646,Malick Fofana,Fofana,Sunderland,MID,Chelsea,1.083,18.764,0.716
-10,312,Jack Taylor,Taylor,Ipswich Town,MID,Bournemouth,1.066,20.07,0.833
-10,461,Bazoumana Touré,Touré,Newcastle,MID,Fulham,1.057,15.533,0.593
-10,489,Ryan Yates,Yates,Nott'm Forest,MID,Manchester City,1.055,27.281,0.716
-10,521,Dejan Kulusevski,Kulusevski,Spurs,MID,Leeds United,1.034,19.266,0.733
-10,630,Taylor Harwood-Bellis,Harwood-Bellis,Aston Villa,DEF,Manchester United,1.033,25.815,0.733
-10,231,Michael Keane,Keane,Everton,DEF,Coventry City,1.005,17.308,0.476
-10,77,Amine Adli,Adli,Bournemouth,MID,Ipswich Town,0.988,12.016,0.563
-10,81,Álvaro Rodríguez,Rodríguez,Bournemouth,FWD,Ipswich Town,0.973,15.943,0.716
-10,310,Azor Matusiwa,Matusiwa,Ipswich Town,MID,Bournemouth,0.973,19.889,0.716
-10,364,Kostas Tsimikas,Tsimikas,Liverpool,DEF,Crystal Palace,0.958,17.279,0.563
-10,256,Kenny Tete,Tete,Fulham,DEF,Newcastle United,0.951,19.192,0.563
-10,635,Hugo Larsson,Larsson,Fulham,MID,Newcastle United,0.937,16.94,0.593
-10,144,Malo Gusto,Gusto,Chelsea,DEF,Sunderland,0.932,17.692,0.563
-10,90,Aaron Hickey,Hickey,Brentford,DEF,Brighton and Hove Albion,0.925,28.89,0.716
-10,108,Callum Wilson,Wilson,Brentford,FWD,Brighton and Hove Albion,0.921,13.798,0.563
-10,473,Ola Aina,Aina,Nott'm Forest,DEF,Manchester City,0.901,26.963,0.563
-10,568,Valentín Barco,Barco,Chelsea,MID,Sunderland,0.864,15.129,0.593
-10,506,Destiny Udogie,Udogie,Spurs,DEF,Leeds United,0.861,20.159,0.593
-10,217,Matheus França de Oliveira,M.França,Crystal Palace,MID,Liverpool,0.861,12.871,0.563
+10,185,Tatsuhiro Sakamoto,Sakamoto,Coventry City,MID,Everton,2.708,75.063,0.99
+10,36,Ian Maatsen,Maatsen,Aston Villa,DEF,Manchester United,2.705,81.081,0.99
+10,536,Reinildo Mandava,Reinildo,Sunderland,DEF,Chelsea,2.699,82.603,0.99
+10,586,Nobel Mendy,Mendy,Hull City,DEF,Arsenal,2.677,78.21,0.99
+10,644,Quinten Timber,Timber,Crystal Palace,MID,Liverpool,2.673,64.516,0.99
+10,153,Axel Disasi,Disasi,Crystal Palace,DEF,Liverpool,2.666,79.538,0.99
+10,52,Alysson Edward Franco da Rocha dos Santos,Alysson,Aston Villa,MID,Manchester United,2.664,63.547,0.99
+10,37,Victor Lindelöf,Lindelöf,Aston Villa,DEF,Manchester United,2.646,83.788,0.99
+10,198,Dean Henderson,Henderson,Crystal Palace,GKP,Liverpool,2.643,82.588,0.99
+10,277,John Egan,Egan,Hull City,DEF,Arsenal,2.636,77.174,0.99
+10,551,Nilson Angulo,N.Angulo,Sunderland,MID,Chelsea,2.61,65.098,0.99
+10,279,Semi Ajayi,Ajayi,Hull City,DEF,Arsenal,2.609,84.12,0.99
+10,71,Lewis Cook,Cook,Bournemouth,MID,Ipswich Town,2.606,64.073,0.99
+10,222,Jørgen Strand Larsen,Strand Larsen,Crystal Palace,FWD,Liverpool,2.595,57.989,0.99
+10,88,Michael Kayode,Kayode,Brentford,DEF,Brighton and Hove Albion,2.59,81.445,0.99
+10,300,Christian Walton,Walton,Ipswich Town,GKP,Bournemouth,2.561,84.43,0.99
+10,318,Jaden Philogene,Philogene,Ipswich Town,MID,Bournemouth,2.535,63.249,0.99
+10,240,Tim Iroegbunam,Iroegbunam,Hull City,MID,Arsenal,2.521,70.402,0.99
+10,545,Noah Sadiki,Sadiki,Sunderland,MID,Chelsea,2.512,78.974,0.99
+10,259,Issa Diop,Diop,Ipswich Town,DEF,Bournemouth,2.483,83.687,0.99
+10,575,Caleb Yirenkyi,Yirenkyi,Coventry City,MID,Everton,2.463,76.221,0.99
+10,337,Brenden Aaronson,Aaronson,Leeds,MID,Tottenham Hotspur,2.462,62.459,0.99
+10,290,Regan Slater,Slater,Hull City,MID,Arsenal,2.437,80.232,0.99
+10,541,Thomas Meunier,Meunier,Sunderland,DEF,Chelsea,2.419,68.964,0.99
+10,592,Abdoul Ouattara,Ouattara,Ipswich Town,DEF,Bournemouth,2.358,80.725,0.99
+10,34,Pau Torres,Pau,Aston Villa,DEF,Manchester United,2.355,80.01,0.99
+10,655,Yann Gboho,Gboho,Coventry City,MID,Everton,2.324,69.454,0.99
+10,616,Ayyoub Bouaddi,Bouaddi,Man City,MID,Nottingham Forest,2.312,66.896,0.99
+10,501,Kevin Danso,Danso,Sunderland,DEF,Chelsea,2.296,66.483,0.99
+10,188,Victor Torp,Torp,Coventry City,MID,Everton,2.259,65.513,0.99
+10,305,Leif Davis,Davis,Ipswich Town,DEF,Bournemouth,2.225,83.846,0.99
+10,462,Sean Steur,Steur,Newcastle,MID,Fulham,2.214,62.962,0.99
+10,102,Yehor Yarmoliuk,Yarmoliuk,Brentford,MID,Brighton and Hove Albion,2.206,58.982,0.99
+10,533,Nordi Mukiele,Mukiele,Sunderland,DEF,Chelsea,2.199,51.366,0.742
+10,576,Elliot Stroud,Stroud,Hull City,MID,Arsenal,2.155,69.605,0.99
+10,282,Ryan Giles,Giles,Hull City,DEF,Arsenal,2.111,79.82,0.99
+10,101,Jordan Henderson,Henderson,Chelsea,MID,Sunderland,2.096,52.552,0.742
+10,325,Karl Darlow,Darlow,Man Utd,GKP,Aston Villa,1.968,47.395,1.0
+10,280,Lewie Coyle,Coyle,Hull City,DEF,Arsenal,1.901,78.324,0.99
+10,41,Emiliano Buendía Stati,Buendía,Aston Villa,MID,Manchester United,1.815,34.424,0.927
+10,241,Dwight McNeil,McNeil,Crystal Palace,MID,Liverpool,1.77,37.872,0.927
+10,368,Dominik Szoboszlai,Szoboszlai,Liverpool,MID,Crystal Palace,1.753,33.937,0.833
+10,399,Rayan Cherki,Cherki,Man City,MID,Nottingham Forest,1.745,33.573,0.826
+10,35,Lamare Bogarde,Bogarde,Aston Villa,MID,Manchester United,1.737,55.495,0.99
+10,560,Mike Penders,Penders,Chelsea,GKP,Sunderland,1.735,44.065,0.826
+10,398,Phil Foden,Foden,Man City,MID,Nottingham Forest,1.726,29.884,0.826
+10,232,Jake O'Brien,O'Brien,Everton,DEF,Coventry City,1.676,38.296,0.833
+10,526,Dominic Solanke-Mitchell,Solanke,Spurs,FWD,Leeds United,1.65,33.487,0.833
+10,464,Yoane Wissa,Wissa,Newcastle,FWD,Fulham,1.605,32.92,0.833
+10,377,Victor Munoz,Munoz,Liverpool,MID,Crystal Palace,1.6,28.028,0.826
+10,539,Luke O'Nien,O'Nien,Sunderland,DEF,Chelsea,1.591,42.152,0.858
+10,347,Lukas Nmecha,Nmecha,Leeds,FWD,Tottenham Hotspur,1.556,25.379,0.826
+10,565,Mamadou Sangaré,M.Sangaré,Brentford,MID,Brighton and Hove Albion,1.529,36.111,0.833
+10,369,Rio Ngumoha,Ngumoha,Liverpool,MID,Crystal Palace,1.526,25.227,0.826
+10,75,Ryan Christie,Christie,Bournemouth,MID,Ipswich Town,1.498,26.304,0.75
+10,570,César Palacios,Palacios,Fulham,MID,Newcastle United,1.492,22.485,0.826
+10,25,Viktor Gyökeres,Gyökeres,Arsenal,FWD,Hull City,1.49,21.684,0.716
+10,605,Malick Yalcouyé,Yalcouyé,Brighton,MID,Brentford,1.484,24.216,0.75
+10,457,Jacob Murphy,J.Murphy,Newcastle,MID,Fulham,1.45,29.359,0.826
+10,105,Jaidon Anthony,Anthony,Brentford,MID,Brighton and Hove Albion,1.448,28.888,0.826
+10,553,Wilson Isidor,Isidor,Sunderland,FWD,Chelsea,1.448,27.208,0.833
+10,96,Mikkel Damsgaard,Damsgaard,Brentford,MID,Brighton and Hove Albion,1.424,29.775,0.826
+10,631,Ibrahim Mbaye,Mbaye,Aston Villa,MID,Manchester United,1.413,24.624,0.826
+10,209,Brennan Johnson,Johnson,Everton,MID,Coventry City,1.405,23.838,0.826
+10,162,Andrey Nascimento dos Santos,Andrey Santos,Man Utd,MID,Aston Villa,1.386,34.951,0.846
+10,123,Jack Hinshelwood,Hinshelwood,Brighton,MID,Brentford,1.382,23.332,0.716
+10,490,Chris Wood,Wood,Nott'm Forest,FWD,Manchester City,1.373,26.134,0.826
+10,78,Junior Kroupi,Kroupi.Jr,Bournemouth,MID,Ipswich Town,1.366,18.442,0.716
+10,549,Chemsdine Talbi,Talbi,Sunderland,MID,Chelsea,1.357,26.548,0.826
+10,522,Archie Gray,Gray,Spurs,MID,Leeds United,1.354,36.567,0.778
+10,152,Marco Palestra,Palestra,Chelsea,DEF,Sunderland,1.342,29.681,0.826
+10,430,Mason Mount,Mount,Man Utd,MID,Aston Villa,1.34,26.686,0.733
+10,224,Eddie Nketiah,Nketiah,Crystal Palace,FWD,Liverpool,1.336,27.918,0.826
+10,194,Brandon Thomas-Asante,Thomas-Asante,Coventry City,FWD,Everton,1.318,30.206,0.826
+10,640,Zian Flemming,Flemming,Ipswich Town,FWD,Bournemouth,1.309,22.19,0.833
+10,387,Nico O'Reilly,O'Reilly,Man City,DEF,Nottingham Forest,1.308,28.545,0.716
+10,617,Mohamed-Ali Cho,Cho,Hull City,MID,Arsenal,1.3,27.988,0.826
+10,130,Mats Wieffer,Wieffer,Brighton,DEF,Brentford,1.289,27.85,0.733
+10,493,Arnaud Kalimuendo,Kalimuendo,Nott'm Forest,FWD,Manchester City,1.271,25.37,0.826
+10,519,Conor Gallagher,Gallagher,Spurs,MID,Leeds United,1.246,28.2,0.826
+10,381,Lewis Koumas,Koumas,Liverpool,MID,Crystal Palace,1.246,18.72,0.716
+10,599,Sidiki Cherif,Cherif,Coventry City,FWD,Everton,1.242,28.117,0.826
+10,313,Jack Clarke,Clarke,Ipswich Town,MID,Bournemouth,1.239,23.385,0.826
+10,10,Benjamin White,White,Arsenal,DEF,Hull City,1.237,23.118,0.498
+10,46,Ross Barkley,Barkley,Aston Villa,MID,Manchester United,1.235,25.143,0.826
+10,343,Daniel James,James,Leeds,MID,Tottenham Hotspur,1.234,26.16,0.733
+10,54,Joao Gomes,Gomes,Aston Villa,MID,Manchester United,1.232,32.523,0.833
+10,440,Joshua Zirkzee,Zirkzee,Man Utd,FWD,Aston Villa,1.229,17.675,0.716
+10,562,Daizen Maeda,Maeda,Ipswich Town,MID,Bournemouth,1.218,26.355,0.826
+10,288,Kieran Dowell,Dowell,Hull City,MID,Arsenal,1.215,30.161,0.858
+10,548,Chris Rigg,Rigg,Sunderland,MID,Chelsea,1.214,27.998,0.716
+10,7,Myles Lewis-Skelly,Lewis-Skelly,Arsenal,MID,Hull City,1.196,33.419,0.826
+10,301,Alex Palmer,Palmer,Ipswich Town,GKP,Bournemouth,1.168,34.276,0.716
+10,125,Georginio Rutter,Georginio,Brighton,FWD,Brentford,1.163,19.215,0.716
+10,271,Rodrigo Muniz Carvalho,Muniz,Fulham,FWD,Newcastle United,1.16,16.36,0.716
+10,81,Álvaro Rodríguez,Rodríguez,Bournemouth,FWD,Ipswich Town,1.146,15.943,0.716
+10,17,Mikel Merino Zazón,Merino,Arsenal,MID,Hull City,1.142,17.073,0.563
+10,136,Danny Welbeck,Welbeck,Chelsea,FWD,Sunderland,1.14,16.76,0.733
+10,647,Darío Osorio,Osorio,Crystal Palace,MID,Liverpool,1.132,19.669,0.716
+10,646,Malick Fofana,Fofana,Sunderland,MID,Chelsea,1.129,18.764,0.716
+10,339,Sean Longstaff,Longstaff,Leeds,MID,Tottenham Hotspur,1.113,22.289,0.733
+10,159,Moisés Caicedo Corozo,Caicedo,Chelsea,MID,Sunderland,1.107,33.59,0.719
+10,184,Matt Grimes,Grimes,Coventry City,MID,Everton,1.092,32.743,0.733
+10,14,Eberechi Eze,Eze,Arsenal,MID,Hull City,1.079,18.216,0.563
+10,614,Jaouen Hadjam,Hadjam,Brighton,DEF,Brentford,1.078,22.988,0.716
+10,489,Ryan Yates,Yates,Nott'm Forest,MID,Manchester City,1.078,27.281,0.716
+10,77,Amine Adli,Adli,Bournemouth,MID,Ipswich Town,1.024,12.016,0.563
+10,521,Dejan Kulusevski,Kulusevski,Spurs,MID,Leeds United,1.022,19.266,0.733
+10,312,Jack Taylor,Taylor,Ipswich Town,MID,Bournemouth,1.016,20.07,0.833
+10,461,Bazoumana Touré,Touré,Newcastle,MID,Fulham,1.0,15.533,0.593
+10,231,Michael Keane,Keane,Everton,DEF,Coventry City,0.996,17.308,0.476
+10,630,Taylor Harwood-Bellis,Harwood-Bellis,Aston Villa,DEF,Manchester United,0.978,25.815,0.733
+10,108,Callum Wilson,Wilson,Brentford,FWD,Brighton and Hove Albion,0.958,13.798,0.563
+10,364,Kostas Tsimikas,Tsimikas,Liverpool,DEF,Crystal Palace,0.951,17.279,0.563
+10,310,Azor Matusiwa,Matusiwa,Ipswich Town,MID,Bournemouth,0.947,19.889,0.716
+10,635,Hugo Larsson,Larsson,Fulham,MID,Newcastle United,0.928,16.94,0.593
+10,335,Anton Stach,Stach,Leeds,MID,Tottenham Hotspur,0.92,18.601,0.413
+10,473,Ola Aina,Aina,Nott'm Forest,DEF,Manchester City,0.919,26.963,0.563
+10,628,Allan Andrade Elias,Allan,Man City,MID,Nottingham Forest,0.915,15.132,0.563
+10,144,Malo Gusto,Gusto,Chelsea,DEF,Sunderland,0.899,17.692,0.563
+10,256,Kenny Tete,Tete,Fulham,DEF,Newcastle United,0.89,19.192,0.563
+10,90,Aaron Hickey,Hickey,Brentford,DEF,Brighton and Hove Albion,0.886,28.89,0.716
+10,164,Geovany Quenda,Quenda,Chelsea,MID,Sunderland,0.876,15.096,0.563
+10,638,Brooke Norton-Cuffy,Norton-Cuffy,Hull City,DEF,Arsenal,0.858,22.315,0.716
 10,424,Harry Amass,Amass,Man Utd,DEF,Aston Villa,0.856,19.201,0.563
-10,320,Chuba Akpom,Akpom,Ipswich Town,FWD,Bournemouth,0.852,13.17,0.563
-10,638,Brooke Norton-Cuffy,Norton-Cuffy,Hull City,DEF,Arsenal,0.851,22.315,0.716
-10,247,Hayden Hackney,Hackney,Everton,MID,Coventry City,0.843,14.493,0.563
-10,628,Allan Andrade Elias,Allan,Man City,MID,Nottingham Forest,0.839,15.132,0.563
-10,3,Illan Meslier,Meslier,Arsenal,GKP,Hull City,0.832,17.015,0.295
-10,340,Joe Gelhardt,Gelhardt,Hull City,MID,Arsenal,0.831,15.951,0.563
-10,9,Piero Hincapié,Hincapie,Arsenal,DEF,Hull City,0.816,12.88,0.373
-10,336,Noah Okafor,Okafor,Leeds,MID,Tottenham Hotspur,0.806,14.253,0.422
-10,228,Tom King,King,Everton,GKP,Coventry City,0.803,14.967,0.308
-10,445,Malick Thiaw,Thiaw,Newcastle,DEF,Fulham,0.799,18.33,0.372
-10,186,Ephron Mason-Clark,Mason-Clark,Coventry City,MID,Everton,0.792,17.362,0.563
-10,207,Oscar Mingueza,Mingueza,Crystal Palace,DEF,Liverpool,0.79,21.092,0.563
-10,160,Alejandro Garnacho Ferreyra,Garnacho,Aston Villa,MID,Manchester United,0.761,11.861,0.476
-10,213,Jefferson Lerma Solís,Lerma,Crystal Palace,MID,Liverpool,0.755,17.203,0.563
-10,447,Sven Botman,Botman,Newcastle,DEF,Fulham,0.748,17.169,0.336
-10,164,Geovany Quenda,Quenda,Chelsea,MID,Sunderland,0.741,15.096,0.563
-10,497,Martin Dubravka,Dubravka,Spurs,GKP,Leeds United,0.731,19.03,0.336
-10,371,Ryan Gravenberch,Gravenberch,Liverpool,MID,Crystal Palace,0.729,16.207,0.422
-10,327,Jaka Bijol,Bijol,Leeds,DEF,Tottenham Hotspur,0.728,16.835,0.372
-10,227,Mark Travers,Travers,Everton,GKP,Coventry City,0.715,13.467,0.231
-10,515,James Maddison,Maddison,Spurs,MID,Leeds United,0.677,13.058,0.373
-10,72,Ben Gannon-Doak,Gannon-Doak,Bournemouth,MID,Ipswich Town,0.668,10.264,0.372
-10,2,Kepa Arrizabalaga Revuelta,Arrizabalaga,Arsenal,GKP,Hull City,0.662,12.642,0.198
-10,199,Walter Benítez,Benitez,Crystal Palace,GKP,Liverpool,0.657,17.898,0.295
-10,388,Marc Guéhi,Guéhi,Man City,DEF,Nottingham Forest,0.651,16.226,0.295
-10,62,Bafodé Diakité,Diakité,Bournemouth,DEF,Ipswich Town,0.64,11.339,0.372
-10,648,Jean-Mattéo Bahoya,Bahoya,Leeds,MID,Tottenham Hotspur,0.621,10.683,0.372
-10,74,David Brooks,Brooks,Bournemouth,MID,Ipswich Town,0.62,8.49,0.295
+10,568,Valentín Barco,Barco,Chelsea,MID,Sunderland,0.85,15.129,0.593
+10,217,Matheus França de Oliveira,M.França,Crystal Palace,MID,Liverpool,0.844,12.871,0.563
+10,506,Destiny Udogie,Udogie,Spurs,DEF,Leeds United,0.841,20.159,0.593
+10,320,Chuba Akpom,Akpom,Ipswich Town,FWD,Bournemouth,0.837,13.17,0.563
+10,3,Illan Meslier,Meslier,Arsenal,GKP,Hull City,0.836,17.015,0.295
+10,247,Hayden Hackney,Hackney,Everton,MID,Coventry City,0.831,14.493,0.563
+10,186,Ephron Mason-Clark,Mason-Clark,Coventry City,MID,Everton,0.818,17.362,0.563
+10,9,Piero Hincapié,Hincapie,Arsenal,DEF,Hull City,0.785,12.88,0.373
+10,207,Oscar Mingueza,Mingueza,Crystal Palace,DEF,Liverpool,0.771,21.092,0.563
+10,340,Joe Gelhardt,Gelhardt,Hull City,MID,Arsenal,0.769,15.951,0.563
+10,160,Alejandro Garnacho Ferreyra,Garnacho,Aston Villa,MID,Manchester United,0.766,11.861,0.476
+10,327,Jaka Bijol,Bijol,Leeds,DEF,Tottenham Hotspur,0.747,16.835,0.372
+10,447,Sven Botman,Botman,Newcastle,DEF,Fulham,0.743,17.169,0.336
+10,445,Malick Thiaw,Thiaw,Newcastle,DEF,Fulham,0.732,18.33,0.372
+10,213,Jefferson Lerma Solís,Lerma,Crystal Palace,MID,Liverpool,0.729,17.203,0.563
+10,228,Tom King,King,Everton,GKP,Coventry City,0.724,14.967,0.308
+10,72,Ben Gannon-Doak,Gannon-Doak,Bournemouth,MID,Ipswich Town,0.717,10.264,0.372
+10,371,Ryan Gravenberch,Gravenberch,Liverpool,MID,Crystal Palace,0.704,16.207,0.422
+10,648,Jean-Mattéo Bahoya,Bahoya,Leeds,MID,Tottenham Hotspur,0.692,10.683,0.372
+10,497,Martin Dubravka,Dubravka,Spurs,GKP,Leeds United,0.681,19.03,0.336
+10,388,Marc Guéhi,Guéhi,Man City,DEF,Nottingham Forest,0.665,16.226,0.295
+10,227,Mark Travers,Travers,Everton,GKP,Coventry City,0.657,13.467,0.231
+10,621,Ryan McAidoo,McAidoo,Man City,MID,Nottingham Forest,0.629,10.212,0.336
+10,435,Shea Lacey,Lacey,Man Utd,MID,Aston Villa,0.623,9.352,0.336
+10,62,Bafodé Diakité,Diakité,Bournemouth,DEF,Ipswich Town,0.621,11.339,0.372
+10,649,Ainsley Maitland-Niles,Maitland-Niles,Everton,DEF,Coventry City,0.62,12.365,0.295
 10,482,Callum Hudson-Odoi,Hudson-Odoi,Nott'm Forest,MID,Manchester City,0.615,11.687,0.372
 10,19,Martín Zubimendi Ibáñez,Zubimendi,Arsenal,MID,Hull City,0.615,11.936,0.373
-10,649,Ainsley Maitland-Niles,Maitland-Niles,Everton,DEF,Coventry City,0.614,12.365,0.295
-10,243,Carlos Alcaraz Durán,Alcaraz,Everton,MID,Coventry City,0.611,8.844,0.308
-10,245,Tyler Dibling,Dibling,Everton,MID,Coventry City,0.607,10.225,0.372
-10,58,Fraser Forster,Forster,Bournemouth,GKP,Ipswich Town,0.602,13.258,0.231
-10,269,Ryan Sessegnon,Sessegnon,Fulham,DEF,Newcastle United,0.582,11.121,0.295
-10,620,El Hadji Malick Diouf,Diouf,Brentford,DEF,Brighton and Hove Albion,0.576,14.744,0.372
-10,23,Fábio Ferreira Vieira,Fábio Vieira,Arsenal,MID,Hull City,0.575,9.043,0.295
-10,435,Shea Lacey,Lacey,Man Utd,MID,Aston Villa,0.575,9.352,0.336
-10,621,Ryan McAidoo,McAidoo,Man City,MID,Nottingham Forest,0.573,10.212,0.336
-10,585,Lucas Herrington,Herrington,Hull City,DEF,Arsenal,0.563,17.163,0.372
-10,21,Christian Nørgaard,Nørgaard,Everton,MID,Coventry City,0.562,9.622,0.295
-10,601,Luca Williams-Barnett,Williams-Barnett,Spurs,MID,Leeds United,0.557,10.164,0.336
-10,352,Freddie Woodman,Woodman,Liverpool,GKP,Crystal Palace,0.556,12.072,0.198
-10,93,Jannik Schuster,Schuster,Brentford,DEF,Brighton and Hove Albion,0.555,14.155,0.295
-10,6,William Saliba,Saliba,Arsenal,DEF,Hull City,0.553,9.494,0.198
-10,581,Ousmane Diomande,Diomande,Nott'm Forest,DEF,Manchester City,0.552,14.809,0.308
-10,11,Cristhian Mosquera,Mosquera,Arsenal,DEF,Hull City,0.552,10.2,0.198
-10,422,Noussair Mazraoui,Mazraoui,Man Utd,DEF,Aston Villa,0.545,11.536,0.295
-10,395,Rico Lewis,Lewis,Man City,DEF,Nottingham Forest,0.545,14.183,0.336
-10,495,Brandon Austin,Austin,Spurs,GKP,Leeds United,0.544,14.037,0.231
-10,33,Tyrone Mings,Mings,Aston Villa,DEF,Manchester United,0.541,14.91,0.308
-10,406,Mateo Kovačić,Kovačić,Man City,MID,Nottingham Forest,0.541,10.991,0.295
-10,478,Luca Netz,Netz,Nott'm Forest,DEF,Manchester City,0.54,10.693,0.336
-10,429,Marcus Rashford,Rashford,Man Utd,MID,Aston Villa,0.535,7.875,0.221
-10,212,Will Hughes,Hughes,Crystal Palace,MID,Liverpool,0.532,11.417,0.373
-10,668,Tymur Tutierov,Tutierov,Sunderland,MID,Chelsea,0.531,12.624,0.372
-10,584,Gustavo Hamer,Hamer,Coventry City,MID,Everton,0.529,10.91,0.372
-10,351,Giorgi Mamardashvili,Mamardashvili,Liverpool,GKP,Crystal Palace,0.522,12.189,0.198
-10,262,Emile Smith Rowe,Smith Rowe,Fulham,MID,Newcastle United,0.521,9.107,0.295
-10,113,Ferdi Kadıoğlu,F.Kadıoğlu,Brighton,DEF,Brentford,0.519,12.845,0.279
-10,111,Jason Steele,Steele,Brighton,GKP,Brentford,0.517,13.647,0.231
-10,488,Ibrahim Sangaré,I.Sangaré,Nott'm Forest,MID,Manchester City,0.512,10.935,0.295
-10,263,Kevin Santos Lopes de Macedo,Kevin,Fulham,MID,Newcastle United,0.507,8.724,0.295
-10,442,Nick Pope,Pope,Newcastle,GKP,Fulham,0.507,12.44,0.198
-10,642,Sorba Thomas,Thomas,Hull City,MID,Arsenal,0.504,12.448,0.336
-10,633,Honest Ahanor,Ahanor,Crystal Palace,DEF,Liverpool,0.504,12.382,0.295
-10,555,Remi Matthews,Matthews,Crystal Palace,GKP,Liverpool,0.502,12.139,0.231
-10,359,Joe Gomez,Gomez,Liverpool,DEF,Crystal Palace,0.498,10.523,0.295
-10,253,Joachim Andersen,Andersen,Fulham,DEF,Newcastle United,0.488,11.142,0.231
-10,508,Ben Davies,Davies,Spurs,DEF,Leeds United,0.486,10.856,0.295
+10,74,David Brooks,Brooks,Bournemouth,MID,Ipswich Town,0.61,8.49,0.295
+10,199,Walter Benítez,Benitez,Crystal Palace,GKP,Liverpool,0.605,17.898,0.295
+10,2,Kepa Arrizabalaga Revuelta,Arrizabalaga,Arsenal,GKP,Hull City,0.604,12.642,0.198
+10,395,Rico Lewis,Lewis,Man City,DEF,Nottingham Forest,0.604,14.183,0.336
+10,668,Tymur Tutierov,Tutierov,Sunderland,MID,Chelsea,0.599,12.624,0.372
+10,274,Jack Butland,Butland,Hull City,GKP,Arsenal,0.569,17.59,0.308
+10,581,Ousmane Diomande,Diomande,Nott'm Forest,DEF,Manchester City,0.563,14.809,0.308
+10,21,Christian Nørgaard,Nørgaard,Everton,MID,Coventry City,0.559,9.622,0.295
+10,585,Lucas Herrington,Herrington,Hull City,DEF,Arsenal,0.558,17.163,0.372
+10,33,Tyrone Mings,Mings,Aston Villa,DEF,Manchester United,0.558,14.91,0.308
+10,269,Ryan Sessegnon,Sessegnon,Fulham,DEF,Newcastle United,0.555,11.121,0.295
+10,584,Gustavo Hamer,Hamer,Coventry City,MID,Everton,0.554,10.91,0.372
+10,243,Carlos Alcaraz Durán,Alcaraz,Everton,MID,Coventry City,0.554,8.844,0.308
+10,58,Fraser Forster,Forster,Bournemouth,GKP,Ipswich Town,0.551,13.258,0.231
+10,23,Fábio Ferreira Vieira,Fábio Vieira,Arsenal,MID,Hull City,0.547,9.043,0.295
+10,352,Freddie Woodman,Woodman,Liverpool,GKP,Crystal Palace,0.544,12.072,0.198
+10,422,Noussair Mazraoui,Mazraoui,Man Utd,DEF,Aston Villa,0.536,11.536,0.295
+10,620,El Hadji Malick Diouf,Diouf,Brentford,DEF,Brighton and Hove Albion,0.536,14.744,0.372
+10,147,Tosin Adarabioyo,Tosin,Spurs,DEF,Leeds United,0.532,11.982,0.295
+10,582,Brian Madjo,Madjo,Aston Villa,FWD,Manchester United,0.532,9.492,0.336
+10,212,Will Hughes,Hughes,Crystal Palace,MID,Liverpool,0.531,11.417,0.373
+10,93,Jannik Schuster,Schuster,Brentford,DEF,Brighton and Hove Albion,0.526,14.155,0.295
+10,601,Luca Williams-Barnett,Williams-Barnett,Spurs,MID,Leeds United,0.526,10.164,0.336
+10,637,Robinio Vaz,Vaz,Hull City,FWD,Arsenal,0.524,10.8,0.372
+10,11,Cristhian Mosquera,Mosquera,Arsenal,DEF,Hull City,0.523,10.2,0.198
+10,6,William Saliba,Saliba,Arsenal,DEF,Hull City,0.522,9.494,0.198
+10,113,Ferdi Kadıoğlu,F.Kadıoğlu,Brighton,DEF,Brentford,0.52,12.845,0.279
+10,657,Gustavo Nunes Fernandes Gomes,Nunes,Brentford,MID,Brighton and Hove Albion,0.519,8.684,0.295
+10,642,Sorba Thomas,Thomas,Hull City,MID,Arsenal,0.517,12.448,0.336
+10,69,Alex Scott,Scott,Bournemouth,MID,Ipswich Town,0.51,9.414,0.221
+10,263,Kevin Santos Lopes de Macedo,Kevin,Fulham,MID,Newcastle United,0.51,8.724,0.295
+10,111,Jason Steele,Steele,Brighton,GKP,Brentford,0.51,13.647,0.231
+10,406,Mateo Kovačić,Kovačić,Man City,MID,Nottingham Forest,0.508,10.991,0.295
+10,508,Ben Davies,Davies,Spurs,DEF,Leeds United,0.505,10.856,0.295
+10,478,Luca Netz,Netz,Nott'm Forest,DEF,Manchester City,0.504,10.693,0.336
+10,488,Ibrahim Sangaré,I.Sangaré,Nott'm Forest,MID,Manchester City,0.493,10.935,0.295
+10,27,Gabriel Fernando de Jesus,G.Jesus,Arsenal,FWD,Hull City,0.493,7.517,0.198
+10,516,Rodrigo Bentancur,Bentancur,Spurs,MID,Leeds United,0.492,11.545,0.295
+10,351,Giorgi Mamardashvili,Mamardashvili,Liverpool,GKP,Crystal Palace,0.492,12.189,0.198
+10,267,Saša Lukić,Lukić,Ipswich Town,MID,Bournemouth,0.491,12.627,0.295
+10,495,Brandon Austin,Austin,Spurs,GKP,Leeds United,0.489,14.037,0.231
+10,498,Marcos Senesi Barón,Senesi,Spurs,DEF,Leeds United,0.489,11.519,0.231
+10,336,Noah Okafor,Okafor,Leeds,MID,Tottenham Hotspur,0.489,9.502,0.281
+10,442,Nick Pope,Pope,Newcastle,GKP,Fulham,0.488,12.44,0.198
+10,262,Emile Smith Rowe,Smith Rowe,Fulham,MID,Newcastle United,0.486,9.107,0.295
 10,306,Jacob Greaves,Greaves,Ipswich Town,DEF,Bournemouth,0.484,15.085,0.295
-10,516,Rodrigo Bentancur,Bentancur,Spurs,MID,Leeds United,0.48,11.545,0.295
-10,195,Ellis Simms,Simms,Coventry City,FWD,Everton,0.478,9.289,0.295
-10,637,Robinio Vaz,Vaz,Hull City,FWD,Arsenal,0.471,10.8,0.372
-10,498,Marcos Senesi Barón,Senesi,Spurs,DEF,Leeds United,0.47,11.519,0.231
-10,531,Melker Ellborg,Ellborg,Sunderland,GKP,Chelsea,0.466,12.252,0.198
-10,190,Loum Tchaouna,Tchaouna,Coventry City,MID,Everton,0.465,10.371,0.295
-10,459,Lewis Miley,L.Miley,Newcastle,MID,Fulham,0.464,11.026,0.252
-10,612,Dayann Méthalie,Methalie,Sunderland,DEF,Chelsea,0.456,11.338,0.295
-10,582,Brian Madjo,Madjo,Aston Villa,FWD,Manchester United,0.453,9.492,0.336
-10,416,Matthijs de Ligt,De Ligt,Man Utd,DEF,Aston Villa,0.453,8.593,0.198
-10,29,Marco Bizot,M.Bizot,Aston Villa,GKP,Manchester United,0.448,12.917,0.198
-10,370,Federico Chiesa,Chiesa,Liverpool,MID,Crystal Palace,0.446,7.133,0.198
-10,613,Jules Ahoka,Ahoka,Sunderland,MID,Chelsea,0.442,10.023,0.295
-10,378,James McConnell,McConnell,Liverpool,MID,Crystal Palace,0.442,8.123,0.231
-10,126,Matt O'Riley,O'Riley,Brighton,MID,Brentford,0.44,7.321,0.198
-10,302,David Button,Button,Ipswich Town,GKP,Bournemouth,0.44,13.121,0.231
-10,564,Kjell Scherpen,Scherpen,Ipswich Town,GKP,Bournemouth,0.438,13.113,0.198
-10,329,Joe Rodon,Rodon,Leeds,DEF,Tottenham Hotspur,0.436,10.099,0.198
-10,27,Gabriel Fernando de Jesus,G.Jesus,Arsenal,FWD,Hull City,0.435,7.517,0.198
-10,51,George Hemmings,George Hemmings,Aston Villa,MID,Manchester United,0.434,10.986,0.295
-10,255,Jorge Cuenca Barreno,J.Cuenca,Fulham,DEF,Newcastle United,0.432,9.881,0.198
-10,392,Rayan Aït-Nouri,Aït-Nouri,Man City,DEF,Nottingham Forest,0.43,8.857,0.198
-10,173,Bobby Thomas,Thomas,Coventry City,DEF,Everton,0.424,9.316,0.186
-10,146,Benoît Badiashile Mukinayi,B.Badiashile,Chelsea,DEF,Sunderland,0.419,8.529,0.198
-10,657,Gustavo Nunes Fernandes Gomes,Nunes,Brentford,MID,Brighton and Hove Albion,0.416,8.684,0.295
-10,396,Vitor de Oliveira Nunes dos Reis,Vitor Reis,Man City,DEF,Nottingham Forest,0.414,8.752,0.198
-10,491,Igor Jesus Maciel da Cruz,Igor Jesus,Nott'm Forest,FWD,Manchester City,0.412,8.687,0.221
-10,83,Hákon Rafn Valdimarsson,Valdimarsson,Brentford,GKP,Brighton and Hove Albion,0.411,11.459,0.198
-10,120,Michael Svoboda,Svoboda,Brighton,DEF,Brentford,0.408,8.49,0.198
-10,468,John Victor Maciel Furtado,John,Nott'm Forest,GKP,Manchester City,0.404,12.361,0.198
-10,84,Nathan Collins,Collins,Brentford,DEF,Brighton and Hove Albion,0.401,10.361,0.198
-10,66,Julio Soler Barreto,Soler,Bournemouth,DEF,Ipswich Town,0.399,8.089,0.198
-10,122,Yankuba Minteh,Minteh,Brighton,MID,Brentford,0.398,7.358,0.198
-10,608,Daniel Jebbison,Jebbison,Bournemouth,FWD,Ipswich Town,0.398,6.829,0.198
-10,622,Kaden Braithwaite,Braithwaite,Man City,DEF,Nottingham Forest,0.393,8.752,0.198
-10,179,Joel Latibeaudiere,Latibeaudiere,Coventry City,DEF,Everton,0.392,8.398,0.198
-10,510,James Rowswell,Rowswell,Spurs,DEF,Leeds United,0.391,8.405,0.198
-10,524,Callum Olusesi,Olusesi,Spurs,MID,Leeds United,0.386,7.552,0.198
-10,117,Diego Coppola,Coppola,Brighton,DEF,Brentford,0.386,8.376,0.198
-10,104,Frank Onyeka,Onyeka,Coventry City,MID,Everton,0.384,9.466,0.281
-10,594,Promise David,David,Brighton,FWD,Brentford,0.382,7.063,0.198
-10,270,Harrison Reed,Reed,Fulham,MID,Newcastle United,0.374,7.479,0.198
-10,634,Matias Fernandez-Pardo,Fernandez-Pardo,Newcastle,FWD,Fulham,0.374,9.283,0.252
-10,56,Tammy Abraham,Abraham,Aston Villa,FWD,Manchester United,0.373,7.215,0.198
-10,643,Ben Chilwell,Chilwell,Crystal Palace,DEF,Liverpool,0.373,8.555,0.198
-10,550,Djiamgone Jocelin Ta Bi,Jocelin.T,Sunderland,MID,Chelsea,0.365,7.328,0.198
+10,253,Joachim Andersen,Andersen,Fulham,DEF,Newcastle United,0.484,11.142,0.231
+10,190,Loum Tchaouna,Tchaouna,Coventry City,MID,Everton,0.482,10.371,0.295
+10,195,Ellis Simms,Simms,Coventry City,FWD,Everton,0.481,9.289,0.295
+10,126,Matt O'Riley,O'Riley,Brighton,MID,Brentford,0.48,7.321,0.198
+10,612,Dayann Méthalie,Methalie,Sunderland,DEF,Chelsea,0.466,11.338,0.295
+10,255,Jorge Cuenca Barreno,J.Cuenca,Fulham,DEF,Newcastle United,0.464,9.881,0.198
+10,370,Federico Chiesa,Chiesa,Liverpool,MID,Crystal Palace,0.461,7.133,0.198
+10,555,Remi Matthews,Matthews,Crystal Palace,GKP,Liverpool,0.453,12.139,0.231
+10,633,Honest Ahanor,Ahanor,Crystal Palace,DEF,Liverpool,0.452,12.382,0.295
+10,51,George Hemmings,George Hemmings,Aston Villa,MID,Manchester United,0.45,10.986,0.295
+10,600,Ibrahim Osman,Osman,Brighton,MID,Brentford,0.446,7.144,0.198
+10,169,Shumaira Mheuka,Mheuka,Chelsea,FWD,Sunderland,0.445,6.98,0.198
+10,608,Daniel Jebbison,Jebbison,Bournemouth,FWD,Ipswich Town,0.444,6.829,0.198
+10,134,Nehemiah Oriola,Oriola,Brighton,MID,Brentford,0.438,7.037,0.198
+10,359,Joe Gomez,Gomez,Liverpool,DEF,Crystal Palace,0.431,10.523,0.295
+10,531,Melker Ellborg,Ellborg,Sunderland,GKP,Chelsea,0.427,12.252,0.198
+10,437,Bendito Mantato,Bendito Mantato,Man Utd,MID,Aston Villa,0.418,7.183,0.198
+10,29,Marco Bizot,M.Bizot,Aston Villa,GKP,Manchester United,0.415,12.917,0.198
+10,613,Jules Ahoka,Ahoka,Sunderland,MID,Chelsea,0.415,10.023,0.295
+10,415,Patrick Dorgu,Dorgu,Man Utd,MID,Aston Villa,0.415,7.376,0.221
+10,329,Joe Rodon,Rodon,Leeds,DEF,Tottenham Hotspur,0.414,10.099,0.198
+10,634,Matias Fernandez-Pardo,Fernandez-Pardo,Newcastle,FWD,Fulham,0.413,9.283,0.252
+10,594,Promise David,David,Brighton,FWD,Brentford,0.41,7.063,0.198
+10,302,David Button,Button,Ipswich Town,GKP,Bournemouth,0.409,13.121,0.231
+10,564,Kjell Scherpen,Scherpen,Ipswich Town,GKP,Bournemouth,0.407,13.113,0.198
+10,491,Igor Jesus Maciel da Cruz,Igor Jesus,Nott'm Forest,FWD,Manchester City,0.405,8.687,0.221
+10,416,Matthijs de Ligt,De Ligt,Man Utd,DEF,Aston Villa,0.404,8.593,0.198
+10,122,Yankuba Minteh,Minteh,Brighton,MID,Brentford,0.402,7.358,0.198
+10,382,Jayden Danns,Danns,Liverpool,FWD,Crystal Palace,0.399,7.201,0.198
+10,392,Rayan Aït-Nouri,Aït-Nouri,Man City,DEF,Nottingham Forest,0.397,8.857,0.198
+10,550,Djiamgone Jocelin Ta Bi,Jocelin.T,Sunderland,MID,Chelsea,0.396,7.328,0.198
+10,272,Jonah Kusi-Asare,Kusi-Asare,Fulham,FWD,Newcastle United,0.394,7.245,0.198
+10,146,Benoît Badiashile Mukinayi,B.Badiashile,Chelsea,DEF,Sunderland,0.39,8.529,0.198
+10,378,James McConnell,McConnell,Liverpool,MID,Crystal Palace,0.388,8.123,0.231
+10,104,Frank Onyeka,Onyeka,Coventry City,MID,Everton,0.387,9.466,0.281
+10,84,Nathan Collins,Collins,Brentford,DEF,Brighton and Hove Albion,0.386,10.361,0.198
+10,468,John Victor Maciel Furtado,John,Nott'm Forest,GKP,Manchester City,0.385,12.361,0.198
+10,117,Diego Coppola,Coppola,Brighton,DEF,Brentford,0.384,8.376,0.198
+10,66,Julio Soler Barreto,Soler,Bournemouth,DEF,Ipswich Town,0.384,8.089,0.198
+10,56,Tammy Abraham,Abraham,Aston Villa,FWD,Manchester United,0.379,7.215,0.198
+10,173,Bobby Thomas,Thomas,Coventry City,DEF,Everton,0.379,9.316,0.186
+10,396,Vitor de Oliveira Nunes dos Reis,Vitor Reis,Man City,DEF,Nottingham Forest,0.378,8.752,0.198
+10,323,Kasey McAteer,McAteer,Ipswich Town,MID,Bournemouth,0.378,7.127,0.198
+10,120,Michael Svoboda,Svoboda,Brighton,DEF,Brentford,0.376,8.49,0.198
+10,83,Hákon Rafn Valdimarsson,Valdimarsson,Brentford,GKP,Brighton and Hove Albion,0.373,11.459,0.198
+10,179,Joel Latibeaudiere,Latibeaudiere,Coventry City,DEF,Everton,0.37,8.398,0.198
+10,42,Evann Guessand,Guessand,Crystal Palace,MID,Liverpool,0.369,7.583,0.198
 10,641,Melvin Bard,Bard,Leeds,DEF,Tottenham Hotspur,0.364,8.939,0.198
-10,169,Shumaira Mheuka,Mheuka,Chelsea,FWD,Sunderland,0.362,6.98,0.198
-10,437,Bendito Mantato,Bendito Mantato,Man Utd,MID,Aston Villa,0.361,7.183,0.198
-10,177,Kaine Kesler-Hayden,Kesler-Hayden,Coventry City,DEF,Everton,0.357,8.367,0.198
-10,600,Ibrahim Osman,Osman,Brighton,MID,Brentford,0.353,7.144,0.198
-10,267,Saša Lukić,Lukić,Ipswich Town,MID,Bournemouth,0.35,9.47,0.221
-10,309,Marcelino Núñez,Núñez,Ipswich Town,MID,Bournemouth,0.348,8.706,0.198
-10,438,Tyler Fletcher,Fletcher,Man Utd,MID,Aston Villa,0.347,7.679,0.198
-10,374,Endo Wataru,Endo,Liverpool,MID,Crystal Palace,0.343,7.507,0.198
-10,595,Zavier Gozo,Gozo,Crystal Palace,MID,Liverpool,0.343,7.737,0.198
-10,118,Igor Julio dos Santos de Paulo,Igor,Brighton,DEF,Brentford,0.34,8.456,0.198
-10,323,Kasey McAteer,McAteer,Ipswich Town,MID,Bournemouth,0.34,7.127,0.198
-10,42,Evann Guessand,Guessand,Crystal Palace,MID,Liverpool,0.338,7.583,0.198
-10,382,Jayden Danns,Danns,Liverpool,FWD,Crystal Palace,0.338,7.201,0.198
-10,92,Kim Ji-soo,Ji-soo,Brentford,DEF,Brighton and Hove Albion,0.338,8.855,0.231
-10,322,Ali Al-Hamadi,Al-Hamadi,Ipswich Town,FWD,Bournemouth,0.336,6.873,0.198
-10,434,Jack Fletcher,J.Fletcher,Man Utd,MID,Aston Villa,0.335,7.481,0.198
-10,134,Nehemiah Oriola,Oriola,Brighton,MID,Brentford,0.333,7.037,0.198
-10,221,Joél Drakes-Thomas,Drakes-Thomas,Crystal Palace,MID,Liverpool,0.327,7.676,0.198
-10,163,Dário Luís Essugo,D.Essugo,Chelsea,MID,Sunderland,0.326,7.437,0.198
-10,662,Mahdi Nicoll-Jazuli,Nicoll-Jazuli,Chelsea,MID,Sunderland,0.322,7.357,0.198
-10,559,Aladji Bamba,Bamba,Newcastle,MID,Fulham,0.322,7.623,0.198
-10,50,Bradley Burrowes,Burrowes,Aston Villa,MID,Manchester United,0.319,7.095,0.198
-10,344,Ilia Gruev,Gruev,Leeds,MID,Tottenham Hotspur,0.314,7.968,0.198
-10,636,Manuel Ángel Morán Ibáñez,Ángel,Fulham,MID,Newcastle United,0.312,7.705,0.198
-10,272,Jonah Kusi-Asare,Kusi-Asare,Fulham,FWD,Newcastle United,0.31,7.245,0.198
-10,321,Sindre Walle Egeli,Walle Egeli,Ipswich Town,FWD,Bournemouth,0.308,6.964,0.198
-10,274,Jack Butland,Butland,Hull City,GKP,Arsenal,0.306,8.795,0.154
-10,574,Jens Hjertø-Dahl,Hjertø-Dahl,Hull City,MID,Arsenal,0.303,7.687,0.198
-10,651,Juan Angulo,J.Angulo,Sunderland,FWD,Chelsea,0.296,7.198,0.198
-10,308,Darnell Furlong,Furlong,Ipswich Town,DEF,Bournemouth,0.289,9.087,0.198
-10,589,Lucas Gourna-Douath,Gourna-Douath,Hull City,MID,Arsenal,0.281,8.098,0.221
-10,285,Paddy McNair,McNair,Hull City,DEF,Arsenal,0.271,8.841,0.198
-10,403,Sávio Moreira de Oliveira,Sávio,Spurs,MID,,0.0,0.0,0.0
+10,321,Sindre Walle Egeli,Walle Egeli,Ipswich Town,FWD,Bournemouth,0.363,6.964,0.198
+10,50,Bradley Burrowes,Burrowes,Aston Villa,MID,Manchester United,0.36,7.095,0.198
+10,510,James Rowswell,Rowswell,Spurs,DEF,Leeds United,0.359,8.405,0.198
+10,118,Igor Julio dos Santos de Paulo,Igor,Brighton,DEF,Brentford,0.358,8.456,0.198
+10,651,Juan Angulo,J.Angulo,Sunderland,FWD,Chelsea,0.354,7.198,0.198
+10,177,Kaine Kesler-Hayden,Kesler-Hayden,Coventry City,DEF,Everton,0.354,8.367,0.198
+10,622,Kaden Braithwaite,Braithwaite,Man City,DEF,Nottingham Forest,0.352,8.752,0.198
+10,309,Marcelino Núñez,Núñez,Ipswich Town,MID,Bournemouth,0.349,8.706,0.198
+10,322,Ali Al-Hamadi,Al-Hamadi,Ipswich Town,FWD,Bournemouth,0.349,6.873,0.198
+10,524,Callum Olusesi,Olusesi,Spurs,MID,Leeds United,0.349,7.552,0.198
+10,643,Ben Chilwell,Chilwell,Crystal Palace,DEF,Liverpool,0.344,8.555,0.198
+10,574,Jens Hjertø-Dahl,Hjertø-Dahl,Hull City,MID,Arsenal,0.339,7.687,0.198
+10,374,Endo Wataru,Endo,Liverpool,MID,Crystal Palace,0.335,7.507,0.198
+10,163,Dário Luís Essugo,D.Essugo,Chelsea,MID,Sunderland,0.332,7.437,0.198
+10,438,Tyler Fletcher,Fletcher,Man Utd,MID,Aston Villa,0.332,7.679,0.198
+10,270,Harrison Reed,Reed,Fulham,MID,Newcastle United,0.331,7.479,0.198
+10,221,Joél Drakes-Thomas,Drakes-Thomas,Crystal Palace,MID,Liverpool,0.331,7.676,0.198
+10,636,Manuel Ángel Morán Ibáñez,Ángel,Fulham,MID,Newcastle United,0.327,7.705,0.198
+10,92,Kim Ji-soo,Ji-soo,Brentford,DEF,Brighton and Hove Albion,0.327,8.855,0.231
+10,595,Zavier Gozo,Gozo,Crystal Palace,MID,Liverpool,0.325,7.737,0.198
+10,559,Aladji Bamba,Bamba,Newcastle,MID,Fulham,0.323,7.623,0.198
+10,434,Jack Fletcher,J.Fletcher,Man Utd,MID,Aston Villa,0.321,7.481,0.198
+10,344,Ilia Gruev,Gruev,Leeds,MID,Tottenham Hotspur,0.312,7.968,0.198
+10,662,Mahdi Nicoll-Jazuli,Nicoll-Jazuli,Chelsea,MID,Sunderland,0.309,7.357,0.198
+10,285,Paddy McNair,McNair,Hull City,DEF,Arsenal,0.289,8.841,0.198
+10,308,Darnell Furlong,Furlong,Ipswich Town,DEF,Bournemouth,0.288,9.087,0.198
+10,589,Lucas Gourna-Douath,Gourna-Douath,Hull City,MID,Arsenal,0.286,8.098,0.221
+10,459,Lewis Miley,L.Miley,Newcastle,MID,Fulham,0.284,7.351,0.168
+10,297,Darko Gyabi,Gyabi,Hull City,MID,Arsenal,0.273,5.964,0.173
+10,611,Aaron Wan-Bissaka,Wan-Bissaka,Aston Villa,DEF,Manchester United,0.25,6.494,0.147
+10,625,Alex Cairns,Cairns,Leeds,GKP,,0.0,0.0,0.0
+10,326,Lucas Estella Perri,Perri,Leeds,GKP,,0.0,0.0,0.0
+10,602,Cameron Humphreys,Humphreys,Ipswich Town,MID,,0.0,0.0,0.0
+10,603,Jayden Lienou,Lienou,Leeds,DEF,,0.0,0.0,0.0
+10,610,Luc De Fougerolles,De Fougerolles,Fulham,DEF,,0.0,0.0,0.0
 10,507,Ashley Phillips,Phillips,Spurs,DEF,,0.0,0.0,0.0
-10,505,Djed Spence,Spence,Spurs,DEF,,0.0,0.0,0.0
-10,205,Borna Sosa,Sosa,Crystal Palace,DEF,,0.0,0.0,0.0
+10,48,Amadou Onana,Onana,Aston Villa,MID,,0.0,0.0,0.0
+10,49,Samuel Iling-Junior,Iling Jr,Aston Villa,MID,,0.0,0.0,0.0
+10,55,Ollie Watkins,Watkins,Aston Villa,FWD,,0.0,0.0,0.0
+10,538,Leo Fuhr Hjelde,Hjelde,Sunderland,DEF,,0.0,0.0,0.0
 10,24,Reiss Nelson,Nelson,Arsenal,MID,,0.0,0.0,0.0
+10,546,Simon Adingra,Adingra,Sunderland,MID,,0.0,0.0,0.0
+10,333,Sebastiaan Bornauw,Bornauw,Leeds,DEF,,0.0,0.0,0.0
+10,629,Michael Zetterer,Zetterer,Leeds,GKP,,0.0,0.0,0.0
+10,18,Gabriel Martinelli Silva,Martinelli,Arsenal,MID,,0.0,0.0,0.0
+10,547,Romaine Mundle,Mundle,Sunderland,MID,,0.0,0.0,0.0
+10,540,Arthur Masuaku,Masuaku,Sunderland,DEF,,0.0,0.0,0.0
+10,530,Anthony Patterson,Patterson,Sunderland,GKP,,0.0,0.0,0.0
+10,517,Wilson Odobert,Odobert,Spurs,MID,,0.0,0.0,0.0
+10,281,Cody Drameh,Drameh,Hull City,DEF,,0.0,0.0,0.0
+10,532,Daniel Ballard,Ballard,Sunderland,DEF,,0.0,0.0,0.0
+10,342,Jack Harrison,Harrison,Leeds,MID,,0.0,0.0,0.0
+10,348,Joël Piroe,Piroe,Leeds,FWD,,0.0,0.0,0.0
+10,349,Mateo Joseph Fernández-Regatillo,Mateo Joseph,Leeds,FWD,,0.0,0.0,0.0
+10,216,Romain Esse,Esse,Crystal Palace,MID,,0.0,0.0,0.0
+10,219,Jesurun Rak-Sakyi,J.Rak-Sakyi,Crystal Palace,MID,,0.0,0.0,0.0
+10,218,Cheick Doucouré,Doucouré,Crystal Palace,MID,,0.0,0.0,0.0
+10,623,Dan Bentley,Bentley,Coventry City,GKP,,0.0,0.0,0.0
+10,341,Wilfried Gnonto,Gnonto,Leeds,MID,,0.0,0.0,0.0
+10,192,Kai Andrews,Andrews,Coventry City,MID,,0.0,0.0,0.0
+10,191,Raphael Borges Rodrigues,Borges Rodrigues,Coventry City,MID,,0.0,0.0,0.0
+10,189,George Shepherd,Shepherd,Coventry City,MID,,0.0,0.0,0.0
+10,357,Jeremie Frimpong,Frimpong,Liverpool,DEF,,0.0,0.0,0.0
+10,355,Harvey Davies,Davies,Liverpool,GKP,,0.0,0.0,0.0
+10,363,Giovanni Leoni,Leoni,Liverpool,DEF,,0.0,0.0,0.0
+10,361,Wellity Lucky,Lucky,Liverpool,DEF,,0.0,0.0,0.0
+10,360,Conor Bradley,Bradley,Liverpool,DEF,,0.0,0.0,0.0
+10,376,Stefan Bajčetić Maquieira,Bajcetic,Liverpool,MID,,0.0,0.0,0.0
+10,380,Hugo Ekitiké,Ekitiké,Liverpool,FWD,,0.0,0.0,0.0
+10,354,Vitezslav Jaros,Jaros,Liverpool,GKP,,0.0,0.0,0.0
+10,187,Josh Eccles,Eccles,Coventry City,MID,,0.0,0.0,0.0
+10,180,Luke Woolfenden,Woolfenden,Coventry City,DEF,,0.0,0.0,0.0
+10,181,Miguel Brau,Brau,Coventry City,DEF,,0.0,0.0,0.0
+10,178,Jake Bidwell,Bidwell,Coventry City,DEF,,0.0,0.0,0.0
+10,182,Aurèle Amenda,Amenda,Coventry City,DEF,,0.0,0.0,0.0
+10,174,Liam Kitching,Kitching,Coventry City,DEF,,0.0,0.0,0.0
+10,373,Curtis Jones,C.Jones,Liverpool,MID,,0.0,0.0,0.0
+10,365,Calvin Ramsay,Ramsay,Liverpool,DEF,,0.0,0.0,0.0
+10,394,Max Alleyne,Alleyne,Man City,DEF,,0.0,0.0,0.0
+10,172,Ben Wilson,Wilson,Coventry City,GKP,,0.0,0.0,0.0
+10,197,Norman Bassette,Bassette,Coventry City,FWD,,0.0,0.0,0.0
+10,196,Jahnoah Markelo,Markelo,Coventry City,FWD,,0.0,0.0,0.0
+10,193,Haji Wright,Wright,Coventry City,FWD,,0.0,0.0,0.0
+10,669,Teddy Sharman-Lowe,Sharman-Lowe,Chelsea,GKP,,0.0,0.0,0.0
+10,670,Olutayo Subuloye,Subuloye,Chelsea,DEF,,0.0,0.0,0.0
+10,171,Oliver Dovin,Dovin,Coventry City,GKP,,0.0,0.0,0.0
+10,200,Maxence Lacroix,Lacroix,Chelsea,DEF,,0.0,0.0,0.0
+10,168,Marc Guiu Paz,Marc Guiu,Chelsea,FWD,,0.0,0.0,0.0
+10,386,Marcus Bettinelli,Bettinelli,Man City,GKP,,0.0,0.0,0.0
+10,383,Harvey Elliott,Elliott,Liverpool,MID,,0.0,0.0,0.0
+10,561,Aaron Anselmino,Anselmino,Chelsea,DEF,,0.0,0.0,0.0
+10,587,Gerónimo Rulli,Rulli,Man City,GKP,,0.0,0.0,0.0
+10,410,Jeremy Monga,Monga,Man City,MID,,0.0,0.0,0.0
+10,408,Kalvin Phillips,Phillips,Man City,MID,,0.0,0.0,0.0
+10,409,Divine Mukasa,Mukasa,Man City,MID,,0.0,0.0,0.0
+10,407,Claudio Echeverri,Echeverri,Man City,MID,,0.0,0.0,0.0
+10,165,João Pedro Junqueira de Jesus,João Pedro,Chelsea,FWD,,0.0,0.0,0.0
+10,353,Armin Pecsi,Pecsi,Liverpool,GKP,,0.0,0.0,0.0
+10,215,Justin Devenny,Devenny,Crystal Palace,MID,,0.0,0.0,0.0
+10,324,Anis Mehmeti,Mehmeti,Ipswich Town,MID,,0.0,0.0,0.0
+10,205,Borna Sosa,Sosa,Crystal Palace,DEF,,0.0,0.0,0.0
 10,206,Chadi Riad Dnanou,Chadi Riad,Crystal Palace,DEF,,0.0,0.0,0.0
 10,208,Ismaïla Sarr,Sarr,Crystal Palace,MID,,0.0,0.0,0.0
-10,341,Wilfried Gnonto,Gnonto,Leeds,MID,,0.0,0.0,0.0
-10,342,Jack Harrison,Harrison,Leeds,MID,,0.0,0.0,0.0
-10,578,Mykhailo Mudryk,Mudryk,Spurs,MID,,0.0,0.0,0.0
-10,528,Dane Scarlett,Scarlett,Spurs,FWD,,0.0,0.0,0.0
-10,530,Anthony Patterson,Patterson,Sunderland,GKP,,0.0,0.0,0.0
-10,532,Daniel Ballard,Ballard,Sunderland,DEF,,0.0,0.0,0.0
-10,494,Guglielmo Vicario,Vicario,Spurs,GKP,,0.0,0.0,0.0
-10,500,Cristian Romero,Romero,Spurs,DEF,,0.0,0.0,0.0
-10,535,Omar Alderete,Alderete,Sunderland,DEF,,0.0,0.0,0.0
-10,538,Leo Fuhr Hjelde,Hjelde,Sunderland,DEF,,0.0,0.0,0.0
-10,511,João Victor de Souza Menezes,Souza,Spurs,DEF,,0.0,0.0,0.0
-10,513,Xavi Simons,Xavi,Spurs,MID,,0.0,0.0,0.0
-10,517,Wilson Odobert,Odobert,Spurs,MID,,0.0,0.0,0.0
-10,518,Pape Matar Sarr,P.M.Sarr,Spurs,MID,,0.0,0.0,0.0
-10,546,Simon Adingra,Adingra,Sunderland,MID,,0.0,0.0,0.0
-10,547,Romaine Mundle,Mundle,Sunderland,MID,,0.0,0.0,0.0
-10,543,Habib Diarra,Diarra,Sunderland,MID,Chelsea,0.0,0.0,0.0
-10,540,Arthur Masuaku,Masuaku,Sunderland,DEF,,0.0,0.0,0.0
-10,355,Harvey Davies,Davies,Liverpool,GKP,,0.0,0.0,0.0
-10,354,Vitezslav Jaros,Jaros,Liverpool,GKP,,0.0,0.0,0.0
-10,353,Armin Pecsi,Pecsi,Liverpool,GKP,,0.0,0.0,0.0
-10,629,Michael Zetterer,Zetterer,Leeds,GKP,,0.0,0.0,0.0
-10,181,Miguel Brau,Brau,Coventry City,DEF,,0.0,0.0,0.0
-10,182,Aurèle Amenda,Amenda,Coventry City,DEF,,0.0,0.0,0.0
-10,357,Jeremie Frimpong,Frimpong,Liverpool,DEF,,0.0,0.0,0.0
-10,174,Liam Kitching,Kitching,Coventry City,DEF,,0.0,0.0,0.0
-10,361,Wellity Lucky,Lucky,Liverpool,DEF,,0.0,0.0,0.0
-10,363,Giovanni Leoni,Leoni,Liverpool,DEF,,0.0,0.0,0.0
-10,365,Calvin Ramsay,Ramsay,Liverpool,DEF,,0.0,0.0,0.0
-10,373,Curtis Jones,C.Jones,Liverpool,MID,,0.0,0.0,0.0
-10,376,Stefan Bajčetić Maquieira,Bajcetic,Liverpool,MID,,0.0,0.0,0.0
-10,215,Justin Devenny,Devenny,Crystal Palace,MID,,0.0,0.0,0.0
-10,178,Jake Bidwell,Bidwell,Coventry City,DEF,,0.0,0.0,0.0
-10,180,Luke Woolfenden,Woolfenden,Coventry City,DEF,,0.0,0.0,0.0
-10,218,Cheick Doucouré,Doucouré,Crystal Palace,MID,,0.0,0.0,0.0
-10,216,Romain Esse,Esse,Crystal Palace,MID,,0.0,0.0,0.0
-10,220,Rio Cardines,Cardines,Crystal Palace,DEF,,0.0,0.0,0.0
-10,219,Jesurun Rak-Sakyi,J.Rak-Sakyi,Crystal Palace,MID,,0.0,0.0,0.0
+10,604,Alfie Cresswell,Cresswell,Leeds,MID,,0.0,0.0,0.0
+10,319,Sam Szmodics,Szmodics,Ipswich Town,MID,,0.0,0.0,0.0
 10,225,Christantus Uche,Uche,Crystal Palace,FWD,,0.0,0.0,0.0
 10,577,Takehiro Tomiyasu,Tomiyasu,Crystal Palace,DEF,,0.0,0.0,0.0
-10,602,Cameron Humphreys,Humphreys,Ipswich Town,MID,,0.0,0.0,0.0
 10,223,Jean-Philippe Mateta,Mateta,Crystal Palace,FWD,,0.0,0.0,0.0
-10,326,Lucas Estella Perri,Perri,Leeds,GKP,,0.0,0.0,0.0
-10,333,Sebastiaan Bornauw,Bornauw,Leeds,DEF,,0.0,0.0,0.0
-10,380,Hugo Ekitiké,Ekitiké,Liverpool,FWD,,0.0,0.0,0.0
-10,383,Harvey Elliott,Elliott,Liverpool,MID,,0.0,0.0,0.0
-10,386,Marcus Bettinelli,Bettinelli,Man City,GKP,,0.0,0.0,0.0
-10,168,Marc Guiu Paz,Marc Guiu,Chelsea,FWD,,0.0,0.0,0.0
-10,187,Josh Eccles,Eccles,Coventry City,MID,,0.0,0.0,0.0
-10,360,Conor Bradley,Bradley,Liverpool,DEF,,0.0,0.0,0.0
-10,200,Maxence Lacroix,Lacroix,Chelsea,DEF,,0.0,0.0,0.0
-10,170,Emmanuel Emegha,Emegha,Chelsea,FWD,,0.0,0.0,0.0
-10,669,Teddy Sharman-Lowe,Sharman-Lowe,Chelsea,GKP,,0.0,0.0,0.0
-10,561,Aaron Anselmino,Anselmino,Chelsea,DEF,,0.0,0.0,0.0
-10,171,Oliver Dovin,Dovin,Coventry City,GKP,,0.0,0.0,0.0
-10,172,Ben Wilson,Wilson,Coventry City,GKP,,0.0,0.0,0.0
-10,148,Jorrel Hato,Hato,Chelsea,DEF,,0.0,0.0,0.0
-10,670,Olutayo Subuloye,Subuloye,Chelsea,DEF,,0.0,0.0,0.0
-10,150,Mamadou Sarr,M.Sarr,Chelsea,DEF,,0.0,0.0,0.0
-10,158,Jamie Bynoe-Gittens,Gittens,Chelsea,MID,,0.0,0.0,0.0
-10,165,João Pedro Junqueira de Jesus,João Pedro,Chelsea,FWD,,0.0,0.0,0.0
-10,394,Max Alleyne,Alleyne,Man City,DEF,,0.0,0.0,0.0
+10,220,Rio Cardines,Cardines,Crystal Palace,DEF,,0.0,0.0,0.0
+10,535,Omar Alderete,Alderete,Sunderland,DEF,,0.0,0.0,0.0
+10,537,Jenson Seelt,Seelt,Sunderland,DEF,,0.0,0.0,0.0
+10,596,Matteo Ruggeri,Ruggeri,Aston Villa,DEF,,0.0,0.0,0.0
+10,543,Habib Diarra,Diarra,Sunderland,MID,,0.0,0.0,0.0
+10,12,Bukayo Saka,Saka,Arsenal,MID,,0.0,0.0,0.0
+10,509,Jun'ai Byfield,Byfield,Spurs,DEF,,0.0,0.0,0.0
+10,419,Lisandro Martínez,Martinez,Man Utd,DEF,,0.0,0.0,0.0
 10,397,Antoine Semenyo,Semenyo,Man City,MID,,0.0,0.0,0.0
 10,402,Rodrigo 'Rodri' Hernandez Cascante,Rodrigo,Man City,MID,,0.0,0.0,0.0
 10,404,Tijjani Reijnders,Reijnders,Man City,MID,,0.0,0.0,0.0
-10,407,Claudio Echeverri,Echeverri,Man City,MID,,0.0,0.0,0.0
-10,348,Joël Piroe,Piroe,Leeds,FWD,,0.0,0.0,0.0
-10,349,Mateo Joseph Fernández-Regatillo,Mateo Joseph,Leeds,FWD,,0.0,0.0,0.0
-10,189,George Shepherd,Shepherd,Coventry City,MID,,0.0,0.0,0.0
-10,191,Raphael Borges Rodrigues,Borges Rodrigues,Coventry City,MID,,0.0,0.0,0.0
-10,192,Kai Andrews,Andrews,Coventry City,MID,,0.0,0.0,0.0
-10,193,Haji Wright,Wright,Coventry City,FWD,,0.0,0.0,0.0
-10,196,Jahnoah Markelo,Markelo,Coventry City,FWD,,0.0,0.0,0.0
-10,197,Norman Bassette,Bassette,Coventry City,FWD,,0.0,0.0,0.0
-10,623,Dan Bentley,Bentley,Coventry City,GKP,,0.0,0.0,0.0
-10,603,Jayden Lienou,Lienou,Leeds,DEF,,0.0,0.0,0.0
-10,604,Alfie Cresswell,Cresswell,Leeds,MID,,0.0,0.0,0.0
-10,625,Alex Cairns,Cairns,Leeds,GKP,,0.0,0.0,0.0
-10,520,Lucas Bergvall,Bergvall,Spurs,MID,,0.0,0.0,0.0
-10,527,Richarlison de Andrade,Richarlison,Spurs,FWD,,0.0,0.0,0.0
-10,610,Luc De Fougerolles,De Fougerolles,Fulham,DEF,,0.0,0.0,0.0
-10,509,Jun'ai Byfield,Byfield,Spurs,DEF,,0.0,0.0,0.0
-10,414,Tom Heaton,Heaton,Man Utd,GKP,,0.0,0.0,0.0
-10,413,Altay Bayındır,Bayindir,Man Utd,GKP,,0.0,0.0,0.0
-10,143,Trevoh Chalobah,Chalobah,Chelsea,DEF,,0.0,0.0,0.0
-10,142,Reece James,James,Chelsea,DEF,,0.0,0.0,0.0
-10,141,Filip Jörgensen,Jörgensen,Chelsea,GKP,,0.0,0.0,0.0
-10,140,Robert Lynch Sánchez,Sánchez,Chelsea,GKP,,0.0,0.0,0.0
-10,28,Emiliano Martínez Romero,Martinez,Chelsea,GKP,,0.0,0.0,0.0
-10,658,Younes Ibrahim,Ibrahim,Brighton,MID,,0.0,0.0,0.0
-10,652,Femi Azeez,Azeez,Brighton,MID,,0.0,0.0,0.0
-10,624,Amario Cozier-Duberry,Cozier-Duberry,Brighton,MID,,0.0,0.0,0.0
-10,131,Carlos Baleba,Baleba,Man Utd,MID,Aston Villa,0.0,0.0,0.0
-10,653,Floyd Samba,Samba,Man City,MID,,0.0,0.0,0.0
-10,587,Gerónimo Rulli,Rulli,Man City,GKP,,0.0,0.0,0.0
-10,410,Jeremy Monga,Monga,Man City,MID,,0.0,0.0,0.0
-10,409,Divine Mukasa,Mukasa,Man City,MID,,0.0,0.0,0.0
-10,408,Kalvin Phillips,Phillips,Man City,MID,,0.0,0.0,0.0
-10,234,Nathan Patterson,Patterson,Everton,DEF,,0.0,0.0,0.0
-10,307,Ben Johnson,Johnson,Ipswich Town,DEF,,0.0,0.0,0.0
-10,428,Matheus Santos Carneiro da Cunha,Cunha,Man Utd,MID,Aston Villa,0.0,0.0,0.0
-10,328,Pascal Struijk,Struijk,Brighton,DEF,,0.0,0.0,0.0
-10,317,George Hirst,Hirst,Ipswich Town,FWD,,0.0,0.0,0.0
-10,314,Chiedozie Ogbene,Ogbene,Ipswich Town,MID,,0.0,0.0,0.0
-10,311,Wes Burns,Burns,Ipswich Town,MID,,0.0,0.0,0.0
-10,235,Adam Aznou,Aznou,Everton,DEF,,0.0,0.0,0.0
-10,319,Sam Szmodics,Szmodics,Ipswich Town,MID,,0.0,0.0,0.0
-10,324,Anis Mehmeti,Mehmeti,Ipswich Town,MID,,0.0,0.0,0.0
-10,139,Evan Ferguson,Ferguson,Brighton,FWD,,0.0,0.0,0.0
-10,137,Stefanos Tzimas,Tzimas,Brighton,FWD,,0.0,0.0,0.0
-10,133,Tom Watson,Watson,Brighton,MID,,0.0,0.0,0.0
-10,135,Zadok Yohanna,Yohanna,Brighton,MID,,0.0,0.0,0.0
-10,423,Luke Shaw,Shaw,Man Utd,DEF,,0.0,0.0,0.0
-10,415,Patrick Dorgu,Dorgu,Man Utd,MID,,0.0,0.0,0.0
-10,660,Benjamin Fredrick,Fredrick,Brentford,DEF,,0.0,0.0,0.0
-10,441,Chido Obi,Obi,Man Utd,FWD,,0.0,0.0,0.0
-10,439,Benjamin Sesko,Šeško,Man Utd,FWD,,0.0,0.0,0.0
-10,436,Toby Collyer,Collyer,Man Utd,MID,,0.0,0.0,0.0
-10,444,Ewen Jaouen,Jaouen,Newcastle,GKP,,0.0,0.0,0.0
-10,661,Ellery Balcombe,Balcombe,Brentford,GKP,,0.0,0.0,0.0
-10,121,Mitoma Kaoru,Mitoma,Brighton,MID,,0.0,0.0,0.0
-10,443,Mark Gillespie,Gillespie,Newcastle,GKP,,0.0,0.0,0.0
-10,458,Joelinton Cássio Apolinário de Lira,Joelinton,Newcastle,MID,Fulham,0.0,0.0,0.0
-10,99,Antoni Milambo,Milambo,Brentford,MID,,0.0,0.0,0.0
-10,100,Fábio Freitas Gouveia Carvalho,Carvalho,Brentford,MID,,0.0,0.0,0.0
-10,103,Josh Dasilva,Dasilva,Brentford,MID,,0.0,0.0,0.0
-10,107,Kaye Furo,Furo,Brentford,FWD,,0.0,0.0,0.0
-10,450,Tino Livramento,Livramento,Newcastle,DEF,,0.0,0.0,0.0
-10,451,Alex Murphy,A.Murphy,Newcastle,DEF,,0.0,0.0,0.0
-10,456,Jacob Ramsey,J.Ramsey,Newcastle,MID,,0.0,0.0,0.0
-10,563,Hidemasa Morita,Morita,Hull City,MID,Arsenal,0.0,0.0,0.0
-10,466,Sean Neave,Neave,Newcastle,FWD,,0.0,0.0,0.0
-10,463,Nick Woltemade,Woltemade,Newcastle,FWD,,0.0,0.0,0.0
-10,632,Ilyas Ansah,Ansah,Hull City,FWD,,0.0,0.0,0.0
+10,554,Kayne van Oevelen,Van Oevelen,Ipswich Town,GKP,,0.0,0.0,0.0
+10,238,Jack Grealish,Grealish,Everton,MID,Coventry City,0.0,0.0,0.0
 10,248,Norberto Bercique Gomes Betuncal,Beto,Everton,FWD,,0.0,0.0,0.0
 10,654,Braiden Graham,Graham,Everton,MID,,0.0,0.0,0.0
 10,251,Benjamin Lecomte,Lecomte,Fulham,GKP,,0.0,0.0,0.0
-10,238,Jack Grealish,Grealish,Everton,MID,Coventry City,0.0,0.0,0.0
 10,252,Alfie McNally,McNally,Fulham,GKP,,0.0,0.0,0.0
-10,645,Christos Mouzakitis,Mouzakitis,Hull City,MID,,0.0,0.0,0.0
-10,554,Kayne van Oevelen,Van Oevelen,Ipswich Town,GKP,,0.0,0.0,0.0
-10,433,Manuel Ugarte Ribeiro,Ugarte,Man Utd,MID,,0.0,0.0,0.0
-10,425,Tyler Fredricson,Fredricson,Man Utd,DEF,,0.0,0.0,0.0
-10,128,Facundo Buonanotte,Buonanotte,Brighton,MID,,0.0,0.0,0.0
-10,132,Harry Howell,Howell,Brighton,MID,,0.0,0.0,0.0
-10,419,Lisandro Martínez,Martinez,Man Utd,DEF,,0.0,0.0,0.0
-10,665,Michael Mills,Mills,Newcastle,MID,,0.0,0.0,0.0
-10,664,Vakhtang Salia,Salia,Newcastle,FWD,,0.0,0.0,0.0
-10,663,Miodrag Pivas,Pivas,Newcastle,DEF,,0.0,0.0,0.0
-10,659,Mason Miley,Miley,Newcastle,MID,,0.0,0.0,0.0
-10,609,Leo Shahar,Shahar,Newcastle,DEF,,0.0,0.0,0.0
+10,234,Nathan Patterson,Patterson,Everton,DEF,,0.0,0.0,0.0
+10,235,Adam Aznou,Aznou,Everton,DEF,,0.0,0.0,0.0
+10,307,Ben Johnson,Johnson,Ipswich Town,DEF,,0.0,0.0,0.0
 10,303,Cédric Kipré,Kipré,Ipswich Town,DEF,,0.0,0.0,0.0
-10,89,Rico Henry,Henry,Brentford,DEF,,0.0,0.0,0.0
+10,148,Jorrel Hato,Hato,Chelsea,DEF,,0.0,0.0,0.0
+10,150,Mamadou Sarr,M.Sarr,Chelsea,DEF,,0.0,0.0,0.0
+10,170,Emmanuel Emegha,Emegha,Chelsea,FWD,,0.0,0.0,0.0
+10,158,Jamie Bynoe-Gittens,Gittens,Chelsea,MID,,0.0,0.0,0.0
+10,132,Harry Howell,Howell,Brighton,MID,,0.0,0.0,0.0
+10,128,Facundo Buonanotte,Buonanotte,Brighton,MID,,0.0,0.0,0.0
+10,433,Manuel Ugarte Ribeiro,Ugarte,Man Utd,MID,,0.0,0.0,0.0
+10,429,Marcus Rashford,Rashford,Man Utd,MID,,0.0,0.0,0.0
+10,428,Matheus Santos Carneiro da Cunha,Cunha,Man Utd,MID,Aston Villa,0.0,0.0,0.0
+10,439,Benjamin Sesko,Šeško,Man Utd,FWD,,0.0,0.0,0.0
+10,441,Chido Obi,Obi,Man Utd,FWD,,0.0,0.0,0.0
+10,652,Femi Azeez,Azeez,Brighton,MID,,0.0,0.0,0.0
+10,131,Carlos Baleba,Baleba,Man Utd,MID,,0.0,0.0,0.0
+10,624,Amario Cozier-Duberry,Cozier-Duberry,Brighton,MID,,0.0,0.0,0.0
+10,141,Filip Jörgensen,Jörgensen,Chelsea,GKP,,0.0,0.0,0.0
+10,414,Tom Heaton,Heaton,Man Utd,GKP,,0.0,0.0,0.0
+10,143,Trevoh Chalobah,Chalobah,Chelsea,DEF,,0.0,0.0,0.0
+10,413,Altay Bayındır,Bayindir,Man Utd,GKP,,0.0,0.0,0.0
+10,450,Tino Livramento,Livramento,Newcastle,DEF,,0.0,0.0,0.0
+10,451,Alex Murphy,A.Murphy,Newcastle,DEF,,0.0,0.0,0.0
+10,456,Jacob Ramsey,J.Ramsey,Newcastle,MID,,0.0,0.0,0.0
+10,458,Joelinton Cássio Apolinário de Lira,Joelinton,Newcastle,MID,,0.0,0.0,0.0
+10,660,Benjamin Fredrick,Fredrick,Brentford,DEF,,0.0,0.0,0.0
+10,444,Ewen Jaouen,Jaouen,Newcastle,GKP,,0.0,0.0,0.0
+10,328,Pascal Struijk,Struijk,Brighton,DEF,,0.0,0.0,0.0
+10,443,Mark Gillespie,Gillespie,Newcastle,GKP,,0.0,0.0,0.0
 10,666,Kyran Thompson,Thompson,Newcastle,MID,,0.0,0.0,0.0
+10,665,Michael Mills,Mills,Newcastle,MID,,0.0,0.0,0.0
+10,663,Miodrag Pivas,Pivas,Newcastle,DEF,,0.0,0.0,0.0
+10,664,Vakhtang Salia,Salia,Newcastle,FWD,,0.0,0.0,0.0
+10,137,Stefanos Tzimas,Tzimas,Brighton,FWD,,0.0,0.0,0.0
+10,135,Zadok Yohanna,Yohanna,Brighton,MID,,0.0,0.0,0.0
+10,99,Antoni Milambo,Milambo,Brentford,MID,,0.0,0.0,0.0
+10,139,Evan Ferguson,Ferguson,Brighton,FWD,,0.0,0.0,0.0
+10,463,Nick Woltemade,Woltemade,Newcastle,FWD,,0.0,0.0,0.0
+10,466,Sean Neave,Neave,Newcastle,FWD,,0.0,0.0,0.0
+10,609,Leo Shahar,Shahar,Newcastle,DEF,,0.0,0.0,0.0
+10,659,Mason Miley,Miley,Newcastle,MID,,0.0,0.0,0.0
+10,44,Leon Bailey,Bailey,Aston Villa,MID,,0.0,0.0,0.0
+10,39,Kosta Nedeljkovic,Nedeljkovic,Aston Villa,DEF,,0.0,0.0,0.0
+10,38,Andrés García,A.García,Aston Villa,DEF,,0.0,0.0,0.0
+10,436,Toby Collyer,Collyer,Man Utd,MID,,0.0,0.0,0.0
+10,425,Tyler Fredricson,Fredricson,Man Utd,DEF,,0.0,0.0,0.0
+10,423,Luke Shaw,Shaw,Man Utd,DEF,,0.0,0.0,0.0
+10,661,Ellery Balcombe,Balcombe,Brentford,GKP,,0.0,0.0,0.0
+10,653,Floyd Samba,Samba,Man City,MID,,0.0,0.0,0.0
+10,133,Tom Watson,Watson,Brighton,MID,,0.0,0.0,0.0
+10,140,Robert Lynch Sánchez,Sánchez,Chelsea,GKP,,0.0,0.0,0.0
+10,658,Younes Ibrahim,Ibrahim,Brighton,MID,,0.0,0.0,0.0
+10,142,Reece James,James,Chelsea,DEF,,0.0,0.0,0.0
+10,615,Michele Di Gregorio,Di Gregorio,Bournemouth,GKP,,0.0,0.0,0.0
+10,89,Rico Henry,Henry,Brentford,DEF,,0.0,0.0,0.0
+10,121,Mitoma Kaoru,Mitoma,Brighton,MID,,0.0,0.0,0.0
+10,266,Tom Cairney,Cairney,Fulham,MID,,0.0,0.0,0.0
+10,30,Lucas Digne,Digne,Aston Villa,DEF,,0.0,0.0,0.0
+10,317,George Hirst,Hirst,Ipswich Town,FWD,,0.0,0.0,0.0
+10,314,Chiedozie Ogbene,Ogbene,Ipswich Town,MID,,0.0,0.0,0.0
+10,311,Wes Burns,Burns,Ipswich Town,MID,,0.0,0.0,0.0
+10,32,Matty Cash,Cash,Aston Villa,DEF,,0.0,0.0,0.0
+10,100,Fábio Freitas Gouveia Carvalho,Carvalho,Brentford,MID,,0.0,0.0,0.0
+10,103,Josh Dasilva,Dasilva,Brentford,MID,,0.0,0.0,0.0
+10,573,Juanlu Sánchez,Sanchez,Bournemouth,DEF,,0.0,0.0,0.0
+10,475,Nicolò Savona,Savona,Nott'm Forest,DEF,,0.0,0.0,0.0
+10,470,Felipe Rodrigues da Silva,Morato,Nott'm Forest,DEF,,0.0,0.0,0.0
 10,477,Zach Abbott,Abbott,Nott'm Forest,DEF,,0.0,0.0,0.0
 10,479,Tyler Bindon,Bindon,Nott'm Forest,DEF,,0.0,0.0,0.0
-10,65,Julián Araujo Zúñiga,J.Araujo,Bournemouth,DEF,Ipswich Town,0.0,0.0,0.0
-10,69,Alex Scott,Scott,Bournemouth,MID,,0.0,0.0,0.0
-10,76,Alex Tóth,Tóth.A,Bournemouth,MID,,0.0,0.0,0.0
-10,470,Felipe Rodrigues da Silva,Morato,Nott'm Forest,DEF,,0.0,0.0,0.0
-10,615,Michele Di Gregorio,Di Gregorio,Bournemouth,GKP,,0.0,0.0,0.0
-10,573,Juanlu Sánchez,Sanchez,Bournemouth,DEF,Ipswich Town,0.0,0.0,0.0
 10,485,Dilane Bakwa,Bakwa,Nott'm Forest,MID,,0.0,0.0,0.0
-10,484,Omari Hutchinson,Hutchinson,Nott'm Forest,MID,,0.0,0.0,0.0
-10,147,Tosin Adarabioyo,Tosin,Spurs,DEF,,0.0,0.0,0.0
 10,487,Nicolás Domínguez,Dominguez,Nott'm Forest,MID,,0.0,0.0,0.0
-10,606,Triston Rowe,Rowe,Aston Villa,DEF,,0.0,0.0,0.0
-10,607,Luka Lynch,Lynch,Aston Villa,MID,,0.0,0.0,0.0
-10,273,Dillon Phillips,Phillips,Hull City,GKP,,0.0,0.0,0.0
-10,590,Steven Benda,Benda,Nott'm Forest,GKP,,0.0,0.0,0.0
-10,275,Harvey Cartwright,Cartwright,Hull City,GKP,,0.0,0.0,0.0
-10,276,Thimothée Lo-Tutala,Lo-Tutala,Hull City,GKP,,0.0,0.0,0.0
-10,281,Cody Drameh,Drameh,Hull City,DEF,,0.0,0.0,0.0
-10,278,Charlie Hughes,Hughes,Hull City,DEF,,0.0,0.0,0.0
-10,283,Matty Jacob,Jacob,Hull City,DEF,,0.0,0.0,0.0
+10,484,Omari Hutchinson,Hutchinson,Nott'm Forest,MID,,0.0,0.0,0.0
 10,80,Enes Ünal,Enes Ünal,Bournemouth,FWD,,0.0,0.0,0.0
-10,475,Nicolò Savona,Savona,Nott'm Forest,DEF,,0.0,0.0,0.0
-10,476,Omar Richards,O.Richards,Nott'm Forest,DEF,,0.0,0.0,0.0
-10,289,Matt Crooks,Crooks,Hull City,MID,,0.0,0.0,0.0
-10,287,Liam Millar,Millar,Hull City,MID,,0.0,0.0,0.0
-10,284,Cathal McCarthy,McCarthy,Hull City,DEF,,0.0,0.0,0.0
-10,291,Eliot Matazo,Matazo,Hull City,MID,,0.0,0.0,0.0
-10,12,Bukayo Saka,Saka,Arsenal,MID,,0.0,0.0,0.0
-10,537,Jenson Seelt,Seelt,Sunderland,DEF,,0.0,0.0,0.0
-10,296,David Akintola,Akintola,Hull City,MID,,0.0,0.0,0.0
-10,523,Mikey Moore,Moore,Spurs,MID,,0.0,0.0,0.0
-10,298,Enis Destan,Destan,Hull City,FWD,,0.0,0.0,0.0
+10,65,Julián Araujo Zúñiga,J.Araujo,Bournemouth,DEF,Ipswich Town,0.0,0.0,0.0
+10,76,Alex Tóth,Tóth.A,Bournemouth,MID,,0.0,0.0,0.0
 10,299,Mason Burstow,Burstow,Hull City,FWD,,0.0,0.0,0.0
-10,556,Matt Targett,Targett,Hull City,DEF,,0.0,0.0,0.0
+10,298,Enis Destan,Destan,Hull City,FWD,,0.0,0.0,0.0
+10,296,David Akintola,Akintola,Hull City,MID,,0.0,0.0,0.0
+10,294,Óscar Zambrano,Zambrano,Hull City,MID,,0.0,0.0,0.0
+10,667,James Wright,Wright,Aston Villa,GKP,,0.0,0.0,0.0
+10,607,Luka Lynch,Lynch,Aston Villa,MID,,0.0,0.0,0.0
+10,606,Triston Rowe,Rowe,Aston Villa,DEF,,0.0,0.0,0.0
+10,590,Steven Benda,Benda,Nott'm Forest,GKP,,0.0,0.0,0.0
+10,107,Kaye Furo,Furo,Brentford,FWD,,0.0,0.0,0.0
+10,476,Omar Richards,O.Richards,Nott'm Forest,DEF,,0.0,0.0,0.0
+10,513,Xavi Simons,Xavi,Spurs,MID,,0.0,0.0,0.0
+10,500,Cristian Romero,Romero,Spurs,DEF,,0.0,0.0,0.0
+10,505,Djed Spence,Spence,Spurs,DEF,,0.0,0.0,0.0
+10,291,Eliot Matazo,Matazo,Hull City,MID,,0.0,0.0,0.0
 10,292,Abdülkadir Ömür,Ömür,Hull City,MID,,0.0,0.0,0.0
 10,293,Abu Kamara,Kamara,Hull City,MID,,0.0,0.0,0.0
-10,294,Óscar Zambrano,Zambrano,Hull City,MID,,0.0,0.0,0.0
-10,611,Aaron Wan-Bissaka,Wan-Bissaka,Aston Villa,DEF,,0.0,0.0,0.0
-10,297,Darko Gyabi,Gyabi,Hull City,MID,,0.0,0.0,0.0
-10,667,James Wright,Wright,Aston Villa,GKP,,0.0,0.0,0.0
-10,59,Will Dennis,Dennis,Bournemouth,GKP,,0.0,0.0,0.0
-10,626,Macaulay Zepa,Zepa,Fulham,MID,,0.0,0.0,0.0
-10,63,Veljko Milosavljevic,Milosavljević,Bournemouth,DEF,,0.0,0.0,0.0
-10,32,Matty Cash,Cash,Aston Villa,DEF,,0.0,0.0,0.0
-10,38,Andrés García,A.García,Aston Villa,DEF,,0.0,0.0,0.0
-10,39,Kosta Nedeljkovic,Nedeljkovic,Aston Villa,DEF,,0.0,0.0,0.0
-10,30,Lucas Digne,Digne,Aston Villa,DEF,,0.0,0.0,0.0
-10,44,Leon Bailey,Bailey,Aston Villa,MID,,0.0,0.0,0.0
-10,48,Amadou Onana,Onana,Aston Villa,MID,,0.0,0.0,0.0
-10,49,Samuel Iling-Junior,Iling Jr,Aston Villa,MID,,0.0,0.0,0.0
 10,22,Ethan Nwaneri,Nwaneri,Arsenal,MID,,0.0,0.0,0.0
-10,55,Ollie Watkins,Watkins,Aston Villa,FWD,,0.0,0.0,0.0
+10,511,João Victor de Souza Menezes,Souza,Spurs,DEF,,0.0,0.0,0.0
+10,273,Dillon Phillips,Phillips,Hull City,GKP,,0.0,0.0,0.0
+10,626,Macaulay Zepa,Zepa,Fulham,MID,,0.0,0.0,0.0
+10,578,Mykhailo Mudryk,Mudryk,Spurs,MID,,0.0,0.0,0.0
+10,528,Dane Scarlett,Scarlett,Spurs,FWD,,0.0,0.0,0.0
+10,278,Charlie Hughes,Hughes,Hull City,DEF,,0.0,0.0,0.0
+10,276,Thimothée Lo-Tutala,Lo-Tutala,Hull City,GKP,,0.0,0.0,0.0
+10,275,Harvey Cartwright,Cartwright,Hull City,GKP,,0.0,0.0,0.0
+10,645,Christos Mouzakitis,Mouzakitis,Hull City,MID,,0.0,0.0,0.0
+10,63,Veljko Milosavljevic,Milosavljević,Bournemouth,DEF,,0.0,0.0,0.0
+10,403,Sávio Moreira de Oliveira,Sávio,Spurs,MID,,0.0,0.0,0.0
+10,494,Guglielmo Vicario,Vicario,Spurs,GKP,,0.0,0.0,0.0
+10,527,Richarlison de Andrade,Richarlison,Spurs,FWD,,0.0,0.0,0.0
+10,520,Lucas Bergvall,Bergvall,Spurs,MID,,0.0,0.0,0.0
+10,59,Will Dennis,Dennis,Bournemouth,GKP,,0.0,0.0,0.0
 10,20,Max Dowman,Dowman,Arsenal,MID,,0.0,0.0,0.0
-10,18,Gabriel Martinelli Silva,Martinelli,Arsenal,MID,,0.0,0.0,0.0
-10,596,Matteo Ruggeri,Ruggeri,Aston Villa,DEF,,0.0,0.0,0.0
+10,523,Mikey Moore,Moore,Spurs,MID,,0.0,0.0,0.0
+10,287,Liam Millar,Millar,Hull City,MID,,0.0,0.0,0.0
+10,289,Matt Crooks,Crooks,Hull City,MID,,0.0,0.0,0.0
+10,518,Pape Matar Sarr,P.M.Sarr,Spurs,MID,,0.0,0.0,0.0
+10,284,Cathal McCarthy,McCarthy,Hull City,DEF,,0.0,0.0,0.0
+10,632,Ilyas Ansah,Ansah,Hull City,FWD,,0.0,0.0,0.0
+10,283,Matty Jacob,Jacob,Hull City,DEF,,0.0,0.0,0.0
+10,563,Hidemasa Morita,Morita,Hull City,MID,,0.0,0.0,0.0
+10,556,Matt Targett,Targett,Hull City,DEF,,0.0,0.0,0.0
